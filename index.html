@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نموذج المحل ثلاثي الأبعاد 3D - الصيانة عند حائط الـ 3م • فاترينات زجاج حرف L • كاونتر في المنتصف</title>
+  <title>نموذج المحل ثلاثي الأبعاد 3D - الصيانة عند حائط الـ 3م الأبيض • فاترينة الباب الثابت 5 أرفف • كاونتر في المنتصف</title>
 
   <!-- Google Fonts: Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1043,6 +1043,24 @@
       }
     }
 
+  
+    .quick-doors-float {
+      top: max(76px, calc(env(safe-area-inset-top) + 76px)) !important;
+      background: rgba(219, 70, 129, 0.22) !important;
+      border: 1px solid rgba(219, 70, 129, 0.55) !important;
+      color: #fbcfe8 !important;
+    }
+    .quick-doors-float:hover {
+      background: rgba(219, 70, 129, 0.38) !important;
+      border-color: #db4681 !important;
+      color: #fff !important;
+      transform: translateY(-2px);
+    }
+    .quick-doors-float.active {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: #10b981 !important;
+      color: #6ee7b7 !important;
+    }
   </style>
 
   <!-- Three.js CDNs -->
@@ -1064,6 +1082,12 @@
     <span class="corner-menu-badge">3 مقترحات</span>
   </button>
 
+  <!-- Floating Quick Button: Open/Close Counter Doors (مباشرة على الشاشة) -->
+  <button id="btn-quick-counter-doors" class="corner-menu-btn quick-doors-float" onclick="toggleCounterDoors()" title="فتح أو إغلاق ضلف الكاونترات" aria-label="فتح أو إغلاق ضلف الكاونترات">
+    <i class="fa-solid fa-folder-open"></i>
+    <span id="quick-counter-btn-text">فتح ضلف الكاونتر</span>
+  </button>
+
   <!-- Overlay Backdrop -->
   <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
 
@@ -1082,28 +1106,6 @@
 
     <!-- Drawer Scrollable Body -->
     <div class="drawer-body">
-
-      <!-- 0. Viewing mode and camera reset -->
-      <div class="drawer-section">
-        <div class="drawer-section-title">
-          <i class="fa-solid fa-eye"></i>
-          <span>وضع المشاهدة</span>
-        </div>
-        <div class="drawer-toggles-grid drawer-mode-grid">
-          <button class="btn-drawer-toggle active" id="btn-mode-360" onclick="toggleInterior360Mode()">
-            <i class="fa-solid fa-street-view"></i>
-            <span>جولة داخلية 360°</span>
-          </button>
-          <button class="btn-drawer-toggle" id="btn-orbit-view" onclick="setExteriorOrbitMode()">
-            <i class="fa-solid fa-cube"></i>
-            <span>منظور خارجي 3D</span>
-          </button>
-          <button class="btn-drawer-toggle" id="btn-reset-camera" onclick="resetCamera()">
-            <i class="fa-solid fa-compress"></i>
-            <span>إعادة الكاميرا للوسط</span>
-          </button>
-        </div>
-      </div>
 
       <!-- 1. Desk Proposals Switcher -->
       <div class="drawer-section">
@@ -1136,81 +1138,40 @@
         </div>
       </div>
 
-      <!-- 2. Camera Views -->
+      <!-- 2. Camera Views (وضع الزوم والتجول الحر 3D) -->
       <div class="drawer-section">
         <div class="drawer-section-title">
           <i class="fa-solid fa-camera"></i>
-          <span>زوايا الرؤية والكاميرا (360° وبانوراما)</span>
+          <span>زوايا الكاميرا (تجول حر وزووم 3D)</span>
         </div>
         <div class="drawer-views-grid">
-          <button class="btn-drawer-view btn-view active" id="view-btn-center" onclick="jumpToSpot('center')">
-            <i class="fa-solid fa-street-view" style="color:#38bdf8;"></i>
-            <span>وسط صالة العرض (بانوراما شاملة 360°)</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-repair" onclick="switchCameraView('repairCounterView')">
-            <i class="fa-solid fa-screwdriver-wrench" style="color:#38bdf8;"></i>
-            <span>محطة الصيانة حرف L (أمام المكتب)</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-micro" onclick="switchCameraView('microscopeZoomView')">
-            <i class="fa-solid fa-microscope" style="color:#10b981;"></i>
-            <span>زووم الميكروسكوب واللحام الدقيق</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-tech" onclick="switchCameraView('technicianEyeView')">
-            <i class="fa-solid fa-chair" style="color:#fbbf24;"></i>
-            <span>من كرسي الصيانة (جلسة الفني 360°)</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-slat" onclick="switchCameraView('ledWallView')">
-            <i class="fa-solid fa-layer-group" style="color:#f43f5e;"></i>
-            <span>جدار الإكسسوارات سلات وول بضلف</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-entry" onclick="switchCameraView('customerEntryView')">
-            <i class="fa-solid fa-door-open" style="color:#34d399;"></i>
-            <span>رؤية الزبون عند الدخول</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-vitrines" onclick="switchCameraView('glassVitrinesView')">
-            <i class="fa-solid fa-shapes" style="color:#10b981;"></i>
-            <span>الفاترينات الزجاجية داخل الصالة</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-door-showcase" onclick="switchCameraView('maintenanceDoorShowcaseView')">
-            <i class="fa-solid fa-store" style="color:#34d399;"></i>
-            <span>عرض الباب الزجاجي من الخارج (5 رفوف)</span>
-          </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-top" onclick="switchCameraView('top')">
-            <i class="fa-solid fa-compass-drafting" style="color:#818cf8;"></i>
-            <span>مسقط أفقي معماري من أعلى (Plan)</span>
+          <button class="btn-drawer-view btn-view active" id="view-btn-top" onclick="switchCameraView('top')">
+            <i class="fa-solid fa-compass-drafting" style="color:#38bdf8;"></i>
+            <span>المنظور الافتراضي: مسقط أفقي من أعلى (Top View)</span>
           </button>
           <button class="btn-drawer-view btn-view" id="view-btn-iso" onclick="switchCameraView('iso')">
             <i class="fa-solid fa-cube" style="color:#c084fc;"></i>
-            <span>ماكيت أيزومتري 3D شامل (خارجي)</span>
+            <span>منظور 3D شامل (مجسم أيزومتري)</span>
           </button>
-          <button class="btn-drawer-view btn-view" id="view-btn-floor" onclick="switchCameraView('floorView')">
-            <i class="fa-solid fa-grip" style="color:#94a3b8;"></i>
-            <span>بلاط الأرضية الرخامي الفاخر</span>
+          <button class="btn-drawer-view btn-view" id="view-btn-door2" onclick="switchCameraView('doorShowcaseView')">
+            <i class="fa-solid fa-laptop" style="color:#34d399;"></i>
+            <span>فاترينة الباب الثابت (5 أرفف لابات وموبايلات)</span>
           </button>
-        </div>
-      </div>
-
-      <!-- 2a. Interior standing spots -->
-      <div class="drawer-section">
-        <div class="drawer-section-title">
-          <i class="fa-solid fa-location-dot"></i>
-          <span>نقاط الوقوف داخل المحل</span>
-        </div>
-        <div class="drawer-spots-grid">
-          <button class="spot-pill active" id="spot-btn-center" onclick="jumpToSpot('center')">
-            <i class="fa-solid fa-circle-dot"></i> وسط المحل (360°)
+          <button class="btn-drawer-view btn-view" id="view-btn-repair" onclick="switchCameraView('repairCounterView')">
+            <i class="fa-solid fa-screwdriver-wrench" style="color:#f59e0b;"></i>
+            <span>ورشة الصيانة وحائط 3م الأبيض</span>
           </button>
-          <button class="spot-pill" id="spot-btn-desk" onclick="jumpToSpot('desk')">
-            <i class="fa-solid fa-screwdriver-wrench"></i> أمام ورشة الصيانة
+          <button class="btn-drawer-view btn-view" id="view-btn-counter" onclick="switchCameraView('counterView')">
+            <i class="fa-solid fa-cash-register" style="color:#f472b6;"></i>
+            <span>كاونترات الاستقبال والضلف الداخلية</span>
           </button>
-          <button class="spot-pill" id="spot-btn-technician" onclick="jumpToSpot('technician')">
-            <i class="fa-solid fa-chair"></i> كرسي الفني
+          <button class="btn-drawer-view btn-view" id="view-btn-vitrines" onclick="switchCameraView('glassVitrinesView')">
+            <i class="fa-solid fa-mobile-screen" style="color:#ec4899;"></i>
+            <span>فاترينات العرض الزجاجية الوسطية</span>
           </button>
-          <button class="spot-pill" id="spot-btn-entry" onclick="jumpToSpot('entry')">
-            <i class="fa-solid fa-door-open"></i> مدخل الزبائن
-          </button>
-          <button class="spot-pill" id="spot-btn-vitrines" onclick="jumpToSpot('vitrines')">
-            <i class="fa-solid fa-gem"></i> فاترينات الزجاج
+          <button class="btn-drawer-view btn-view" id="view-btn-slat" onclick="switchCameraView('ledWallView')">
+            <i class="fa-solid fa-layer-group" style="color:#f43f5e;"></i>
+            <span>جدار الإكسسوارات سلات وول</span>
           </button>
         </div>
       </div>
@@ -1226,7 +1187,7 @@
             <i class="fa-solid fa-ruler-combined"></i>
             <span>الأبعاد 3D</span>
           </button>
-          <button class="btn-drawer-toggle active" id="btn-toggle-ceiling">
+          <button class="btn-drawer-toggle" id="btn-toggle-ceiling">
             <i class="fa-solid fa-border-top-left"></i>
             <span>السقف</span>
           </button>
@@ -1241,6 +1202,10 @@
           <button class="btn-drawer-toggle active" id="btn-toggle-door">
             <i class="fa-solid fa-door-open"></i>
             <span id="door-btn-text">دلفة الباب</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-toggle-counter-doors" onclick="toggleCounterDoors()" title="فتح أو إغلاق ضلف الكاونترين ورؤية الأرفف الداخلية">
+            <i class="fa-solid fa-folder-open"></i>
+            <span id="counter-doors-btn-text">ضلف الكاونتر</span>
           </button>
           <button class="btn-drawer-toggle" id="btn-switch-side" onclick="toggleDoorsSide()">
             <i class="fa-solid fa-repeat"></i>
@@ -1267,39 +1232,35 @@
           <!-- Populated dynamically by updateDeskSpecsBox -->
         </div>
         
-        <!-- Wall Colors Consultation Section matching Pink -->
+        <!-- Melamine Board Colors (Desk + Drawers + Walls) matching Pink -->
         <div class="breakdown-box">
           <div class="breakdown-title">
-            <i class="fa-solid fa-paint-roller" style="color:#38bdf8;"></i>
-            <span>ألوان الحوائط المقترحة (المتناسقة مع البينك الثابت):</span>
+            <i class="fa-solid fa-layer-group" style="color:#38bdf8;"></i>
+            <span>ألواح الكونتر الميلامين الاقتصادية (المكتب + الأدراج + الحوائط):</span>
           </div>
-          <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">
-            جرب بنقرة واحدة رؤية كل لون على جدران المحل مباشرة لمشاهدة التناسق مع البينك:
+          <div style="font-size:11px; color:#94a3b8; margin-bottom:8px; line-height:1.5;">
+            ألواح خشب يلدز تريند التركية الأصلية (Yıldız Trend) بالأكواد الحقيقية المعتمدة بالسوق المصري (أبو خالد للأخشاب)، موحدة للمكتب والأدراج والجدران:
           </div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
-            <button class="btn-drawer-toggle active" id="btn-wall-grey" onclick="setWallColorTheme('grey')" style="font-size:11px; padding:6px 6px; text-align:center;">
-              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#7d8c99; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
-              1. رمادي سحابي عصري
+            <button class="btn-drawer-toggle active" id="btn-wall-vt001" onclick="setWallColorTheme('vt001')" style="font-size:11px; padding:6px 4px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#ded8cf; margin-left:4px; vertical-align:middle; border:1.5px solid #cbd5e1;"></span>
+              1. Light Oak (VT 001) ⭐
             </button>
-            <button class="btn-drawer-toggle" id="btn-wall-white" onclick="setWallColorTheme('white')" style="font-size:11px; padding:6px 6px; text-align:center;">
-              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#ffffff; margin-left:4px; vertical-align:middle; border:1.5px solid #cbd5e1;"></span>
-              2. أوف وايت لؤلؤي ناصع
+            <button class="btn-drawer-toggle" id="btn-wall-vt059" onclick="setWallColorTheme('vt059')" style="font-size:11px; padding:6px 4px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#f0dfc8; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              2. Maple (VT 059)
             </button>
-            <button class="btn-drawer-toggle" id="btn-wall-greige" onclick="setWallColorTheme('greige')" style="font-size:11px; padding:6px 6px; text-align:center;">
-              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#aa9d8d; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
-              3. جريج دافئ وراقي
+            <button class="btn-drawer-toggle" id="btn-wall-vt202" onclick="setWallColorTheme('vt202')" style="font-size:11px; padding:6px 4px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#d8b58a; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              3. New Oak (VT 202)
             </button>
-            <button class="btn-drawer-toggle" id="btn-wall-charcoal" onclick="setWallColorTheme('charcoal')" style="font-size:11px; padding:6px 6px; text-align:center;">
-              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2b3440; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
-              4. أنثراسيت فخم تبايني
-            </button>
-            <button class="btn-drawer-toggle" id="btn-wall-beige" onclick="setWallColorTheme('beige')" style="font-size:11px; padding:6px 6px; text-align:center; grid-column: span 2;">
-              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#cfb492; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
-              5. بيج دافئ كلاسيكي (لاتيه)
+            <button class="btn-drawer-toggle" id="btn-wall-vt408" onclick="setWallColorTheme('vt408')" style="font-size:11px; padding:6px 4px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#c2ae98; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              4. Sonoma (VT 408)
             </button>
           </div>
         </div>
-<div class="breakdown-box">
+        <div class="breakdown-box">
           <div class="breakdown-title">
             <i class="fa-solid fa-wand-magic-sparkles" style="color:#fbbf24;"></i>
             <span>جدار الإكسسوارات سلات وول بضلف (أبيض + أحمر):</span>
@@ -1358,141 +1319,57 @@
     // ----------------------------------------------------
     const isMobileViewport = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches;
 
-    // Real Marble Porcelain Tiles Matching User's Real Photo Exactly (Calacatta Gold 60x60)
+    // Pure White Porcelain Floor Tiles 60x60 cm (بلاط أرضية أبيض ناصع)
     function createMarbleTileTexture() {
       const canvas = document.createElement('canvas');
       canvas.width = 1024;
       canvas.height = 1024;
       const ctx = canvas.getContext('2d');
 
-      // 1. Luminous Alabaster / Pure White Porcelain Base
-      const bgGrad = ctx.createLinearGradient(0, 0, 1024, 1024);
-      bgGrad.addColorStop(0, '#fdfcf9');
-      bgGrad.addColorStop(0.5, '#f9f6f0');
-      bgGrad.addColorStop(1, '#fcfaf6');
-      ctx.fillStyle = bgGrad;
+      // 1. Pristine Bright White Porcelain Base
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, 1024, 1024);
 
-      // 2. Micro Mineral Crystalline Grain
-      const grainCount = isMobileViewport ? 8000 : 40000;
+      // Subtle, delicate porcelain micro-crystal grain
+      const grainCount = isMobileViewport ? 4000 : 15000;
       for (let i = 0; i < grainCount; i++) {
         const x = Math.random() * 1024;
         const y = Math.random() * 1024;
-        const rad = Math.random() * 14 + 2;
-        const alpha = Math.random() * 0.14 + 0.04;
-        ctx.fillStyle = Math.random() < 0.65 ? `rgba(245, 238, 226, ${alpha})` : `rgba(230, 218, 202, ${alpha * 0.75})`;
+        const rad = Math.random() * 1.5 + 0.5;
+        const alpha = Math.random() * 0.04 + 0.01;
+        ctx.fillStyle = `rgba(226, 232, 240, ${alpha})`;
         ctx.beginPath();
         ctx.arc(x, y, rad, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 3. Soft Caramel / Golden Glow Halos along Vein Corridors
-      for (let w = 0; w < 12; w++) {
-        const startX = Math.random() * 650;
-        const startY = Math.random() * 1024;
-        ctx.strokeStyle = 'rgba(217, 155, 95, 0.12)';
-        ctx.lineWidth = Math.random() * 55 + 25;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.bezierCurveTo(
-          startX + 220 + Math.random() * 80, startY - 140,
-          startX + 420 + Math.random() * 80, startY - 280,
-          startX + 650, startY - 450
-        );
-        ctx.stroke();
-      }
+      // 2. Precision 60x60 cm Porcelain Tile Grid with Fine Light-Grey Grout Lines
+      const tilesCount = 4; // 4x4 tiles in 1024 canvas
+      const tileSize = 1024 / tilesCount; // 256px per tile
 
-      // 4. Distinct Brown / Caramel / Bronze / Gold Marble Veins (Direct Match to User's Image)
-      const veinPalettes = [
-        { core: 'rgba(92, 46, 18, 0.94)', halo: 'rgba(175, 105, 48, 0.42)', width: 3.8 },
-        { core: 'rgba(125, 68, 28, 0.88)', halo: 'rgba(198, 132, 68, 0.36)', width: 3.2 },
-        { core: 'rgba(75, 38, 14, 0.95)', halo: 'rgba(152, 92, 42, 0.38)', width: 2.6 },
-        { core: 'rgba(162, 98, 44, 0.82)', halo: 'rgba(224, 158, 92, 0.32)', width: 2.0 },
-        { core: 'rgba(108, 58, 24, 0.78)', halo: 'rgba(182, 118, 58, 0.28)', width: 1.6 }
-      ];
+      for (let i = 0; i < tilesCount; i++) {
+        for (let j = 0; j < tilesCount; j++) {
+          const tx = i * tileSize;
+          const ty = j * tileSize;
 
-      // Draw 26 rich organic diagonal vein trajectories
-      for (let v = 0; v < 26; v++) {
-        const palette = veinPalettes[v % veinPalettes.length];
-        let curX = (v % 2 === 0) ? Math.random() * 550 : Math.random() * 1024;
-        let curY = (v % 2 === 0) ? 0 : Math.random() * 1024;
+          // Subtle individual tile shading (realistic porcelain variation)
+          const tileShade = (Math.random() - 0.5) * 4;
+          const r = Math.min(255, Math.max(250, 254 + tileShade));
+          const g = Math.min(255, Math.max(250, 254 + tileShade));
+          const b = Math.min(255, Math.max(252, 255 + tileShade));
+          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.fillRect(tx + 2, ty + 2, tileSize - 4, tileSize - 4);
 
-        const steps = Math.floor(Math.random() * 42 + 35);
-        let baseAngle = (Math.PI * 0.27) + (Math.random() - 0.5) * 0.75; // 35 to 55 degrees diagonal flow
-
-        // Pass A: Soft Caramel Halo
-        ctx.beginPath();
-        ctx.moveTo(curX, curY);
-        ctx.strokeStyle = palette.halo;
-        ctx.lineWidth = palette.width * 2.8;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        let pathPoints = [{ x: curX, y: curY }];
-        for (let s = 0; s < steps; s++) {
-          const angle = baseAngle + (Math.random() - 0.5) * 0.88;
-          const dist = Math.random() * 24 + 10;
-          curX += Math.cos(angle) * dist;
-          curY += Math.sin(angle) * dist;
-          pathPoints.push({ x: curX, y: curY });
-          ctx.lineTo(curX, curY);
-        }
-        ctx.stroke();
-
-        // Pass B: Sharp Dark Bronze/Brown Core
-        ctx.beginPath();
-        ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
-        ctx.strokeStyle = palette.core;
-        ctx.lineWidth = palette.width;
-        for (let s = 1; s < pathPoints.length; s++) {
-          ctx.lineTo(pathPoints[s].x, pathPoints[s].y);
-        }
-        ctx.stroke();
-
-        // Pass C: Fine Branching Capillaries & Tendrils
-        for (let s = 2; s < pathPoints.length - 2; s += 3) {
-          if (Math.random() < 0.45) {
-            ctx.beginPath();
-            const pt = pathPoints[s];
-            ctx.moveTo(pt.x, pt.y);
-            const branchAngle = baseAngle + (Math.random() < 0.5 ? 1.05 : -1.05) + (Math.random() - 0.5) * 0.45;
-            const branchLen = Math.random() * 42 + 15;
-            const bx = pt.x + Math.cos(branchAngle) * branchLen;
-            const by = pt.y + Math.sin(branchAngle) * branchLen;
-            ctx.strokeStyle = palette.core;
-            ctx.lineWidth = Math.max(0.75, palette.width * 0.45);
-            ctx.lineTo(bx, by);
-            ctx.stroke();
-          }
+          // Soft beveled tile perimeter highlight
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(tx + 3, ty + 3, tileSize - 6, tileSize - 6);
         }
       }
 
-      // 5. Realistic 60x60 cm Porcelain Tile Seams & Beveled Grout Joints
-      const tilesCount = 4; // 4x4 tiles in 1024 canvas (matches 60cm module)
-      const tileSize = 1024 / tilesCount;
-
-      // Soft bevel shadow at tile edges
-      for (let i = 0; i <= tilesCount; i++) {
-        const pos = i * tileSize;
-        const hGrad = ctx.createLinearGradient(0, pos - 5, 0, pos + 5);
-        hGrad.addColorStop(0, 'rgba(210, 198, 180, 0)');
-        hGrad.addColorStop(0.5, 'rgba(175, 158, 138, 0.45)');
-        hGrad.addColorStop(1, 'rgba(210, 198, 180, 0)');
-        ctx.fillStyle = hGrad;
-        ctx.fillRect(0, pos - 5, 1024, 10);
-
-        const vGrad = ctx.createLinearGradient(pos - 5, 0, pos + 5, 0);
-        vGrad.addColorStop(0, 'rgba(210, 198, 180, 0)');
-        vGrad.addColorStop(0.5, 'rgba(175, 158, 138, 0.45)');
-        vGrad.addColorStop(1, 'rgba(210, 198, 180, 0)');
-        ctx.fillStyle = vGrad;
-        ctx.fillRect(pos - 5, 0, 10, 1024);
-      }
-
-      // Crisp clean fine grout seam
-      ctx.strokeStyle = '#a89884';
-      ctx.lineWidth = 1.8;
+      // Clean Light-Grey Grout Lines (فواصل البلاط الرفيعة 2 مم)
+      ctx.strokeStyle = 'rgba(203, 213, 225, 0.65)';
+      ctx.lineWidth = 2.5;
       for (let i = 0; i <= tilesCount; i++) {
         const pos = i * tileSize;
         ctx.beginPath();
@@ -1506,8 +1383,7 @@
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      // 4.0m width / (4 * 0.6m) = 1.67, 6.0m depth / (4 * 0.6m) = 2.50 (Exact 60x60cm tiles!)
-      texture.repeat.set(1.67, 2.50);
+      texture.repeat.set(1, 1); // 1 unit in UV (2.40m) = 4 tiles (60x60 cm exact tile size)
       return texture;
     }
 
@@ -1652,8 +1528,7 @@
       const texture = new THREE.CanvasTexture(canvas);
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      // 4.0m width / (4 * 0.6m) = 1.67, 6.0m depth / (4 * 0.6m) = 2.50 (Exact 60x60cm Armstrong grid!)
-      texture.repeat.set(1.67, 2.50);
+      texture.repeat.set(1, 1); // Exact 60x60cm Armstrong grid matching UV scale
       return texture;
     }
 
@@ -1740,6 +1615,53 @@
       return texture;
     }
 
+    // Natural Sand Oak Melamine Texture (أرو سنديان بيج طبيعي فاتح متطابق مع ألواح السوق)
+    function createSandOakWoodTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      // Light bleached Scandinavian Sand Oak base
+      const grad = ctx.createLinearGradient(0, 0, 512, 0);
+      grad.addColorStop(0, '#ebdcc7');
+      grad.addColorStop(0.25, '#dfcca8');
+      grad.addColorStop(0.5, '#e5d4b5');
+      grad.addColorStop(0.75, '#dbc7a2');
+      grad.addColorStop(1, '#e8d8be');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Fine delicate natural wood fibers
+      for (let i = 0; i < 450; i++) {
+        const y = Math.random() * 512;
+        ctx.strokeStyle = Math.random() < 0.65 ? 'rgba(135, 102, 65, 0.13)' : 'rgba(255, 248, 235, 0.22)';
+        ctx.lineWidth = Math.random() * 1.8 + 0.3;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.bezierCurveTo(170, y + (Math.random() - 0.5) * 6, 340, y + (Math.random() - 0.5) * 6, 512, y + (Math.random() - 0.5) * 4);
+        ctx.stroke();
+      }
+
+      // Clean wood plank seams
+      const planks = 3;
+      const plWidth = 512 / planks;
+      ctx.strokeStyle = 'rgba(110, 80, 50, 0.18)';
+      ctx.lineWidth = 1.2;
+      for (let i = 1; i < planks; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * plWidth, 0);
+        ctx.lineTo(i * plWidth, 512);
+        ctx.stroke();
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(1.5, 1.5);
+      return texture;
+    }
+
     function createSignTexture(text, isGreen = false) {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
@@ -1808,7 +1730,7 @@
 
     const camera = new THREE.PerspectiveCamera(isMobileViewport ? 60 : 52, window.innerWidth / window.innerHeight, 0.1, 100);
     // Initial camera: Showing the complete L-shaped workstation and shop!
-    camera.position.set(2.85, 1.85, 2.75);
+    camera.position.set(2.0, 9.0, 3.01);
 
     const renderer = new THREE.WebGLRenderer({ antialias: !isMobileViewport, alpha: false, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1831,7 +1753,7 @@
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.target.set(1.35, 1.05, 4.65);
+    controls.target.set(2.0, 0.4, 3.0);
     controls.maxPolarAngle = Math.PI / 2 + 0.05;
     controls.minDistance = 0.5;
     controls.maxDistance = 25;
@@ -1843,13 +1765,12 @@
     const ceilingTexture = createCeilingTexture();
     const pinkWoodTexture = createPinkWoodTexture();
 
-    const floorMaterial = new THREE.MeshPhysicalMaterial({
+    const floorMaterial = new THREE.MeshStandardMaterial({
       map: floorTexture,
-      roughness: 0.12,
-      metalness: 0.05,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.06,
-      reflectivity: 0.98
+      color: new THREE.Color(0xffffff),
+      roughness: 0.15,
+      metalness: 0.02,
+      side: THREE.DoubleSide
     });
 
     const pinkWallMaterial = new THREE.MeshStandardMaterial({
@@ -1860,7 +1781,7 @@
     });
 
     const beigeWallMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#7d8c99'), // Default modern tech grey
+      color: new THREE.Color('#ffffff'), // Default pure pearl white (حائط أبيض ناصع)
       roughness: 0.55,
       metalness: 0.02
     });
@@ -1921,10 +1842,27 @@
       metalness: 0.05
     });
 
-    const oakWoodTexture = createOakWoodTexture();
+    // Real Yıldız Trend Wood Textures (Turkish Melamine Panels)
+    const textureLoader = new THREE.TextureLoader();
+    function loadYildizTexture(path) {
+      const tex = textureLoader.load(path);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(1.5, 1.5);
+      return tex;
+    }
+
+    const yildizWoodTextures = {
+      vt001: loadYildizTexture('textures/vt001.jpg'),
+      vt059: loadYildizTexture('textures/vt059.jpg'),
+      vt202: loadYildizTexture('textures/vt202.jpg'),
+      vt408: loadYildizTexture('textures/vt408.jpg')
+    };
+
     const oakWoodMaterial = new THREE.MeshStandardMaterial({
-      map: oakWoodTexture,
-      roughness: 0.35,
+      map: yildizWoodTextures.vt001,
+      color: new THREE.Color(0xffffff),
+      roughness: 0.38,
       metalness: 0.02
     });
 
@@ -1965,6 +1903,8 @@
     let doorPivotRef = null;
 
     function buildShopModel(onRight = true) {
+      window.counterDoorHinges = [];
+      window.counterDoorMeshes = [];
       while (shopGroup.children.length > 0) {
         const obj = shopGroup.children[0];
         shopGroup.remove(obj);
@@ -1995,31 +1935,99 @@
         P3 = new THREE.Vector2(3.50, 5.68); // Right = 5.70m
       }
 
-      // Floor
-      const floorShape = new THREE.Shape();
-      floorShape.moveTo(P1.x, P1.y);
-      floorShape.lineTo(P2.x, P2.y);
-      floorShape.lineTo(P3.x, P3.y);
-      floorShape.lineTo(P4.x, P4.y);
-      floorShape.closePath();
+      // 1. Pristine White Porcelain Floor (Built directly in 3D XZ coordinates with normal pointing UP)
+      const floorGeo = new THREE.BufferGeometry();
+      const floorVertices = new Float32Array([
+        // Triangle 1: P1 -> P4 -> P3 (Normal points UP +Y)
+        P1.x, 0.002, P1.y,
+        P4.x, 0.002, P4.y,
+        P3.x, 0.002, P3.y,
+        // Triangle 2: P1 -> P3 -> P2 (Normal points UP +Y)
+        P1.x, 0.002, P1.y,
+        P3.x, 0.002, P3.y,
+        P2.x, 0.002, P2.y
+      ]);
+      const floorUVs = new Float32Array([
+        // UV scale: 4x4 tiles per 2.40m -> (x / 2.40, z / 2.40) gives exact 60x60cm tiles!
+        P1.x / 2.40, P1.y / 2.40,
+        P4.x / 2.40, P4.y / 2.40,
+        P3.x / 2.40, P3.y / 2.40,
 
-      const floorGeometry = new THREE.ShapeGeometry(floorShape);
-      const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-      floorMesh.rotation.x = Math.PI / 2;
+        P1.x / 2.40, P1.y / 2.40,
+        P3.x / 2.40, P3.y / 2.40,
+        P2.x / 2.40, P2.y / 2.40
+      ]);
+      const floorNormals = new Float32Array([
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0
+      ]);
+      floorGeo.setAttribute('position', new THREE.BufferAttribute(floorVertices, 3));
+      floorGeo.setAttribute('uv', new THREE.BufferAttribute(floorUVs, 2));
+      floorGeo.setAttribute('normal', new THREE.BufferAttribute(floorNormals, 3));
+
+      const floorMesh = new THREE.Mesh(floorGeo, floorMaterial);
       floorMesh.receiveShadow = true;
       shopGroup.add(floorMesh);
 
-      const slabGeo = new THREE.ExtrudeGeometry(floorShape, { depth: 0.12, bevelEnabled: false });
-      const slabMesh = new THREE.Mesh(slabGeo, new THREE.MeshStandardMaterial({ color: 0x1e293b }));
-      slabMesh.rotation.x = Math.PI / 2;
-      slabMesh.position.y = -0.12;
+      // 2. Foundation Concrete Slab Underneath (from y = 0 to y = -0.12)
+      const slabGeo = new THREE.BufferGeometry();
+      const slabPos = [
+        // Bottom face (y = -0.12)
+        P1.x, -0.12, P1.y,  P2.x, -0.12, P2.y,  P3.x, -0.12, P3.y,
+        P1.x, -0.12, P1.y,  P3.x, -0.12, P3.y,  P4.x, -0.12, P4.y
+      ];
+      const pts = [P1, P2, P3, P4];
+      for (let i = 0; i < 4; i++) {
+        const a = pts[i];
+        const b = pts[(i + 1) % 4];
+        slabPos.push(
+          a.x, 0, a.y,       b.x, 0, b.y,       b.x, -0.12, b.y,
+          a.x, 0, a.y,       b.x, -0.12, b.y,   a.x, -0.12, a.y
+        );
+      }
+      slabGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(slabPos), 3));
+      slabGeo.computeVertexNormals();
+      const slabMesh = new THREE.Mesh(slabGeo, new THREE.MeshStandardMaterial({ color: 0xe2e8f0 }));
       shopGroup.add(slabMesh);
 
-      // Ceiling
-      const ceilingGeo = new THREE.ShapeGeometry(floorShape);
+      // 3. Ceiling (at y = shopHeight)
+      const ceilingGeo = new THREE.BufferGeometry();
+      const ceilingVertices = new Float32Array([
+        // Triangle 1: P1 -> P2 -> P3 (Normal points DOWN -Y into the room)
+        P1.x, shopHeight, P1.y,
+        P2.x, shopHeight, P2.y,
+        P3.x, shopHeight, P3.y,
+        // Triangle 2: P1 -> P3 -> P4 (Normal points DOWN -Y into the room)
+        P1.x, shopHeight, P1.y,
+        P3.x, shopHeight, P3.y,
+        P4.x, shopHeight, P4.y
+      ]);
+      const ceilingUVs = new Float32Array([
+        P1.x / 2.40, P1.y / 2.40,
+        P2.x / 2.40, P2.y / 2.40,
+        P3.x / 2.40, P3.y / 2.40,
+
+        P1.x / 2.40, P1.y / 2.40,
+        P3.x / 2.40, P3.y / 2.40,
+        P4.x / 2.40, P4.y / 2.40
+      ]);
+      const ceilingNormals = new Float32Array([
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0,
+        0, -1, 0
+      ]);
+      ceilingGeo.setAttribute('position', new THREE.BufferAttribute(ceilingVertices, 3));
+      ceilingGeo.setAttribute('uv', new THREE.BufferAttribute(ceilingUVs, 2));
+      ceilingGeo.setAttribute('normal', new THREE.BufferAttribute(ceilingNormals, 3));
+
       window.ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMaterial);
-      window.ceilingMesh.rotation.x = Math.PI / 2;
-      window.ceilingMesh.position.y = shopHeight;
       window.ceilingMesh.receiveShadow = true;
       shopGroup.add(window.ceilingMesh);
 
@@ -2051,7 +2059,9 @@
       }
 
       addSolidWall(P1, P2, 'wall4m_back_beige');
-      addSolidWall(P3, P4, 'wall3m_front_beige');
+
+      // 3.00m Solid White Wall behind Maintenance Desk (حائط الصيانة أبيض ناصع 3.00 متر)
+      addSolidWall(P3, P4, 'wall3m_maintenance_white');
 
       // The 5.70m Solid Wall
       const vSolidStart = onRight ? P4 : P2;
@@ -2176,98 +2186,6 @@
       d1FixedMesh.position.set(0.75 + 0.72 / 2 + 0.01, (glassHeight - 0.02) / 2, 0);
       d1Group.add(d1FixedMesh);
 
-      // Five glass product shelves mounted inside the fixed pane nearest the repair area.
-      // Their faces and merchandise point through the pane toward customers outside.
-      const maintenanceDoorShowcase = new THREE.Group();
-      maintenanceDoorShowcase.name = 'maintenanceDoorShowcase';
-      d1Group.add(maintenanceDoorShowcase);
-      const showcaseCenterX = 0.75 + 0.72 / 2 + 0.01;
-      const showcaseWidth = 0.68;
-      const showcaseDepth = 0.32;
-      const showcaseShelfYs = [0.48, 0.87, 1.26, 1.65, 2.04];
-      const showcaseSide = onRight ? 1 : -1;
-      const showcaseCenterZ = showcaseSide * (0.025 + showcaseDepth / 2);
-      const showcaseRailHeight = showcaseShelfYs[4] - showcaseShelfYs[0] + 0.06;
-      [-1, 1].forEach(side => {
-        const rail = new THREE.Mesh(
-          new THREE.BoxGeometry(0.012, showcaseRailHeight, 0.018),
-          chromeMaterial
-        );
-        rail.position.set(
-          showcaseCenterX + side * (showcaseWidth / 2 - 0.035),
-          (showcaseShelfYs[0] + showcaseShelfYs[4]) / 2,
-          showcaseSide * 0.035
-        );
-        maintenanceDoorShowcase.add(rail);
-      });
-      showcaseShelfYs.forEach((shelfY) => {
-        const shelf = new THREE.Mesh(
-          new THREE.BoxGeometry(showcaseWidth, 0.014, showcaseDepth),
-          glassMaterial
-        );
-        shelf.position.set(showcaseCenterX, shelfY, showcaseCenterZ);
-        shelf.receiveShadow = true;
-        maintenanceDoorShowcase.add(shelf);
-        [-1, 1].forEach(side => {
-          const bracket = new THREE.Mesh(
-            new THREE.BoxGeometry(0.014, 0.035, showcaseDepth - 0.04),
-            chromeMaterial
-          );
-          bracket.position.set(
-            showcaseCenterX + side * (showcaseWidth / 2 - 0.05),
-            shelfY - 0.023,
-            showcaseCenterZ
-          );
-          maintenanceDoorShowcase.add(bracket);
-        });
-      });
-
-      const displayPhoneBody = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.35, metalness: 0.18 });
-      const displayPhoneScreen = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x075985, emissiveIntensity: 0.45, roughness: 0.2 });
-      const displayLaptopBody = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.3, metalness: 0.65 });
-      const displayLaptopScreen = new THREE.MeshStandardMaterial({ color: 0x0f172a, emissive: 0x0369a1, emissiveIntensity: 0.35, roughness: 0.18 });
-      const addShowcasePhone = (x, shelfY, z, caseColor = 0x111827, screenColor = 0x38bdf8) => {
-        const bodyMaterial = caseColor === 0x111827 ? displayPhoneBody : new THREE.MeshStandardMaterial({ color: caseColor, roughness: 0.35, metalness: 0.2 });
-        const screenMaterial = screenColor === 0x38bdf8 ? displayPhoneScreen : new THREE.MeshStandardMaterial({ color: screenColor, emissive: screenColor, emissiveIntensity: 0.3, roughness: 0.2 });
-        const body = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.145, 0.014), bodyMaterial);
-        body.position.set(x, shelfY + 0.082, z);
-        maintenanceDoorShowcase.add(body);
-        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.064, 0.125, 0.003), screenMaterial);
-        screen.position.set(x, shelfY + 0.084, z - showcaseSide * 0.009);
-        maintenanceDoorShowcase.add(screen);
-      };
-      const addShowcaseLaptop = (x, shelfY, z, screenTint = 0x0f172a) => {
-        const laptopScreenMat = screenTint === 0x0f172a ? displayLaptopScreen : new THREE.MeshStandardMaterial({ color: screenTint, emissive: screenTint, emissiveIntensity: 0.28, roughness: 0.18 });
-        const base = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.012, 0.17), displayLaptopBody);
-        base.position.set(x, shelfY + 0.013, z);
-        maintenanceDoorShowcase.add(base);
-        const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.003, 0.12), darkMetalMaterial);
-        keyboard.position.set(x, shelfY + 0.020, z - showcaseSide * 0.01);
-        maintenanceDoorShowcase.add(keyboard);
-        const lid = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.16, 0.012), displayLaptopBody);
-        lid.position.set(x, shelfY + 0.095, z + showcaseSide * 0.072);
-        maintenanceDoorShowcase.add(lid);
-        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.225, 0.135, 0.003), laptopScreenMat);
-        screen.position.set(x, shelfY + 0.096, z + showcaseSide * 0.064);
-        maintenanceDoorShowcase.add(screen);
-      };
-
-      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[0], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a);
-      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[0], showcaseCenterZ - showcaseSide * 0.065, 0x1e293b, 0x38bdf8);
-      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[0], showcaseCenterZ - showcaseSide * 0.065, 0xe2e8f0, 0x0ea5e9);
-      addShowcasePhone(showcaseCenterX - 0.14, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a, 0xa78bfa);
-      addShowcasePhone(showcaseCenterX + 0.02, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0x334155, 0x34d399);
-      addShowcasePhone(showcaseCenterX + 0.18, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0xf1f5f9, 0xf59e0b);
-      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[2], showcaseCenterZ + showcaseSide * 0.015, 0x172554);
-      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[2], showcaseCenterZ - showcaseSide * 0.065, 0x111827, 0x34d399);
-      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[2], showcaseCenterZ - showcaseSide * 0.065, 0xf1f5f9, 0x38bdf8);
-      addShowcasePhone(showcaseCenterX - 0.14, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0x1e293b, 0xfb7185);
-      addShowcasePhone(showcaseCenterX + 0.02, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0xf1f5f9, 0x38bdf8);
-      addShowcasePhone(showcaseCenterX + 0.18, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a, 0x34d399);
-      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[4], showcaseCenterZ + showcaseSide * 0.015, 0x1e3a8a);
-      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[4], showcaseCenterZ - showcaseSide * 0.065, 0xf1f5f9, 0xa78bfa);
-      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[4], showcaseCenterZ - showcaseSide * 0.065, 0x1e293b, 0xf59e0b);
-
       const d1Frame = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.06, 0.06), chromeMaterial);
       d1Frame.position.set(1.50 / 2, 0.03, 0);
       d1Group.add(d1Frame);
@@ -2342,12 +2260,13 @@
       midColGroup.position.set(2.75, shopHeight / 2, midColDepth / 2);
       wall6Group.add(midColGroup);
 
-      // 4. Segment 4: 3.50 to 5.00m (Door 2: FIXED / CLOSED DOOR WITH NATIONAL AC ABOVE)
+      // 4. Segment 4: 3.50 to 5.00m (Door 2: FIXED GLASS DOOR SHOWCASE WITH 5 SHELVES, LAPTOPS & PHONES)
       addHeaderAndShutter(3.50, 1.50, true);
 
       const d2Group = new THREE.Group();
       d2Group.position.set(3.50, 0, 0);
 
+      // Fixed Outer Glass Door Panel
       const d2Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.48, glassHeight - 0.02, 0.015), glassMaterial);
       d2Mesh.position.set(1.50 / 2, (glassHeight - 0.02) / 2, 0);
       d2Group.add(d2Mesh);
@@ -2360,12 +2279,160 @@
       d2Mullion.position.set(0.75, glassHeight / 2, 0);
       d2Group.add(d2Mullion);
 
+      // Handle on fixed door
       const h2Outer = new THREE.Mesh(handleGeo, chromeMaterial);
       h2Outer.position.set(0.68, 1.10, 0.04);
       d2Group.add(h2Outer);
       const h2Inner = h2Outer.clone();
       h2Inner.position.z = -0.04;
       d2Group.add(h2Inner);
+
+      // --- 5-SHELF COMMERCIAL GLASS DISPLAY UNIT INSIDE FIXED DOOR ---
+      // (خمسة أرفف زجاجية كاملة بداخل الباب الثابت محملة بلابات وموبايلات)
+      const d2Display = new THREE.Group();
+      d2Display.name = 'door2GlassShowcaseProducts';
+      d2Group.add(d2Display);
+
+      const d2ShelfW = 1.40;
+      const d2ShelfD = 0.28;
+      const d2ShelfZ = 0.16; // Just inside the glass panel into the shop
+      const d2ShelfHeights = [0.45, 0.85, 1.25, 1.65, 2.05];
+
+      // Vertical Chrome Slotted Rails
+      [-1, 1].forEach(side => {
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(0.018, 1.85, 0.02), chromeMaterial);
+        rail.position.set(1.50 / 2 + side * (d2ShelfW / 2 - 0.05), (d2ShelfHeights[0] + d2ShelfHeights[4]) / 2, d2ShelfZ - 0.08);
+        d2Display.add(rail);
+      });
+
+      // Overhead warm LED strip for showcase
+      const d2LedStrip = new THREE.Mesh(
+        new THREE.BoxGeometry(d2ShelfW, 0.02, 0.04),
+        new THREE.MeshStandardMaterial({ color: 0xfffae8, emissive: 0xffedd5, emissiveIntensity: 0.6 })
+      );
+      d2LedStrip.position.set(1.50 / 2, glassHeight - 0.06, d2ShelfZ);
+      d2Display.add(d2LedStrip);
+
+      // Helper: Laptop Builder
+      const createDoorLaptop = (lx, ly, lz, screenTint = 0x38bdf8) => {
+        const lg = new THREE.Group();
+        const base = new THREE.Mesh(
+          new THREE.BoxGeometry(0.24, 0.012, 0.16),
+          new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.25, metalness: 0.7 })
+        );
+        base.position.set(0, 0.006, 0);
+        lg.add(base);
+
+        const kb = new THREE.Mesh(
+          new THREE.BoxGeometry(0.20, 0.002, 0.09),
+          darkMetalMaterial
+        );
+        kb.position.set(0, 0.013, -0.015);
+        lg.add(kb);
+
+        const tp = new THREE.Mesh(
+          new THREE.BoxGeometry(0.07, 0.001, 0.045),
+          new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 })
+        );
+        tp.position.set(0, 0.0125, 0.045);
+        lg.add(tp);
+
+        const lid = new THREE.Mesh(
+          new THREE.BoxGeometry(0.24, 0.155, 0.01),
+          new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.25, metalness: 0.7 })
+        );
+        lid.rotation.x = -Math.PI / 8;
+        lid.position.set(0, 0.08, -0.075);
+        lg.add(lid);
+
+        const scr = new THREE.Mesh(
+          new THREE.BoxGeometry(0.22, 0.136, 0.003),
+          new THREE.MeshStandardMaterial({ color: screenTint, emissive: screenTint, emissiveIntensity: 0.35, roughness: 0.15 })
+        );
+        scr.rotation.x = -Math.PI / 8;
+        scr.position.set(0, 0.08, -0.071);
+        lg.add(scr);
+
+        lg.position.set(lx, ly, lz);
+        d2Display.add(lg);
+      };
+
+      // Helper: Smartphone Builder
+      const createDoorPhone = (px, py, pz, caseColor, screenColor) => {
+        const pg = new THREE.Group();
+        const stand = new THREE.Mesh(
+          new THREE.BoxGeometry(0.06, 0.035, 0.045),
+          new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.5 })
+        );
+        stand.position.set(0, 0.0175, 0);
+        pg.add(stand);
+
+        const body = new THREE.Mesh(
+          new THREE.BoxGeometry(0.072, 0.142, 0.011),
+          new THREE.MeshStandardMaterial({ color: caseColor, roughness: 0.3, metalness: 0.3 })
+        );
+        body.rotation.x = -Math.PI / 10;
+        body.position.set(0, 0.08, 0.01);
+        pg.add(body);
+
+        const scr = new THREE.Mesh(
+          new THREE.BoxGeometry(0.064, 0.130, 0.003),
+          new THREE.MeshStandardMaterial({ color: screenColor, emissive: screenColor, emissiveIntensity: 0.38, roughness: 0.15 })
+        );
+        scr.rotation.x = -Math.PI / 10;
+        scr.position.set(0, 0.08, 0.016);
+        pg.add(scr);
+
+        pg.position.set(px, py, pz);
+        d2Display.add(pg);
+      };
+
+      // Build each of the 5 shelves with glass panel, brackets, laptops and mobile phones
+      d2ShelfHeights.forEach((shelfY, idx) => {
+        // 1. Glass Shelf
+        const shelf = new THREE.Mesh(new THREE.BoxGeometry(d2ShelfW, 0.012, d2ShelfD), glassMaterial);
+        shelf.position.set(1.50 / 2, shelfY, d2ShelfZ);
+        shelf.receiveShadow = true;
+        d2Display.add(shelf);
+
+        // 2. Chrome Support Brackets
+        [-1, 1].forEach(side => {
+          const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.035, d2ShelfD - 0.04), chromeMaterial);
+          bracket.position.set(1.50 / 2 + side * (d2ShelfW / 2 - 0.05), shelfY - 0.02, d2ShelfZ);
+          d2Display.add(bracket);
+        });
+
+        // 3. Products on EVERY shelf: Laptops AND Smartphones
+        // Shelf 0 (Lower): 2 Laptops + 3 Phones
+        // Shelf 1: 2 Laptops + 3 Phones
+        // Shelf 2 (Hero Eye-Level): 2 Flagship Laptops + 4 Smartphones
+        // Shelf 3: 2 Laptops + 3 Phones
+        // Shelf 4 (Top): 2 Laptops + 3 Phones
+        const laptopZ = d2ShelfZ;
+        const phoneZ = d2ShelfZ - 0.02;
+
+        if (idx === 2) {
+          // Eye-level hero shelf
+          createDoorLaptop(1.50 / 2 - 0.44, shelfY, laptopZ, 0xf59e0b); // Gold screen
+          createDoorLaptop(1.50 / 2 + 0.44, shelfY, laptopZ, 0x0ea5e9); // Sky blue screen
+          createDoorPhone(1.50 / 2 - 0.18, shelfY, phoneZ, 0x111827, 0x38bdf8);
+          createDoorPhone(1.50 / 2 - 0.06, shelfY, phoneZ, 0xf1f5f9, 0xa78bfa);
+          createDoorPhone(1.50 / 2 + 0.06, shelfY, phoneZ, 0x334155, 0x34d399);
+          createDoorPhone(1.50 / 2 + 0.18, shelfY, phoneZ, 0x1e293b, 0xf43f5e);
+        } else if (idx % 2 === 0) {
+          createDoorLaptop(1.50 / 2 - 0.42, shelfY, laptopZ, 0x38bdf8); // Cyan screen
+          createDoorLaptop(1.50 / 2 + 0.42, shelfY, laptopZ, 0x818cf8); // Indigo screen
+          createDoorPhone(1.50 / 2 - 0.14, shelfY, phoneZ, 0x111827, 0x34d399);
+          createDoorPhone(1.50 / 2, shelfY, phoneZ, 0x334155, 0xf59e0b);
+          createDoorPhone(1.50 / 2 + 0.14, shelfY, phoneZ, 0xf8fafc, 0x38bdf8);
+        } else {
+          createDoorLaptop(1.50 / 2 - 0.42, shelfY, laptopZ, 0x10b981); // Emerald screen
+          createDoorLaptop(1.50 / 2 + 0.42, shelfY, laptopZ, 0xec4899); // Pink/Rose screen
+          createDoorPhone(1.50 / 2 - 0.14, shelfY, phoneZ, 0x1e293b, 0x818cf8);
+          createDoorPhone(1.50 / 2, shelfY, phoneZ, 0x0f172a, 0x22c55e);
+          createDoorPhone(1.50 / 2 + 0.14, shelfY, phoneZ, 0x475569, 0xf97316);
+        }
+      });
 
       wall6Group.add(d2Group);
 
@@ -2419,7 +2486,7 @@
         dimsGroup.add(obj);
       }
 
-      createDimLine(P4, P3, 'الحائط الموازي (الصيانة): 3.00 متر بالضبط', new THREE.Vector3(0, 0.25, 0.45), 0xe11d48);
+      createDimLine(P4, P3, 'حائط الصيانة (أبيض ناصع): 3.00 متر بالضبط', new THREE.Vector3(0, 0.25, 0.45), 0xe11d48);
       createDimLine(P1, P2, 'حائط ظهر الباب: 4.00 متر بالضبط', new THREE.Vector3(0, 0.25, -0.45), 0xf43f5e);
 
       if (onRight) {
@@ -2432,7 +2499,7 @@
 
       // Feature Markers
       createMarker(new THREE.Vector3(1.5, 1.8, 4.6), 'محطة الصيانة المتكاملة حرف L (مع الفواصل والميكروسكوب والكرسي)', 'label-repair', 'fa-chair');
-      createMarker(new THREE.Vector3(2.5, 1.6, 3.23), 'كاونترين بارتفاع 1.20م • رف عرض زجاجي + 5 رفوف تخزين لكل كونتر', 'label-counter', 'fa-cash-register');
+      createMarker(new THREE.Vector3(2.5, 1.6, 3.23), 'كاونترين بارتفاع 1.20م • وش بينك مغلق + ضلف تفتح للأرفف الداخلية', 'label-counter', 'fa-cash-register');
       createMarker(new THREE.Vector3(1.8, 1.5, 1.2), 'فاترينات الموبايلات الزجاج (حرف L عند المدخل)', 'label-vitrine', 'fa-mobile-screen');
 
       const ledMarkerX = onRight ? 0.6 : 3.4;
@@ -2646,126 +2713,79 @@
       }
 
 
-      // --- MOBILE REPAIR MULTI-TIER PLASTIC STORAGE DRAWER TOWER ---
-      // (وحدة أدراج بلاستيكية متعددة الطوابق مسنودة على الحائط تحت المكتب لحفظ الشاشات والبطاريات وقطع الغيار)
+      // --- MOBILE REPAIR MULTI-DRAWER MELAMINE COUNTER CABINET ---
+      // (وحدة أدراج كونتر ميلامين اقتصادية جاهزة تحت المكتب لحفظ الشاشات والبطاريات وقطع الغيار)
       function createPlasticDrawerTower(width = 0.50, depth = 0.60, height = 0.65, numDrawers = 4) {
         const towerGroup = new THREE.Group();
-        towerGroup.name = 'plasticStorageDrawerTower';
+        towerGroup.name = 'melamineStorageDrawerTower';
 
-        const frameColor = 0x334155; // dark slate molded plastic frame
-        const drawerColor = 0xf1f5f9; // frosted semi-translucent polypropylene
-        const frameMat = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.45 });
-        const drawerMat = new THREE.MeshStandardMaterial({
-          color: drawerColor,
-          roughness: 0.25,
-          transparent: true,
-          opacity: 0.85,
-          metalness: 0.05
-        });
+        // Melamine material for carcass and drawer fronts (identical to desk & walls)
+        const melamineMat = oakWoodMaterial;
+        const panelThick = 0.018;
 
-        // 1. Base with 4 small caster wheels
-        [-width / 2 + 0.03, width / 2 - 0.03].forEach(wx => {
-          [-depth / 2 + 0.04, depth / 2 - 0.04].forEach(dz => {
-            const caster = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.015, 8), darkMetalMaterial);
+        // 1. Base with 4 commercial swivel casters
+        [-width / 2 + 0.04, width / 2 - 0.04].forEach(wx => {
+          [-depth / 2 + 0.05, depth / 2 - 0.05].forEach(dz => {
+            const caster = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.016, 8), darkMetalMaterial);
             caster.rotation.z = Math.PI / 2;
-            caster.position.set(wx, 0.018, dz);
+            caster.position.set(wx, 0.02, dz);
             towerGroup.add(caster);
           });
         });
 
-        // 2. Plastic Frame uprights & top tray
-        const bottomBase = new THREE.Mesh(new THREE.BoxGeometry(width, 0.02, depth), frameMat);
-        bottomBase.position.set(0, 0.035, 0);
+        // 2. Melamine Carcass (Bottom, Top, Sides, Back)
+        const bottomBase = new THREE.Mesh(new THREE.BoxGeometry(width, panelThick, depth), melamineMat);
+        bottomBase.position.set(0, 0.04 + panelThick / 2, 0);
+        bottomBase.castShadow = true;
         towerGroup.add(bottomBase);
 
-        const topTray = new THREE.Mesh(new THREE.BoxGeometry(width, 0.025, depth), frameMat);
-        topTray.position.set(0, height - 0.012, 0);
+        const topTray = new THREE.Mesh(new THREE.BoxGeometry(width, panelThick, depth), melamineMat);
+        topTray.position.set(0, height - panelThick / 2, 0);
+        topTray.castShadow = true;
         towerGroup.add(topTray);
 
-        // Top tray shallow rim
-        const rimGeo = new THREE.BoxGeometry(width + 0.01, 0.015, 0.01);
-        const rimF = new THREE.Mesh(rimGeo, frameMat);
-        rimF.position.set(0, height + 0.005, depth / 2);
-        towerGroup.add(rimF);
-        const rimB = rimF.clone();
-        rimB.position.z = -depth / 2;
-        towerGroup.add(rimB);
-
-        // Corner posts / frame columns
-        [-width / 2 + 0.01, width / 2 - 0.01].forEach(px => {
-          [-depth / 2 + 0.01, depth / 2 - 0.01].forEach(pz => {
-            const post = new THREE.Mesh(new THREE.BoxGeometry(0.02, height - 0.06, 0.02), frameMat);
-            post.position.set(px, (height + 0.04) / 2, pz);
-            towerGroup.add(post);
-          });
+        // Side panels
+        const sideHeight = height - 0.04 - 2 * panelThick;
+        const sideY = 0.04 + panelThick + sideHeight / 2;
+        [-width / 2 + panelThick / 2, width / 2 - panelThick / 2].forEach(px => {
+          const side = new THREE.Mesh(new THREE.BoxGeometry(panelThick, sideHeight, depth), melamineMat);
+          side.position.set(px, sideY, 0);
+          side.castShadow = true;
+          towerGroup.add(side);
         });
 
-        // 3. Sliding Frosted Drawers
-        const drawerH = (height - 0.08) / numDrawers; // ~0.14m each
-        const dW = width - 0.03;
-        const dD = depth - 0.02;
+        // Back panel
+        const back = new THREE.Mesh(new THREE.BoxGeometry(width - 2 * panelThick, sideHeight, 0.008), melamineMat);
+        back.position.set(0, sideY, -depth / 2 + 0.004);
+        towerGroup.add(back);
+
+        // 3. Four Melamine Drawers with Brushed Chrome Bar Handles
+        const drawerH = (sideHeight - 0.02) / numDrawers;
+        const dW = width - 2 * panelThick - 0.006;
+        const dD = depth - 0.04;
 
         for (let d = 0; d < numDrawers; d++) {
-          const dY = 0.05 + (d + 0.5) * drawerH;
+          const dY = 0.04 + panelThick + (d + 0.5) * drawerH;
           const drawerG = new THREE.Group();
 
-          // Drawer front face (frosted translucent)
-          const dFront = new THREE.Mesh(new THREE.BoxGeometry(dW, drawerH - 0.01, 0.012), drawerMat);
-          dFront.position.set(0, 0, dD / 2 - 0.006);
+          // Drawer front face (Melamine board matching desk & walls)
+          const dFront = new THREE.Mesh(new THREE.BoxGeometry(dW, drawerH - 0.006, panelThick), melamineMat);
+          dFront.position.set(0, 0, depth / 2 - panelThick / 2);
+          dFront.castShadow = true;
           drawerG.add(dFront);
 
-          // Drawer sides & bottom
-          const dBottom = new THREE.Mesh(new THREE.BoxGeometry(dW - 0.01, 0.008, dD - 0.02), drawerMat);
-          dBottom.position.set(0, -drawerH / 2 + 0.01, 0);
-          drawerG.add(dBottom);
-
-          // Molded wide recessed curved pull handle on front (matches full desk width)
-          const handleW = width >= 0.45 ? 0.24 : 0.10;
+          // Sleek modern brushed chrome horizontal bar handle
           const handle = new THREE.Mesh(
-            new THREE.BoxGeometry(handleW, 0.024, 0.015),
-            new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 })
+            new THREE.BoxGeometry(0.18, 0.018, 0.022),
+            chromeMaterial
           );
-          handle.position.set(0, 0.015, dD / 2 + 0.002);
+          handle.position.set(0, 0, depth / 2 + 0.012);
           drawerG.add(handle);
 
-          // Classification label sticker
-          const label = new THREE.Mesh(
-            new THREE.PlaneGeometry(0.06, 0.018),
-            new THREE.MeshBasicMaterial({ color: 0xffffff })
-          );
-          label.position.set(0, -0.025, dD / 2 + 0.001);
-          drawerG.add(label);
-
-          // Silhouettes of parts inside translucent drawer
-          if (d === 0) {
-            // Replacement mobile screens
-            for (let s = -1; s <= 1; s++) {
-              const scr = new THREE.Mesh(
-                new THREE.BoxGeometry(0.07, 0.005, 0.14),
-                new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.1 })
-              );
-              scr.position.set(s * 0.08, -drawerH / 4, 0);
-              drawerG.add(scr);
-            }
-          } else if (d === 1) {
-            // Mobile batteries
-            for (let b = -1; b <= 1; b++) {
-              const batt = new THREE.Mesh(
-                new THREE.BoxGeometry(0.05, 0.01, 0.09),
-                new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 })
-              );
-              batt.position.set(b * 0.07, -drawerH / 4, 0.02);
-              drawerG.add(batt);
-            }
-          } else {
-            // Flex cables / IC chips bins
-            const bin = new THREE.Mesh(
-              new THREE.BoxGeometry(0.18, 0.03, 0.20),
-              new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 })
-            );
-            bin.position.set(0, -drawerH / 4, 0);
-            drawerG.add(bin);
-          }
+          // Drawer bottom tray
+          const dBottom = new THREE.Mesh(new THREE.BoxGeometry(dW - 0.02, 0.008, dD - 0.02), darkMetalMaterial);
+          dBottom.position.set(0, -drawerH / 2 + 0.008, 0);
+          drawerG.add(dBottom);
 
           drawerG.position.set(0, dY, 0);
           towerGroup.add(drawerG);
@@ -3652,65 +3672,141 @@
         const storageTop = 0.88;
         const panel = 0.025;
         const storageHeight = storageTop - plinthHeight;
-        const backZ = -counterDepth / 2 + panel / 2;
-        const frontZ = counterDepth / 2;
+        const backZ = -counterDepth / 2; // Maintenance/technician side: where doors open to reveal shelves
+        const frontZ = counterDepth / 2;  // Customer entrance side: solid pink face, no shelves
         const cabinetMat = pinkWallMaterial;
 
-        // Open carcass so the five storage shelves are real parts of the model.
-        const bottom = new THREE.Mesh(new THREE.BoxGeometry(width - 0.04, panel, counterDepth - 0.04), cabinetMat);
+        // 1. Plinth / Baseboard (الوزرة السفلية)
+        const plinth = new THREE.Mesh(
+          new THREE.BoxGeometry(width - 0.04, plinthHeight, counterDepth - 0.06),
+          baseboardMaterial
+        );
+        plinth.position.set(0, plinthHeight / 2, 0);
+        cg.add(plinth);
+
+        // 2. Bottom Carcass Board (القرصة السفلية)
+        const bottom = new THREE.Mesh(new THREE.BoxGeometry(width, panel, counterDepth), cabinetMat);
         bottom.position.set(0, plinthHeight + panel / 2, 0);
         cg.add(bottom);
+
+        // 3. Top of Lower Cabinet (القرصة الفاصلة العلوية للكابينة)
         const cabinetTop = new THREE.Mesh(new THREE.BoxGeometry(width, panel, counterDepth), cabinetMat);
         cabinetTop.position.set(0, storageTop - panel / 2, 0);
         cabinetTop.castShadow = true;
         cg.add(cabinetTop);
+
+        // 4. Side Panels (الأجناب)
         [-1, 1].forEach(side => {
           const sidePanel = new THREE.Mesh(new THREE.BoxGeometry(panel, storageHeight, counterDepth), cabinetMat);
           sidePanel.position.set(side * (width / 2 - panel / 2), plinthHeight + storageHeight / 2, 0);
           sidePanel.castShadow = true;
           cg.add(sidePanel);
         });
-        const backPanel = new THREE.Mesh(new THREE.BoxGeometry(width - 2 * panel, storageHeight, panel), cabinetMat);
-        backPanel.position.set(0, plinthHeight + storageHeight / 2, backZ);
-        backPanel.castShadow = true;
-        cg.add(backPanel);
 
-        // Five melamine storage shelves below the separate glass display shelf.
-        const storageShelfCount = 5;
+        // 5. Solid Pink Front Face (وش الكاونتر الأمامي حتة واحدة بنفس اللون البينك من غير رفوف)
+        // Fully enclosed and solid facing the customer entrance side (+Z in local coords)
+        const frontFace = new THREE.Mesh(
+          new THREE.BoxGeometry(width, storageHeight, panel),
+          cabinetMat
+        );
+        frontFace.position.set(0, plinthHeight + storageHeight / 2, frontZ - panel / 2);
+        frontFace.castShadow = true;
+        frontFace.receiveShadow = true;
+        cg.add(frontFace);
+
+        // 6. Interior Storage Shelves (الأرفف الداخلية وراء الضلف)
+        // Located inside the counter, accessed only from the doors on the back
+        const storageShelfCount = 4;
         const usableStorageHeight = storageTop - plinthHeight - panel;
+        const shelfDepth = counterDepth - panel - 0.05;
+        const shelfWidth = width - 2 * panel - 0.01;
+        const shelfZ = (frontZ - panel + backZ + 0.03) / 2;
+
         for (let shelfIndex = 1; shelfIndex <= storageShelfCount; shelfIndex++) {
+          const shelfY = plinthHeight + usableStorageHeight * shelfIndex / (storageShelfCount + 1);
           const shelf = new THREE.Mesh(
-            new THREE.BoxGeometry(width - 2 * panel - 0.015, panel, counterDepth - 2 * panel - 0.025),
+            new THREE.BoxGeometry(shelfWidth, panel, shelfDepth),
             cabinetMat
           );
-          shelf.position.set(0, plinthHeight + usableStorageHeight * shelfIndex / (storageShelfCount + 1), 0);
+          shelf.position.set(0, shelfY, shelfZ);
           shelf.castShadow = true;
+          shelf.receiveShadow = true;
           cg.add(shelf);
+
+          // Organized merchandise boxes & spare parts inside the shelves (visible when doors open)
+          [-0.32, 0, 0.32].forEach((boxX, bIdx) => {
+            const boxColor = [0x0284c7, 0x1e293b, 0x334155, 0x475569][(shelfIndex + bIdx) % 4];
+            const box = new THREE.Mesh(
+              new THREE.BoxGeometry(0.18, 0.065, 0.20),
+              new THREE.MeshStandardMaterial({ color: boxColor, roughness: 0.35 })
+            );
+            box.position.set(boxX, shelfY + panel / 2 + 0.033, shelfZ - 0.02);
+            cg.add(box);
+          });
         }
 
-        // Two hinged pink doors meet at the center and swing out from the counter front.
-        const doorGap = 0.012;
+        // 7. Two Hinged Pink Doors on the Back (الضلف من ناحية الصيانة تفتح وتغلق)
+        // Meeting flush in the center with modern vertical chrome handles
+        const doorGap = 0.006;
         const doorWidth = (width - 2 * panel - doorGap) / 2;
-        const doorHeight = storageHeight - 0.035;
+        const doorHeight = storageHeight - 0.015;
         const doorY = plinthHeight + storageHeight / 2;
-        const hingeOffset = 0.008;
-        [-1, 1].forEach(side => {
-          const hinge = new THREE.Group();
-          const hingeX = side < 0 ? -width / 2 + panel + hingeOffset : width / 2 - panel - hingeOffset;
-          hinge.position.set(hingeX, doorY, frontZ + 0.012);
-          const door = new THREE.Mesh(new THREE.BoxGeometry(doorWidth, doorHeight, 0.022), cabinetMat);
-          door.position.set(-side * doorWidth / 2, 0, 0);
-          door.castShadow = true;
-          door.userData.opensOutward = true;
-          hinge.add(door);
+        const doorThick = 0.02;
+        const hingeZ = backZ + doorThick / 2;
 
-          const handle = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.12, 0.022), chromeMaterial);
-          handle.position.set(-side * (doorWidth / 2 - 0.045), 0, 0.018);
-          hinge.add(handle);
-          cg.add(hinge);
-        });
+        // Left Door Hinge (opens outward toward maintenance side)
+        const leftHinge = new THREE.Group();
+        leftHinge.position.set(-width / 2 + panel, doorY, hingeZ);
+        leftHinge.userData = { side: -1 };
+        const leftDoor = new THREE.Mesh(
+          new THREE.BoxGeometry(doorWidth, doorHeight, doorThick),
+          cabinetMat
+        );
+        leftDoor.position.set(doorWidth / 2, 0, -doorThick / 2);
+        leftDoor.castShadow = true;
+        leftHinge.add(leftDoor);
 
-        // One transparent glass shelf carries the phones; the glass top is exactly 1.20m high.
+        const leftHandle = new THREE.Mesh(
+          new THREE.BoxGeometry(0.016, 0.16, 0.025),
+          chromeMaterial
+        );
+        leftHandle.position.set(doorWidth - 0.035, 0, -doorThick - 0.008);
+        leftHinge.add(leftHandle);
+        cg.add(leftHinge);
+        if (window.counterDoorHinges) window.counterDoorHinges.push(leftHinge);
+        if (window.counterDoorMeshes) {
+          leftDoor.userData.isCounterDoor = true;
+          leftHandle.userData.isCounterDoor = true;
+          window.counterDoorMeshes.push(leftDoor, leftHandle);
+        }
+
+        // Right Door Hinge (opens outward toward maintenance side)
+        const rightHinge = new THREE.Group();
+        rightHinge.position.set(width / 2 - panel, doorY, hingeZ);
+        rightHinge.userData = { side: 1 };
+        const rightDoor = new THREE.Mesh(
+          new THREE.BoxGeometry(doorWidth, doorHeight, doorThick),
+          cabinetMat
+        );
+        rightDoor.position.set(-doorWidth / 2, 0, -doorThick / 2);
+        rightDoor.castShadow = true;
+        rightHinge.add(rightDoor);
+
+        const rightHandle = new THREE.Mesh(
+          new THREE.BoxGeometry(0.016, 0.16, 0.025),
+          chromeMaterial
+        );
+        rightHandle.position.set(-doorWidth + 0.035, 0, -doorThick - 0.008);
+        rightHinge.add(rightHandle);
+        cg.add(rightHinge);
+        if (window.counterDoorHinges) window.counterDoorHinges.push(rightHinge);
+        if (window.counterDoorMeshes) {
+          rightDoor.userData.isCounterDoor = true;
+          rightHandle.userData.isCounterDoor = true;
+          window.counterDoorMeshes.push(rightDoor, rightHandle);
+        }
+
+        // 8. Upper Glass Display Showcase on top (ارتفاع 1.20م مع الهواتف المعروضة تحت الزجاج)
         const displayFloorY = storageTop + 0.018;
         const glassBottom = new THREE.Mesh(
           new THREE.BoxGeometry(width - 0.035, 0.012, counterDepth - 0.035),
@@ -3745,7 +3841,7 @@
           cg.add(sideGlass);
         });
 
-        // Five phones are displayed upright on the upper glass shelf of each counter.
+        // Five phones displayed upright on the upper glass shelf of each counter
         const phoneCaseColors = [0x111827, 0xe2e8f0, 0x334155, 0xf8fafc, 0x1e293b];
         const phoneScreenColors = [0x0ea5e9, 0x22c55e, 0xa78bfa, 0xf59e0b, 0x38bdf8];
         const phoneXs = [-0.43, -0.215, 0, 0.215, 0.43];
@@ -3838,8 +3934,8 @@
         const isRed = (slatColorType === 'red');
         const slatColor = isRed ? 0xdc2626 : 0xf8fafc;
 
-        const frameMat = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.35, metalness: 0.1 });
-        const doorMat = new THREE.MeshStandardMaterial({ color: doorColor, roughness: 0.3, metalness: 0.05 });
+        const frameMat = oakWoodMaterial;
+        const doorMat = oakWoodMaterial;
         if (!window.slatwallWhiteMat) {
           window.slatwallWhiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.35, metalness: 0.0 });
         }
@@ -4683,6 +4779,39 @@
     }
     document.getElementById('btn-toggle-door').addEventListener('click', toggleLeaf);
 
+    // Counter doors state and toggle function
+    let areCounterDoorsOpen = false;
+
+    function toggleCounterDoors() {
+      areCounterDoorsOpen = !areCounterDoorsOpen;
+      console.log('toggleCounterDoors called! areCounterDoorsOpen:', areCounterDoorsOpen, 'hinges:', window.counterDoorHinges?.length);
+      
+      if (window.counterDoorHinges && window.counterDoorHinges.length > 0) {
+        window.counterDoorHinges.forEach(h => {
+          const openAngle = -h.userData.side * (Math.PI / 1.7);
+          const targetAngle = areCounterDoorsOpen ? openAngle : 0;
+          new TWEEN.Tween(h.rotation)
+            .to({ y: targetAngle }, 750)
+            .easing(TWEEN.Easing.Cubic.InOut)
+            .start();
+        });
+      }
+
+      // Update Drawer button
+      const btn = document.getElementById('btn-toggle-counter-doors');
+      if (btn) btn.classList.toggle('active', areCounterDoorsOpen);
+      const text = document.getElementById('counter-doors-btn-text');
+      if (text) text.innerText = areCounterDoorsOpen ? 'إغلاق ضلف الكاونتر' : 'فتح ضلف الكاونتر';
+
+      // Update Floating Screen button
+      const quickBtn = document.getElementById('btn-quick-counter-doors');
+      if (quickBtn) quickBtn.classList.toggle('active', areCounterDoorsOpen);
+      const quickText = document.getElementById('quick-counter-btn-text');
+      if (quickText) quickText.innerText = areCounterDoorsOpen ? 'إغلاق ضلف الكاونتر' : 'فتح ضلف الكاونتر';
+
+      showToastNotification(areCounterDoorsOpen ? '📂 تم فتح ضلف الكاونترين ورؤية الأرفف بالداخل' : '📁 تم إغلاق ضلف الكاونترين');
+    }
+
     function toggleDoorsSide() {
       doorsOnRight = !doorsOnRight;
       buildShopModel(doorsOnRight);
@@ -4731,260 +4860,60 @@
     });
 
     // ----------------------------------------------------
-    // 8. Camera Preset Views (tailored for Proposal 1!)
-    // ----------------------------------------------------
+    // 8. Camera Preset Views (تجول حر وزووم 3D دائم)
     function getCameraPresets() {
       const opt = window.activeDeskOption || 1;
-      if (doorsOnRight) {
-        let repairPos = new THREE.Vector3(2.85, 1.85, 2.75);
-        let repairTarget = new THREE.Vector3(1.35, 1.05, 4.65);
-        let microPos = new THREE.Vector3(1.40, 1.30, 4.50);
-        let microTarget = new THREE.Vector3(0.68, 0.95, 4.95);
-        let techPos = new THREE.Vector3(1.50, 1.35, 5.02);
-        let techTarget = new THREE.Vector3(2.10, 1.05, 3.80);
+      const counterX = doorsOnRight ? 2.52 : 1.48;
+      let repairPos = new THREE.Vector3(2.85, 2.00, 2.75);
+      let repairTarget = new THREE.Vector3(1.35, 1.05, 4.65);
+      if (opt === 2) {
+        repairPos = new THREE.Vector3(2.80, 2.10, 3.50);
+        repairTarget = new THREE.Vector3(1.30, 0.95, 5.20);
+      } else if (opt === 3) {
+        repairPos = new THREE.Vector3(2.65, 1.95, 3.50);
+        repairTarget = new THREE.Vector3(0.60, 0.95, 4.65);
+      }
 
-        if (opt === 2) {
-          repairPos = new THREE.Vector3(2.80, 2.00, 3.50);
-          repairTarget = new THREE.Vector3(1.30, 0.95, 5.20);
-          microPos = new THREE.Vector3(1.30, 1.30, 4.50);
-          microTarget = new THREE.Vector3(0.55, 0.95, 4.90);
-          techPos = new THREE.Vector3(1.20, 1.35, 5.15);
-          techTarget = new THREE.Vector3(2.30, 1.10, 3.20);
-        } else if (opt === 3) {
-          repairPos = new THREE.Vector3(2.65, 1.80, 3.50);
-          repairTarget = new THREE.Vector3(0.60, 0.95, 4.65);
-          microPos = new THREE.Vector3(1.40, 1.25, 3.75);
-          microTarget = new THREE.Vector3(0.55, 0.95, 4.05);
-          techPos = new THREE.Vector3(1.05, 1.35, 4.45);
-          techTarget = new THREE.Vector3(0.40, 1.05, 4.45);
+      return {
+        // View looking directly at the counter doors and shelves from the maintenance side
+        counterView: {
+          pos: new THREE.Vector3(counterX, 1.75, 4.8),
+          target: new THREE.Vector3(counterX, 0.85, 3.23)
+        },
+        // 1. Default Top-Down Overview (المنظور الأفقي من أعلى)
+        top: {
+          pos: new THREE.Vector3(2.0, 9.0, 3.01),
+          target: new THREE.Vector3(2.0, 0.4, 3.0)
+        },
+        // 2. Isometric 3D
+        iso: {
+          pos: new THREE.Vector3(-4.5, 6.2, -3.5),
+          target: new THREE.Vector3(2.0, 1.0, 3.0)
+        },
+        // 3. Fixed Door Showcase (5 Shelves with Laptops & Mobiles)
+        doorShowcaseView: {
+          pos: new THREE.Vector3(4.8, 1.7, 4.25),
+          target: new THREE.Vector3(3.5, 1.25, 4.25)
+        },
+        // 4. Maintenance Station & 3m Solid White Wall
+        repairCounterView: {
+          pos: repairPos,
+          target: repairTarget
+        },
+        // 5. Glass Vitrines
+        glassVitrinesView: {
+          pos: new THREE.Vector3(2.8, 1.6, 2.2),
+          target: new THREE.Vector3(1.8, 0.9, 1.2)
+        },
+        // 6. Slatwall Accessory Wall
+        ledWallView: {
+          pos: new THREE.Vector3(2.7, 1.7, 2.4),
+          target: new THREE.Vector3(0.9, 1.25, 0.95)
         }
-
-        return {
-          repairCounterView: { pos: repairPos, target: repairTarget },
-          microscopeZoomView: { pos: microPos, target: microTarget },
-          technicianEyeView: { pos: techPos, target: techTarget },
-          // 4. Customer view walking through open door 2
-          customerEntryView: {
-            pos: new THREE.Vector3(3.2, 1.65, 4.6),
-            target: new THREE.Vector3(1.2, 1.5, 3.2)
-          },
-          // 5. Slatwall Accessory Wall with Doors (L-Shape 2.40m x 2.40m)
-          ledWallView: {
-            pos: new THREE.Vector3(2.7, 1.65, 2.4),
-            target: new THREE.Vector3(0.9, 1.25, 0.95)
-          },
-          // 6. All-Glass Mobile Phone Vitrines Island
-          glassVitrinesView: {
-            pos: new THREE.Vector3(2.8, 1.5, 2.2),
-            target: new THREE.Vector3(1.8, 0.9, 1.2)
-          },
-          maintenanceDoorShowcaseView: {
-            pos: new THREE.Vector3(4.70, 1.50, 1.68),
-            target: new THREE.Vector3(3.84, 1.22, 1.61)
-          },
-          // 7. Floor Marble Veining
-          floorView: {
-            pos: new THREE.Vector3(2.0, 2.0, 2.5),
-            target: new THREE.Vector3(2.0, 0.0, 3.8)
-          },
-          // 8. Architectural Floor Plan
-          top: {
-            pos: new THREE.Vector3(2.0, 9.2, 3.0),
-            target: new THREE.Vector3(2.0, 0, 3.0)
-          },
-          // 9. Isometric 3D
-          iso: {
-            pos: new THREE.Vector3(-4.5, 6.0, -3.5),
-            target: new THREE.Vector3(2.0, 1.0, 3.0)
-          }
-        };
-      } else {
-        return {
-          repairCounterView: {
-            pos: new THREE.Vector3(1.15, 1.85, 2.75),
-            target: new THREE.Vector3(2.65, 1.05, 4.65)
-          },
-          microscopeZoomView: {
-            pos: new THREE.Vector3(2.60, 1.30, 4.50),
-            target: new THREE.Vector3(3.32, 0.95, 4.95)
-          },
-          technicianEyeView: {
-            pos: new THREE.Vector3(2.50, 1.35, 5.02),
-            target: new THREE.Vector3(1.90, 1.05, 3.80)
-          },
-          customerEntryView: {
-            pos: new THREE.Vector3(0.6, 1.65, 4.25),
-            target: new THREE.Vector3(2.0, 1.20, 4.20)
-          },
-          ledWallView: {
-            pos: new THREE.Vector3(1.7, 1.65, 3.80),
-            target: new THREE.Vector3(3.65, 1.50, 3.80)
-          },
-          glassVitrinesView: {
-            pos: new THREE.Vector3(0.7, 1.55, 3.20),
-            target: new THREE.Vector3(1.9, 0.95, 4.30)
-          },
-          maintenanceDoorShowcaseView: {
-            pos: new THREE.Vector3(-0.72, 1.50, 1.68),
-            target: new THREE.Vector3(0.14, 1.22, 1.61)
-          },
-          floorView: {
-            pos: new THREE.Vector3(2.0, 2.0, 2.5),
-            target: new THREE.Vector3(2.0, 0.0, 3.8)
-          },
-          top: {
-            pos: new THREE.Vector3(2.0, 9.5, 3.0),
-            target: new THREE.Vector3(2.0, 0, 3.0)
-          },
-          iso: {
-            pos: new THREE.Vector3(8.0, 6.5, -3.5),
-            target: new THREE.Vector3(2.0, 1.0, 3.0)
-          }
-        };
-      }
-    }
-
-    // ----------------------------------------------------
-    // Interior 360 Panorama & Look-Around Engine
-    // ----------------------------------------------------
-    let isInterior360 = true; // Default directly into interior 360 mode!
-    let interiorYaw = Math.PI; // Face towards maintenance bench (+Z)
-    let targetYaw = Math.PI;
-    let interiorPitch = 0.0;
-    let targetPitch = 0.0;
-    const interiorEye = new THREE.Vector3(2.00, 1.55, 3.00); // Eye-level inside center aisle
-
-    // Clamp camera strictly inside shop perimeter walls (cannot exit outside walls!)
-    function clampInsideShop(pos) {
-      const margin = 0.35;
-      pos.z = Math.max(margin, Math.min(5.50, pos.z));
-      const t = Math.max(0, Math.min(1, pos.z / 5.8));
-      const minX = (0.00 + 0.50 * t) + margin;
-      const maxX = (4.00 - 0.52 * t) - margin;
-      pos.x = Math.max(minX, Math.min(maxX, pos.x));
-      pos.y = Math.max(1.20, Math.min(1.85, pos.y));
-      return pos;
-    }
-
-    // Interior Standing Spots
-    const interiorSpots = {
-      center: {
-        pos: new THREE.Vector3(2.00, 1.55, 3.00),
-        target: new THREE.Vector3(1.50, 1.20, 5.00),
-        name: 'وسط المحل (صالة العرض 360°)'
-      },
-      desk: {
-        pos: new THREE.Vector3(1.85, 1.55, 4.10),
-        target: new THREE.Vector3(1.10, 1.05, 5.15),
-        name: 'أمام ورشة الصيانة'
-      },
-      technician: {
-        pos: new THREE.Vector3(1.25, 1.35, 5.05),
-        target: new THREE.Vector3(2.20, 1.30, 3.00),
-        name: 'كرسي فني الصيانة (قمرة العمل)'
-      },
-      entry: {
-        pos: new THREE.Vector3(2.60, 1.55, 1.10),
-        target: new THREE.Vector3(1.80, 1.40, 3.80),
-        name: 'مدخل الزبائن عند الباب'
-      },
-      vitrines: {
-        pos: new THREE.Vector3(2.50, 1.45, 2.20),
-        target: new THREE.Vector3(1.85, 0.75, 1.35),
-        name: 'فاترينات العرض الزجاجية (2 رف وبضاعة كاملة)'
-      }
-    };
-
-    function jumpToSpot(spotKey, duration = 800) {
-      const spot = interiorSpots[spotKey];
-      if (!spot) return;
-
-      setInterior360Mode(true);
-
-      const viewButtonBySpot = {
-        center: 'view-btn-center',
-        desk: 'view-btn-repair',
-        technician: 'view-btn-tech',
-        entry: 'view-btn-entry',
-        vitrines: 'view-btn-vitrines'
       };
-      document.querySelectorAll('.btn-view').forEach(button => button.classList.remove('active'));
-      const activeViewButton = document.getElementById(viewButtonBySpot[spotKey]);
-      if (activeViewButton) activeViewButton.classList.add('active');
-
-      // Update spot pill UI
-      document.querySelectorAll('.spot-pill').forEach(p => p.classList.remove('active'));
-      const btn = document.getElementById('spot-btn-' + spotKey);
-      if (btn) btn.classList.add('active');
-
-      showToastNotification(`📍 ${spot.name}`);
-
-      // Tween eye position
-      new TWEEN.Tween(interiorEye)
-        .to(spot.pos, duration)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .start();
-
-      // Compute target yaw and pitch
-      const dx = spot.target.x - spot.pos.x;
-      const dy = spot.target.y - spot.pos.y;
-      const dz = spot.target.z - spot.pos.z;
-      const horizDist = Math.sqrt(dx * dx + dz * dz);
-      const newYaw = Math.atan2(dx, -dz);
-      const newPitch = Math.atan2(dy, horizDist);
-
-      let diffYaw = (newYaw - targetYaw) % (Math.PI * 2);
-      if (diffYaw > Math.PI) diffYaw -= Math.PI * 2;
-      if (diffYaw < -Math.PI) diffYaw += Math.PI * 2;
-      const endYaw = targetYaw + diffYaw;
-
-      new TWEEN.Tween({ y: targetYaw, p: targetPitch })
-        .to({ y: endYaw, p: newPitch }, duration)
-        .easing(TWEEN.Easing.Cubic.InOut)
-        .onUpdate((obj) => {
-          targetYaw = obj.y;
-          targetPitch = obj.p;
-        })
-        .start();
     }
 
-    function setInterior360Mode(enable = true) {
-      isInterior360 = enable;
-      controls.enabled = !enable;
-
-      const btn360 = document.getElementById('btn-mode-360');
-      const btnOrbit = document.getElementById('btn-orbit-view');
-
-      if (btn360) btn360.classList.toggle('active', enable);
-      if (btnOrbit) btnOrbit.classList.toggle('active', !enable);
-      if (btn360) btn360.setAttribute('aria-pressed', String(enable));
-      if (btnOrbit) btnOrbit.setAttribute('aria-pressed', String(!enable));
-
-      if (enable) {
-        clampInsideShop(interiorEye);
-        controls.autoRotate = false;
-        showToastNotification('🔄 بانوراما 360° من الداخل: اسحب بالماوس أو اللمس للف في مكانك');
-      } else {
-        controls.autoRotate = autoRotate;
-        controls.autoRotateSpeed = 1.2;
-        showToastNotification('🌐 المنظور الخارجي 3D: اسحب لتدوير الموديل بالكامل');
-      }
-    }
-
-    function setExteriorOrbitMode() {
-      setInterior360Mode(false);
-      animateCameraTo(new THREE.Vector3(-4.5, 6.0, -3.5), new THREE.Vector3(2.0, 1.0, 3.0), 1000);
-    }
-
-    function toggleInterior360Mode() {
-      if (isInterior360) {
-        setExteriorOrbitMode();
-      } else {
-        jumpToSpot('center');
-      }
-    }
-
-    function animateCameraTo(targetPos, targetLookAt, duration = 1200) {
+    function animateCameraTo(targetPos, targetLookAt, duration = 1000) {
       new TWEEN.Tween(camera.position)
         .to(targetPos, duration)
         .easing(TWEEN.Easing.Cubic.InOut)
@@ -5005,58 +4934,19 @@
       const activeBtn = Array.from(document.querySelectorAll('.btn-view')).find(b => b.getAttribute('onclick')?.includes(viewKey));
       if (activeBtn) activeBtn.classList.add('active');
 
-      if (viewKey === 'top' || viewKey === 'iso' || viewKey === 'maintenanceDoorShowcaseView') {
-        if (viewKey === 'top' && window.ceilingMesh) {
-          window.ceilingMesh.visible = false;
-          const btnCeil = document.getElementById('btn-toggle-ceiling');
-          if (btnCeil) btnCeil.classList.remove('active');
-        }
-        setExteriorOrbitMode();
-        animateCameraTo(preset.pos, preset.target);
-      } else {
-        // Interior view: switch to interior 360 mode anchored at that location!
-        setInterior360Mode(true);
-        if (viewKey === 'repairCounterView') {
-          jumpToSpot('desk');
-        } else if (viewKey === 'technicianEyeView') {
-          jumpToSpot('technician');
-        } else if (viewKey === 'customerEntryView') {
-          jumpToSpot('entry');
-        } else if (viewKey === 'ledWallView' || viewKey === 'glassVitrinesView') {
-          jumpToSpot('vitrines');
-        } else {
-          // Custom interior view
-          new TWEEN.Tween(interiorEye)
-            .to(preset.pos, 800)
-            .easing(TWEEN.Easing.Cubic.InOut)
-            .start();
-
-          const dx = preset.target.x - preset.pos.x;
-          const dy = preset.target.y - preset.pos.y;
-          const dz = preset.target.z - preset.pos.z;
-          const horizDist = Math.sqrt(dx * dx + dz * dz);
-          const newYaw = Math.atan2(dx, -dz);
-          const newPitch = Math.atan2(dy, horizDist);
-
-          let diffYaw = (newYaw - targetYaw) % (Math.PI * 2);
-          if (diffYaw > Math.PI) diffYaw -= Math.PI * 2;
-          if (diffYaw < -Math.PI) diffYaw += Math.PI * 2;
-          const endYaw = targetYaw + diffYaw;
-
-          new TWEEN.Tween({ y: targetYaw, p: targetPitch })
-            .to({ y: endYaw, p: newPitch }, 800)
-            .easing(TWEEN.Easing.Cubic.InOut)
-            .onUpdate((obj) => {
-              targetYaw = obj.y;
-              targetPitch = obj.p;
-            })
-            .start();
-        }
+      if (viewKey === 'top' && window.ceilingMesh) {
+        window.ceilingMesh.visible = false;
+        const btnCeil = document.getElementById('btn-toggle-ceiling');
+        if (btnCeil) btnCeil.classList.remove('active');
       }
+
+      isInterior360 = false;
+      controls.enabled = true;
+      animateCameraTo(preset.pos, preset.target);
     }
 
-    // --- Interactive Wall Color Theme Switcher (Harmonizing with Fixed Pink) ---
-    window.currentWallTheme = 'grey'; // Default to modern recommended light grey
+    // --- Interactive Wall Color Theme Switcher ---
+    window.currentWallTheme = 'white'; // Default to pure pearl white // Default to modern recommended light grey
 
     function showToastNotification(msg) {
       let toast = document.getElementById('floating-toast-notif');
@@ -5093,60 +4983,89 @@
     }
 
     const wallColorThemes = {
-      grey: {
-        name: 'رمادي عصري ناعم (Modern Tech Grey)',
-        hex: 0x7d8c99,
-        outerHex: 0x64748b,
-        badge: '#7d8c99',
-        desc: 'أفضل تناسق متوازن وهادئ مع فاترينات البينك ومكتب الصيانة'
+      vt001: {
+        name: 'VT-001 Light Oak - بلوط فاتح جدًا بيج خشابي دافئ (Yıldız Trend Açık Meşe)',
+        code: 'VT 001 Light Oak',
+        brand: 'Yıldız Trend',
+        textureKey: 'vt001',
+        wallHex: 0xded8cf,
+        deskHex: 0xffffff,
+        outerHex: 0xc8c0b4,
+        badge: '#ded8cf',
+        roughness: 0.38,
+        desc: 'بلوط فاتح جداً بيج خشابي دافئ من تشكيلة يلدز تريند (الاختيار الأول للمحل)؛ يعطي دفئاً وفخامة استثنائية مع البينك الثابت'
       },
-      white: {
-        name: 'أبيض لؤلؤي صافي (Pure Pearl White)',
-        hex: 0xffffff,
-        outerHex: 0xe2e8f0,
-        badge: '#ffffff',
-        desc: 'يعطي أقصى اتساع بصري للمحل ويعكس الإضاءة بشكل رائع'
+      vt059: {
+        name: 'VT-059 Maple - قيقب كريمي فاتح دافئ (Yıldız Trend Akçaağaç)',
+        code: 'VT 059 Maple',
+        brand: 'Yıldız Trend',
+        textureKey: 'vt059',
+        wallHex: 0xf0dfc8,
+        deskHex: 0xffffff,
+        outerHex: 0xdac5aa,
+        badge: '#f0dfc8',
+        roughness: 0.35,
+        desc: 'درجة خشب فاتحة ودافئة فيها لمسة كريمية زبدية راقية جداً تتناغم بنعومة بالغة مع البينك'
       },
-      greige: {
-        name: 'جريج كشمير دافئ (Cashmere Greige)',
-        hex: 0xaa9d8d,
-        outerHex: 0x8c7e6e,
-        badge: '#aa9d8d',
-        desc: 'مزيج فاخر بين البيج والرمادي يمنح راحة وفخامة لافتة'
+      vt202: {
+        name: 'VT-202 New Oak - بلوط طبيعي جديد متوسط الفخامة (Yıldız Trend Yeni Meşe)',
+        code: 'VT 202 New Oak',
+        brand: 'Yıldız Trend',
+        textureKey: 'vt202',
+        wallHex: 0xd8b58a,
+        deskHex: 0xffffff,
+        outerHex: 0xbf9b6f,
+        badge: '#d8b58a',
+        roughness: 0.40,
+        desc: 'خشبي طبيعي متوسط كلاسيكي فاخر يعطي هيبة ورقي لمكتب الصيانة والجدران'
       },
-      charcoal: {
-        name: 'أنثراسيت ملكي فاحم (Luxury Charcoal)',
-        hex: 0x2b3440,
-        outerHex: 0x1e2430,
-        badge: '#2b3440',
-        desc: 'تباين قوي وفخم يبرز لون البينك والأجهزة المضيئة'
-      },
-      beige: {
-        name: 'بيج لاتيه دافئ (Warm Latte Beige)',
-        hex: 0xcfb492,
-        outerHex: 0xb59772,
-        badge: '#cfb492',
-        desc: 'إحساس بالدفء والترحيب وتناغم كلاسيكي راقي'
+      vt408: {
+        name: 'VT-408 Sonoma - سونوما رمادي بيج هادئ مودرن (Yıldız Trend Sonoma Meşe)',
+        code: 'VT 408 Sonoma',
+        brand: 'Yıldız Trend',
+        textureKey: 'vt408',
+        wallHex: 0xc2ae98,
+        deskHex: 0xffffff,
+        outerHex: 0xa8947f,
+        badge: '#c2ae98',
+        roughness: 0.42,
+        desc: 'درجة خشبية رمادية بيج (جريج خشبي مودرن) هادئة وعصرية تكسر حرارة البينك بأسلوب إسكندنافي أنيق'
       }
     };
 
     window.setWallColorTheme = function(themeKey) {
+      if (themeKey === 'white' || themeKey === 'oak') themeKey = 'vt001';
+      if (themeKey === 'grey') themeKey = 'vt408';
+      if (themeKey === 'greige') themeKey = 'vt059';
+
       const theme = wallColorThemes[themeKey];
       if (!theme) return;
       window.currentWallTheme = themeKey;
 
-      // Update the shared material assigned to the shop walls and columns.
-      beigeWallMaterial.color.setHex(theme.hex);
-      beigeWallMaterial.roughness = 0.55;
-      beigeWallMaterial.metalness = 0.05;
+      // 1. Update solid walls & structural columns with exact matching tone
+      beigeWallMaterial.color.setHex(theme.wallHex);
+      beigeWallMaterial.roughness = 0.52;
+      beigeWallMaterial.metalness = 0.02;
       beigeWallMaterial.needsUpdate = true;
 
-      // The wall around the pink entrance uses a separate neutral material.
-      // Theme it too, while leaving the pink faces and blue shutters untouched.
+      // 2. Update maintenance desk, upper hutches, shelves, drawers & lower cabinets with real Yıldız wood texture
+      if (yildizWoodTextures && yildizWoodTextures[theme.textureKey]) {
+        oakWoodMaterial.map = yildizWoodTextures[theme.textureKey];
+        oakWoodMaterial.color.setHex(0xffffff);
+        oakWoodMaterial.roughness = theme.roughness || 0.38;
+      }
+      oakWoodMaterial.metalness = 0.02;
+      oakWoodMaterial.needsUpdate = true;
+
+      // 3. Update wall skirting / baseboard
+      baseboardMaterial.color.setHex(theme.wallHex);
+      baseboardMaterial.needsUpdate = true;
+
+      // 4. Update exterior wall neutral trim
       exteriorWallMaterial.color.setHex(theme.outerHex);
       exteriorWallMaterial.needsUpdate = true;
 
-      ['grey', 'white', 'greige', 'charcoal', 'beige'].forEach((key) => {
+      ['vt001', 'vt059', 'vt202', 'vt408'].forEach((key) => {
         const button = document.getElementById('btn-wall-' + key);
         if (button) button.classList.toggle('active', key === themeKey);
       });
@@ -5157,10 +5076,10 @@
 
       const bannerName = document.getElementById('current-color-name');
       if (bannerName) {
-        bannerName.innerHTML = `<span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${theme.badge}; border:1px solid #fff; margin-left:6px; vertical-align:middle;"></span>${theme.name}`;
+        bannerName.innerHTML = `<span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${theme.badge}; border:1px solid #fff; margin-left:6px; vertical-align:middle;"></span>${theme.code}`;
       }
 
-      showToastNotification(`🎨 تم تطبيق: <b>${theme.name}</b>`);
+      showToastNotification(`🪵 تم تطبيق خامة خشب يلدز تريند: <b>${theme.code}</b>`);
     };
     // Keep the earlier function name available for any existing callers.
     window.switchWallColor = window.setWallColorTheme;
@@ -5191,7 +5110,8 @@
     });
 
     function resetCamera() {
-      jumpToSpot('center');
+      switchCameraView('top');
+      showToastNotification('📐 المنظور الافتراضي: مسقط شامل من أعلى (تجول حر وزووم)');
     }
 
     window.activeDeskOption = 1;
@@ -5400,6 +5320,29 @@
     window.addEventListener('pointerup', () => { isPointerDown = false; });
     window.addEventListener('pointercancel', () => { isPointerDown = false; });
 
+    // Click in 3D directly on counter doors to open/close
+    let clickStartX = 0, clickStartY = 0;
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      clickStartX = e.clientX;
+      clickStartY = e.clientY;
+    });
+    renderer.domElement.addEventListener('pointerup', (e) => {
+      if (Math.hypot(e.clientX - clickStartX, e.clientY - clickStartY) > 8) return; // ignore drags
+      const rect = renderer.domElement.getBoundingClientRect();
+      const mouse = new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const ray = new THREE.Raycaster();
+      ray.setFromCamera(mouse, camera);
+      if (window.counterDoorMeshes && window.counterDoorMeshes.length > 0) {
+        const hits = ray.intersectObjects(window.counterDoorMeshes, true);
+        if (hits.length > 0) {
+          toggleCounterDoors();
+        }
+      }
+    });
+
     // Optical Zoom via FOV in Interior 360 Mode (Never penetrates walls!)
     renderer.domElement.addEventListener('wheel', (e) => {
       if (!isInterior360) return;
@@ -5554,7 +5497,8 @@
 
     renderLoop();
     window.switchDeskOption(1);
-    jumpToSpot("center", 0);
+    window.setWallColorTheme('vt001');
+    switchCameraView('top');
   </script>
 </body>
 
