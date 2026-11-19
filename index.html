@@ -1,0 +1,5076 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نموذج المحل ثلاثي الأبعاد 3D - الصيانة عند حائط الـ 3م • فاترينات زجاج حرف L • كاونتر في المنتصف</title>
+
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #db4681;
+      --primary-hover: #c4326d;
+      --accent-blue: #2563eb;
+      --accent-gold: #f59e0b;
+      --bg-dark: #090d16;
+      --panel-bg: rgba(13, 19, 33, 0.90);
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    #webgl-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .shop-title-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 9px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
+
+    .shop-badge {
+      background: linear-gradient(135deg, var(--primary), #fb7185);
+      color: white;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 9px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .shop-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .shop-subtitle {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      color: var(--text-main);
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-action.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(219, 70, 129, 0.45);
+    }
+
+    .btn-furnish {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: #34d399;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .btn-furnish:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    /* Desk Layout Options Floating Bar (Top Center) */
+    .desk-options-bar {
+      position: absolute;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+      pointer-events: auto;
+    }
+
+    .desk-opt-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .desk-opt-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-desk-opt {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 6px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Cairo', sans-serif;
+      white-space: nowrap;
+    }
+
+    .btn-desk-opt:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-desk-opt.active {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 0 18px rgba(2, 132, 199, 0.45);
+    }
+
+    .opt-num {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 992px) {
+      .desk-options-bar {
+        top: auto;
+        bottom: 80px;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 12px;
+        width: calc(100% - 30px);
+      }
+      .desk-opt-buttons {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn-desk-opt {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+    }
+
+    /* Views Quick Switcher (Right Side) */
+    .view-controls {
+      position: absolute;
+      top: 85px;
+      right: 20px;
+      z-index: 10;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 220px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-view {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.18s;
+      font-family: 'Cairo', sans-serif;
+      text-align: right;
+      width: 100%;
+    }
+
+    .btn-view i {
+      width: 16px;
+      text-align: center;
+      color: #f472b6;
+    }
+
+    .btn-view:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .btn-view.active {
+      background: linear-gradient(90deg, rgba(219, 70, 129, 0.35), rgba(219, 70, 129, 0.1));
+      border-color: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Floating Dimensions & Specs Panel (Left Side) */
+    .specs-panel {
+      position: absolute;
+      top: 85px;
+      left: 20px;
+      z-index: 10;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 16px;
+      width: 330px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+      transition: transform 0.3s ease;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .specs-panel.collapsed {
+      transform: translateX(-360px);
+    }
+
+    .specs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .specs-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dimension-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      font-size: 11.5px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .dimension-item:last-child {
+      border-bottom: none;
+    }
+
+    .dim-label {
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dim-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .dim-value {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .breakdown-box {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(219, 70, 129, 0.3);
+      border-radius: 10px;
+    }
+
+    .breakdown-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #f472b6;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breakdown-step {
+      font-size: 11px;
+      color: #cbd5e1;
+      padding: 2px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .color-guide-box {
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .swatch-item {
+      flex: 1;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .area-badge-box {
+      margin-top: 10px;
+      padding: 8px;
+      background: linear-gradient(135deg, rgba(219, 70, 129, 0.18), rgba(37, 99, 235, 0.18));
+      border: 1px solid rgba(219, 70, 129, 0.35);
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .area-title {
+      font-size: 10.5px;
+      color: #cbd5e1;
+    }
+
+    .area-number {
+      font-size: 19px;
+      font-weight: 900;
+      color: #f43f5e;
+    }
+
+    /* Bottom Quick Action Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 30px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .bottom-btn {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .bottom-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .bottom-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Instructions Overlay / Helper */
+    .walk-help {
+      position: absolute;
+      bottom: 75px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #e2e8f0;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .key-badge {
+      background: #1e293b;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: bold;
+      color: #fff;
+      border: 1px solid #475569;
+    }
+
+    /* 3D Floating Labels Styling */
+    .label-3d {
+      font-family: 'Cairo', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+      color: white;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.65);
+      transition: opacity 0.3s;
+    }
+
+    .label-dimension {
+      background: rgba(219, 70, 129, 0.92);
+      border: 1px solid #ff75a0;
+    }
+
+    .label-step {
+      background: rgba(30, 41, 59, 0.92);
+      border: 1px solid #64748b;
+    }
+
+    .label-repair {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border: 1px solid #38bdf8;
+    }
+
+    .label-counter {
+      background: linear-gradient(135deg, #db4681, #be185d);
+      border: 1px solid #f472b6;
+    }
+
+    .label-vitrine {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: 1px solid #34d399;
+    }
+
+    .label-led-wall {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: 1px solid #fbbf24;
+    }
+
+    @media (max-width: 768px) {
+      .specs-panel {
+        width: calc(100% - 40px);
+        top: auto;
+        bottom: 80px;
+        left: 20px;
+      }
+
+      .view-controls {
+        top: 70px;
+        right: 10px;
+        width: 165px;
+        padding: 8px;
+      }
+
+      .shop-title-card {
+        padding: 6px 12px;
+      }
+
+      .shop-name {
+        font-size: 13px;
+      }
+
+      .bottom-bar {
+        padding: 4px 8px;
+        width: 92%;
+        justify-content: space-around;
+      }
+    }
+  
+    /* ==================================================== */
+    /* CLEAN CORNER DRAWER & MINIMALIST UI (شريط منبسط في الزاوية) */
+    /* ==================================================== */
+
+    /* Floating Corner Menu Button */
+    .corner-menu-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .corner-menu-btn:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: #38bdf8;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 35px rgba(56, 189, 248, 0.3);
+    }
+
+    .corner-menu-btn i {
+      color: #38bdf8;
+      font-size: 16px;
+    }
+
+    .corner-menu-badge {
+      background: #e11d48;
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-right: 4px;
+    }
+
+    /* Slide-Out Drawer / Sidebar */
+    .app-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 400px;
+      max-width: 92vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      direction: rtl;
+      overflow: hidden;
+    }
+
+    .app-drawer.open {
+      transform: translateX(0);
+    }
+
+    /* Backdrop Overlay */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Drawer Header */
+    .drawer-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.45);
+    }
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .btn-drawer-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-drawer-close:hover {
+      background: #e11d48;
+      color: #fff;
+      border-color: #e11d48;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .drawer-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .drawer-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+    }
+
+    .drawer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .drawer-section-title i {
+      color: #38bdf8;
+    }
+
+    
+    /* Interior 360 Standing Spots Bar */
+    .interior-spots-bar {
+      position: absolute;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 30px;
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s ease;
+      max-width: 95vw;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .interior-spots-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .interior-spots-bar .spot-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #38bdf8;
+      white-space: nowrap;
+      margin-left: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .spot-pill {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .spot-pill:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: #fff;
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+    .spot-pill.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      border-color: #38bdf8;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Option Cards in Drawer */
+    .drawer-desk-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drawer-opt-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      text-align: right;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-opt-card:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateX(-4px);
+    }
+
+    .drawer-opt-card.active {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(99, 102, 241, 0.25));
+      border-color: #38bdf8;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+    }
+
+    .drawer-opt-card .card-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #38bdf8;
+      flex-shrink: 0;
+    }
+
+    .drawer-opt-card.active .card-num {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    .drawer-opt-card .card-info {
+      flex: 1;
+    }
+
+    .drawer-opt-card .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .drawer-opt-card .card-desc {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Views Grid in Drawer */
+    .drawer-views-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn-drawer-view {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-align: right;
+      transition: all 0.2s ease;
+    }
+
+    .btn-drawer-view:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      transform: translateX(-3px);
+    }
+
+    .btn-drawer-view.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
+      color: #fff;
+    }
+
+    /* Toggles Grid in Drawer */
+    .drawer-toggles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-drawer-toggle {
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .btn-drawer-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .btn-drawer-toggle.active {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    /* Hide the old floating bars */
+    .top-header, .desk-options-bar, .view-controls, .specs-panel {
+      display: none !important;
+    }
+
+  </style>
+
+  <!-- Three.js CDNs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+</head>
+
+<body>
+
+  <!-- WebGL Render Canvas Container -->
+  <div id="webgl-container"></div>
+
+  <!-- Floating Corner Menu Trigger (شريط منبسط في الزاوية) -->
+  <button id="btn-toggle-drawer" class="corner-menu-btn" onclick="toggleDrawer(true)" title="فتح قائمة خيارات المحل والإعدادات">
+    <i class="fa-solid fa-sliders"></i>
+    <span>الإعدادات والخيارات</span>
+    <span class="corner-menu-badge">3 مقترحات</span>
+  </button>
+
+  <!-- Overlay Backdrop -->
+  <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+  <!-- Collapsible Settings & Layouts Drawer (الشريط المنبسط في الزاوية) -->
+  <div id="app-drawer" class="app-drawer">
+    <!-- Drawer Header -->
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <i class="fa-solid fa-sliders" style="color: #38bdf8;"></i>
+        <span>لوحة التحكم والإعدادات</span>
+      </div>
+      <button class="btn-drawer-close" onclick="toggleDrawer(false)" title="إغلاق القائمة">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Scrollable Body -->
+    <div class="drawer-body">
+
+      <!-- 1. Desk Proposals Switcher -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          <span>خيارات مكتب الصيانة (اختر للمقارنة)</span>
+        </div>
+        <div class="drawer-desk-options">
+          <button class="drawer-opt-card btn-desk-opt active" id="btn-opt-1" onclick="switchDeskOption(1)">
+            <span class="card-num opt-num">1</span>
+            <div class="card-info">
+              <div class="card-title">المقترح 1: حرف L مدمج (95 سم)</div>
+              <div class="card-desc">تقصير الضلع الداخلي لـ 95 سم مع ممر واسع 1.60م</div>
+            </div>
+          </button>
+          <button class="drawer-opt-card btn-desk-opt" id="btn-opt-2" onclick="switchDeskOption(2)">
+            <span class="card-num opt-num">2</span>
+            <div class="card-info">
+              <div class="card-title">المقترح 2: ورشة U-Desk (مستطيل ناقص ضلع)</div>
+              <div class="card-desc">بكامل حائط 3م + ضلع 50سم على حائط 6م | وسط المحل مفتوح 2.23م</div>
+            </div>
+          </button>
+          <button class="drawer-opt-card btn-desk-opt" id="btn-opt-3" onclick="switchDeskOption(3)">
+            <span class="card-num opt-num">3</span>
+            <div class="card-info">
+              <div class="card-title">المقترح 3: طولي مستقيم 2.00م</div>
+              <div class="card-desc">ملاصق لحائط 5.7م بدون أي بروز | ممر 2.55م فائق الاتساع</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. Camera Views -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-camera"></i>
+          <span>زوايا الرؤية والكاميرا (360° وبانوراما)</span>
+        </div>
+        <div class="drawer-views-grid">
+          <button class="btn-drawer-view btn-view active" id="view-btn-center" onclick="jumpToSpot('center')">
+            <i class="fa-solid fa-street-view" style="color:#38bdf8;"></i>
+            <span>وسط صالة العرض (بانوراما شاملة 360°)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-repair" onclick="switchCameraView('repairCounterView')">
+            <i class="fa-solid fa-screwdriver-wrench" style="color:#38bdf8;"></i>
+            <span>محطة الصيانة حرف L (أمام المكتب)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-micro" onclick="switchCameraView('microscopeZoomView')">
+            <i class="fa-solid fa-microscope" style="color:#10b981;"></i>
+            <span>زووم الميكروسكوب واللحام الدقيق</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-tech" onclick="switchCameraView('technicianEyeView')">
+            <i class="fa-solid fa-chair" style="color:#fbbf24;"></i>
+            <span>من كرسي الصيانة (جلسة الفني 360°)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-slat" onclick="switchCameraView('ledWallView')">
+            <i class="fa-solid fa-layer-group" style="color:#f43f5e;"></i>
+            <span>جدار الإكسسوارات سلات وول بضلف</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-entry" onclick="switchCameraView('customerEntryView')">
+            <i class="fa-solid fa-door-open" style="color:#34d399;"></i>
+            <span>رؤية الزبون عند الدخول</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-vitrines" onclick="switchCameraView('glassVitrinesView')">
+            <i class="fa-solid fa-shapes" style="color:#10b981;"></i>
+            <span>فاترينات الزجاج (عند الباب)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-top" onclick="switchCameraView('top')">
+            <i class="fa-solid fa-compass-drafting" style="color:#818cf8;"></i>
+            <span>مسقط أفقي معماري من أعلى (Plan)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-iso" onclick="switchCameraView('iso')">
+            <i class="fa-solid fa-cube" style="color:#c084fc;"></i>
+            <span>ماكيت أيزومتري 3D شامل (خارجي)</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-floor" onclick="switchCameraView('floorView')">
+            <i class="fa-solid fa-grip" style="color:#94a3b8;"></i>
+            <span>بلاط الأرضية الرخامي الفاخر</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Toggles & Controls -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-toggle-on"></i>
+          <span>أدوات الإظهار والتحكم</span>
+        </div>
+        <div class="drawer-toggles-grid">
+          <button class="btn-drawer-toggle active" id="btn-toggle-dims">
+            <i class="fa-solid fa-ruler-combined"></i>
+            <span>الأبعاد 3D</span>
+          </button>
+          <button class="btn-drawer-toggle active" id="btn-toggle-ceiling">
+            <i class="fa-solid fa-border-top-left"></i>
+            <span>السقف</span>
+          </button>
+          <button class="btn-drawer-toggle active" id="btn-toggle-furniture" onclick="toggleFurniture()">
+            <i class="fa-solid fa-couch"></i>
+            <span id="furnish-btn-text">الفرش</span>
+          </button>
+          <button class="btn-drawer-toggle active" id="btn-toggle-led" onclick="toggleLedLighting()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>ليدات العلب</span>
+          </button>
+          <button class="btn-drawer-toggle active" id="btn-toggle-door">
+            <i class="fa-solid fa-door-open"></i>
+            <span id="door-btn-text">دلفة الباب</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-switch-side" onclick="toggleDoorsSide()">
+            <i class="fa-solid fa-repeat"></i>
+            <span id="side-btn-text">موقع الباب</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-toggle-lights">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>السبوتات</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-autorotate" onclick="toggleAutoRotate()">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>تدوير 360°</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Specifications Breakdown -->
+      <div class="drawer-section" id="specs-panel">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-list-check"></i>
+          <span>المواصفات الهندسية الدقيقة</span>
+        </div>
+        <div class="breakdown-box" id="desk-specs-box">
+          <!-- Populated dynamically by updateDeskSpecsBox -->
+        </div>
+        
+        <!-- Wall Colors Consultation Section matching Pink -->
+        <div class="breakdown-box">
+          <div class="breakdown-title">
+            <i class="fa-solid fa-paint-roller" style="color:#38bdf8;"></i>
+            <span>ألوان الحوائط المقترحة (المتناسقة مع البينك الثابت):</span>
+          </div>
+          <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">
+            جرب بنقرة واحدة رؤية كل لون على جدران المحل مباشرة لمشاهدة التناسق مع البينك:
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
+            <button class="btn-drawer-toggle active" id="btn-wall-grey" onclick="setWallColorTheme('grey')" style="font-size:11px; padding:6px 6px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#7d8c99; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              1. رمادي سحابي عصري
+            </button>
+            <button class="btn-drawer-toggle" id="btn-wall-white" onclick="setWallColorTheme('white')" style="font-size:11px; padding:6px 6px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#ffffff; margin-left:4px; vertical-align:middle; border:1.5px solid #cbd5e1;"></span>
+              2. أوف وايت لؤلؤي ناصع
+            </button>
+            <button class="btn-drawer-toggle" id="btn-wall-greige" onclick="setWallColorTheme('greige')" style="font-size:11px; padding:6px 6px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#aa9d8d; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              3. جريج دافئ وراقي
+            </button>
+            <button class="btn-drawer-toggle" id="btn-wall-charcoal" onclick="setWallColorTheme('charcoal')" style="font-size:11px; padding:6px 6px; text-align:center;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2b3440; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              4. أنثراسيت فخم تبايني
+            </button>
+            <button class="btn-drawer-toggle" id="btn-wall-beige" onclick="setWallColorTheme('beige')" style="font-size:11px; padding:6px 6px; text-align:center; grid-column: span 2;">
+              <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#cfb492; margin-left:4px; vertical-align:middle; border:1.5px solid #fff;"></span>
+              5. بيج دافئ كلاسيكي (لاتيه)
+            </button>
+          </div>
+        </div>
+<div class="breakdown-box">
+          <div class="breakdown-title">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color:#fbbf24;"></i>
+            <span>جدار الإكسسوارات سلات وول بضلف (أبيض + أحمر):</span>
+          </div>
+          <div style="display:flex; gap:6px; margin: 8px 0;">
+            <button class="btn-drawer-toggle active" id="btn-slat-coord" onclick="setSlatwallColorTheme('coord')" style="flex:1; font-size:11px; padding:6px 4px;">
+              <i class="fa-solid fa-palette"></i> تنسيق أبيض + أحمر
+            </button>
+            <button class="btn-drawer-toggle" id="btn-slat-allwhite" onclick="setSlatwallColorTheme('white')" style="flex:1; font-size:11px; padding:6px 4px;">
+              أبيض كامل
+            </button>
+            <button class="btn-drawer-toggle" id="btn-slat-allred" onclick="setSlatwallColorTheme('red')" style="flex:1; font-size:11px; padding:6px 4px; color:#f87171;">
+              أحمر كامل
+            </button>
+          </div>
+          <div class="breakdown-step">
+            <span>الارتفاع:</span>
+            <span style="font-weight:700; color:#fbbf24;">2.40 متر كامل</span>
+          </div>
+          <div class="breakdown-step">
+            <span>التوزيع:</span>
+            <span style="font-weight:700; color:#38bdf8;">L-Shape (2.40م × 2.40م) + وحدة 60سم بعد العمود</span>
+          </div>
+          <div class="breakdown-step">
+            <span>العلب السفلية:</span>
+            <span style="font-weight:700; color:#34d399;">خزائن بضلف للغلق ومقابض ستانلس</span>
+          </div>
+        </div>
+        <div class="area-badge-box">
+          <div class="area-title">المساحة الإجمالية للمحل</div>
+          <div class="area-number">20.5 م²</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <!-- Interior 360 Standing Spots Bar -->
+  <div id="interior-spots-bar" class="interior-spots-bar">
+    <span class="spot-title"><i class="fa-solid fa-location-dot"></i> نقاط الوقوف بالداخل:</span>
+    <button class="spot-pill active" id="spot-btn-center" onclick="jumpToSpot('center')">
+      <i class="fa-solid fa-circle-dot"></i> وسط المحل (360°)
+    </button>
+    <button class="spot-pill" id="spot-btn-desk" onclick="jumpToSpot('desk')">
+      <i class="fa-solid fa-screwdriver-wrench"></i> أمام ورشة الصيانة
+    </button>
+    <button class="spot-pill" id="spot-btn-technician" onclick="jumpToSpot('technician')">
+      <i class="fa-solid fa-chair"></i> كرسي الفني (قمرة العمل)
+    </button>
+    <button class="spot-pill" id="spot-btn-entry" onclick="jumpToSpot('entry')">
+      <i class="fa-solid fa-door-open"></i> مدخل الزبائن
+    </button>
+    <button class="spot-pill" id="spot-btn-vitrines" onclick="jumpToSpot('vitrines')">
+      <i class="fa-solid fa-gem"></i> فاترينات الزجاج (2 رف مع الشغل)
+    </button>
+  </div>
+
+  <!-- Bottom Quick Controls Bar -->
+  <div class="bottom-bar">
+    <button class="bottom-btn active" id="btn-mode-360" onclick="toggleInterior360Mode()">
+      <i class="fa-solid fa-street-view"></i> بانوراما 360° داخل المحل
+    </button>
+    <button class="bottom-btn" id="btn-orbit-view" onclick="setExteriorOrbitMode()">
+      <i class="fa-solid fa-cube"></i> منظور خارجي 3D
+    </button>
+    <button class="bottom-btn" id="btn-autorotate" onclick="toggleAutoRotate()">
+      <i class="fa-solid fa-arrows-rotate"></i> تدوير 360° تلقائي
+    </button>
+    <button class="bottom-btn" onclick="resetCamera()">
+      <i class="fa-solid fa-compress"></i> ضبط الكاميرا
+    </button>
+    <button class="bottom-btn" onclick="toggleDrawer(true)">
+      <i class="fa-solid fa-sliders"></i> كل الخيارات والإعدادات
+    </button>
+  </div>
+
+  <!-- Free Walk Mode Instructions -->
+  <div class="walk-help" id="walk-help">
+    <span>تحكم بالحركة:</span>
+    <span class="key-badge">W</span>
+    <span class="key-badge">A</span>
+    <span class="key-badge">S</span>
+    <span class="key-badge">D</span>
+    <span>أو الأسهم، واسحب بالماوس للنظر حولك</span>
+    <button onclick="toggleWalkMode()"
+      style="background:#e11d48; color:#fff; border:none; border-radius:10px; padding:2px 8px; cursor:pointer; font-family:'Cairo'; margin-right:6px;">خروج</button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3D WebGL Three.js Application Logic -->
+  <!-- ========================================== -->
+  <script>
+    // ----------------------------------------------------
+    // 1. Procedural Textures
+    // ----------------------------------------------------
+
+    // Real Marble Porcelain Tiles Matching User's Real Photo Exactly (Calacatta Gold 60x60)
+    function createMarbleTileTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Luminous Alabaster / Pure White Porcelain Base
+      const bgGrad = ctx.createLinearGradient(0, 0, 1024, 1024);
+      bgGrad.addColorStop(0, '#fdfcf9');
+      bgGrad.addColorStop(0.5, '#f9f6f0');
+      bgGrad.addColorStop(1, '#fcfaf6');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // 2. Micro Mineral Crystalline Grain
+      for (let i = 0; i < 40000; i++) {
+        const x = Math.random() * 1024;
+        const y = Math.random() * 1024;
+        const rad = Math.random() * 14 + 2;
+        const alpha = Math.random() * 0.14 + 0.04;
+        ctx.fillStyle = Math.random() < 0.65 ? `rgba(245, 238, 226, ${alpha})` : `rgba(230, 218, 202, ${alpha * 0.75})`;
+        ctx.beginPath();
+        ctx.arc(x, y, rad, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. Soft Caramel / Golden Glow Halos along Vein Corridors
+      for (let w = 0; w < 12; w++) {
+        const startX = Math.random() * 650;
+        const startY = Math.random() * 1024;
+        ctx.strokeStyle = 'rgba(217, 155, 95, 0.12)';
+        ctx.lineWidth = Math.random() * 55 + 25;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.bezierCurveTo(
+          startX + 220 + Math.random() * 80, startY - 140,
+          startX + 420 + Math.random() * 80, startY - 280,
+          startX + 650, startY - 450
+        );
+        ctx.stroke();
+      }
+
+      // 4. Distinct Brown / Caramel / Bronze / Gold Marble Veins (Direct Match to User's Image)
+      const veinPalettes = [
+        { core: 'rgba(92, 46, 18, 0.94)', halo: 'rgba(175, 105, 48, 0.42)', width: 3.8 },
+        { core: 'rgba(125, 68, 28, 0.88)', halo: 'rgba(198, 132, 68, 0.36)', width: 3.2 },
+        { core: 'rgba(75, 38, 14, 0.95)', halo: 'rgba(152, 92, 42, 0.38)', width: 2.6 },
+        { core: 'rgba(162, 98, 44, 0.82)', halo: 'rgba(224, 158, 92, 0.32)', width: 2.0 },
+        { core: 'rgba(108, 58, 24, 0.78)', halo: 'rgba(182, 118, 58, 0.28)', width: 1.6 }
+      ];
+
+      // Draw 26 rich organic diagonal vein trajectories
+      for (let v = 0; v < 26; v++) {
+        const palette = veinPalettes[v % veinPalettes.length];
+        let curX = (v % 2 === 0) ? Math.random() * 550 : Math.random() * 1024;
+        let curY = (v % 2 === 0) ? 0 : Math.random() * 1024;
+
+        const steps = Math.floor(Math.random() * 42 + 35);
+        let baseAngle = (Math.PI * 0.27) + (Math.random() - 0.5) * 0.75; // 35 to 55 degrees diagonal flow
+
+        // Pass A: Soft Caramel Halo
+        ctx.beginPath();
+        ctx.moveTo(curX, curY);
+        ctx.strokeStyle = palette.halo;
+        ctx.lineWidth = palette.width * 2.8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        let pathPoints = [{ x: curX, y: curY }];
+        for (let s = 0; s < steps; s++) {
+          const angle = baseAngle + (Math.random() - 0.5) * 0.88;
+          const dist = Math.random() * 24 + 10;
+          curX += Math.cos(angle) * dist;
+          curY += Math.sin(angle) * dist;
+          pathPoints.push({ x: curX, y: curY });
+          ctx.lineTo(curX, curY);
+        }
+        ctx.stroke();
+
+        // Pass B: Sharp Dark Bronze/Brown Core
+        ctx.beginPath();
+        ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+        ctx.strokeStyle = palette.core;
+        ctx.lineWidth = palette.width;
+        for (let s = 1; s < pathPoints.length; s++) {
+          ctx.lineTo(pathPoints[s].x, pathPoints[s].y);
+        }
+        ctx.stroke();
+
+        // Pass C: Fine Branching Capillaries & Tendrils
+        for (let s = 2; s < pathPoints.length - 2; s += 3) {
+          if (Math.random() < 0.45) {
+            ctx.beginPath();
+            const pt = pathPoints[s];
+            ctx.moveTo(pt.x, pt.y);
+            const branchAngle = baseAngle + (Math.random() < 0.5 ? 1.05 : -1.05) + (Math.random() - 0.5) * 0.45;
+            const branchLen = Math.random() * 42 + 15;
+            const bx = pt.x + Math.cos(branchAngle) * branchLen;
+            const by = pt.y + Math.sin(branchAngle) * branchLen;
+            ctx.strokeStyle = palette.core;
+            ctx.lineWidth = Math.max(0.75, palette.width * 0.45);
+            ctx.lineTo(bx, by);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 5. Realistic 60x60 cm Porcelain Tile Seams & Beveled Grout Joints
+      const tilesCount = 4; // 4x4 tiles in 1024 canvas (matches 60cm module)
+      const tileSize = 1024 / tilesCount;
+
+      // Soft bevel shadow at tile edges
+      for (let i = 0; i <= tilesCount; i++) {
+        const pos = i * tileSize;
+        const hGrad = ctx.createLinearGradient(0, pos - 5, 0, pos + 5);
+        hGrad.addColorStop(0, 'rgba(210, 198, 180, 0)');
+        hGrad.addColorStop(0.5, 'rgba(175, 158, 138, 0.45)');
+        hGrad.addColorStop(1, 'rgba(210, 198, 180, 0)');
+        ctx.fillStyle = hGrad;
+        ctx.fillRect(0, pos - 5, 1024, 10);
+
+        const vGrad = ctx.createLinearGradient(pos - 5, 0, pos + 5, 0);
+        vGrad.addColorStop(0, 'rgba(210, 198, 180, 0)');
+        vGrad.addColorStop(0.5, 'rgba(175, 158, 138, 0.45)');
+        vGrad.addColorStop(1, 'rgba(210, 198, 180, 0)');
+        ctx.fillStyle = vGrad;
+        ctx.fillRect(pos - 5, 0, 10, 1024);
+      }
+
+      // Crisp clean fine grout seam
+      ctx.strokeStyle = '#a89884';
+      ctx.lineWidth = 1.8;
+      for (let i = 0; i <= tilesCount; i++) {
+        const pos = i * tileSize;
+        ctx.beginPath();
+        ctx.moveTo(0, pos); ctx.lineTo(1024, pos);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, 1024);
+        ctx.stroke();
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      // 4.0m width / (4 * 0.6m) = 1.67, 6.0m depth / (4 * 0.6m) = 2.50 (Exact 60x60cm tiles!)
+      texture.repeat.set(1.67, 2.50);
+      return texture;
+    }
+
+    // Suspended Armstrong 60x60 cm Ceiling with Round LED Panels & Square Spotlights (Exact Match to User's Photo)
+    function createCeilingTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+
+      // 1. Pure White / Soft Acoustic Gypsum Tile Base
+      ctx.fillStyle = '#f5f7fa';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // Micro acoustic pinhole / stippling texture
+      for (let i = 0; i < 35000; i++) {
+        const x = Math.random() * 1024;
+        const y = Math.random() * 1024;
+        ctx.fillStyle = Math.random() < 0.5 ? 'rgba(195, 205, 218, 0.28)' : 'rgba(255, 255, 255, 0.60)';
+        ctx.fillRect(x, y, 1.4, 1.4);
+      }
+
+      const tilesCount = 4;
+      const tileSize = 1024 / tilesCount;
+
+      // 2. White T-Grid Metal Flanges with 3D Bevel Shadow Lines
+      for (let i = 0; i <= tilesCount; i++) {
+        const pos = i * tileSize;
+
+        // Soft 3D shadow recess along T-bar
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(0, pos); ctx.lineTo(1024, pos);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, 1024);
+        ctx.stroke();
+
+        // White metal T-bar profile
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(0, pos); ctx.lineTo(1024, pos);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, 1024);
+        ctx.stroke();
+
+        // Crisp inner join line
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(0, pos); ctx.lineTo(1024, pos);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos, 0); ctx.lineTo(pos, 1024);
+        ctx.stroke();
+      }
+
+      // 3. Recessed Lighting Fixtures Matching User's Photo:
+      // - Large Circular LED Recessed Downlight Panels (بانل ليد دائري كبير)
+      // - Square Recessed Spotlights with Warm Golden Halo (سبوت لايت مربع بقلب ذهبي)
+      const fixtures = [
+        // Large Round LED Panels (Cool / Pure White 5500K)
+        { x: tileSize * 1.5, y: tileSize * 0.5, type: 'round_panel' },
+        { x: tileSize * 2.5, y: tileSize * 1.5, type: 'round_panel' },
+        { x: tileSize * 1.5, y: tileSize * 2.5, type: 'round_panel' },
+        { x: tileSize * 2.5, y: tileSize * 3.5, type: 'round_panel' },
+
+        // Square Spotlights (Warm Golden Spotlight Core 3000K, as seen in user's photo)
+        { x: tileSize * 0.5, y: tileSize * 0.5, type: 'square_spot' },
+        { x: tileSize * 3.5, y: tileSize * 0.5, type: 'square_spot' },
+        { x: tileSize * 0.5, y: tileSize * 2.0, type: 'square_spot' },
+        { x: tileSize * 3.5, y: tileSize * 2.0, type: 'square_spot' },
+        { x: tileSize * 0.5, y: tileSize * 3.5, type: 'square_spot' }
+      ];
+
+      fixtures.forEach(f => {
+        if (f.type === 'round_panel') {
+          // Outer white bezel ring
+          ctx.fillStyle = '#e2e8f0';
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, 44, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          // Soft light glow halo
+          const halo = ctx.createRadialGradient(f.x, f.y, 20, f.x, f.y, 42);
+          halo.addColorStop(0, '#ffffff');
+          halo.addColorStop(0.7, '#f8fafc');
+          halo.addColorStop(1, '#e2e8f0');
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, 40, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Bright glowing frosted diffuser center
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, 34, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Square Recessed Spotlight (Match photo's golden/warm core)
+          const sz = 68;
+          const half = sz / 2;
+
+          // Outer square metallic frame
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillRect(f.x - half, f.y - half, sz, sz);
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(f.x - half, f.y - half, sz, sz);
+
+          // Recessed dark housing
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(f.x - half + 6, f.y - half + 6, sz - 12, sz - 12);
+
+          // Warm golden/amber spotlight reflector (As seen in photo!)
+          const spotGrad = ctx.createRadialGradient(f.x, f.y, 4, f.x, f.y, 22);
+          spotGrad.addColorStop(0, '#ffffff');
+          spotGrad.addColorStop(0.35, '#fffbeb');
+          spotGrad.addColorStop(0.75, '#fde047');
+          spotGrad.addColorStop(1, '#ca8a04');
+          ctx.fillStyle = spotGrad;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, 20, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Chrome inner spotlight ring
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, 20, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      });
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      // 4.0m width / (4 * 0.6m) = 1.67, 6.0m depth / (4 * 0.6m) = 2.50 (Exact 60x60cm Armstrong grid!)
+      texture.repeat.set(1.67, 2.50);
+      return texture;
+    }
+
+    function createPinkWoodTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#db4681';
+      ctx.fillRect(0, 0, 512, 512);
+
+      for (let i = 0; i < 400; i++) {
+        const y = Math.random() * 512;
+        ctx.strokeStyle = Math.random() < 0.5 ? 'rgba(255, 120, 175, 0.15)' : 'rgba(170, 45, 95, 0.15)';
+        ctx.lineWidth = Math.random() * 2 + 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(512, y + (Math.random() - 0.5) * 6);
+        ctx.stroke();
+      }
+
+      const panels = 4;
+      const pWidth = 512 / panels;
+      ctx.strokeStyle = 'rgba(150, 30, 80, 0.35)';
+      ctx.lineWidth = 2;
+      for (let i = 1; i < panels; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * pWidth, 0);
+        ctx.lineTo(i * pWidth, 512);
+        ctx.stroke();
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(2, 2);
+      return texture;
+    }
+
+    function createOakWoodTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      // Warm honey oak gradient base
+      const grad = ctx.createLinearGradient(0, 0, 512, 0);
+      grad.addColorStop(0, '#be8344');
+      grad.addColorStop(0.25, '#cf9554');
+      grad.addColorStop(0.5, '#b47839');
+      grad.addColorStop(0.75, '#c98e4d');
+      grad.addColorStop(1, '#b87c3d');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Fine wood fibers
+      for (let i = 0; i < 500; i++) {
+        const y = Math.random() * 512;
+        ctx.strokeStyle = Math.random() < 0.6 ? 'rgba(74, 42, 16, 0.16)' : 'rgba(238, 195, 140, 0.14)';
+        ctx.lineWidth = Math.random() * 2.0 + 0.4;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.bezierCurveTo(170, y + (Math.random() - 0.5) * 6, 340, y + (Math.random() - 0.5) * 6, 512, y + (Math.random() - 0.5) * 4);
+        ctx.stroke();
+      }
+
+      // Wood plank seams
+      const planks = 3;
+      const plWidth = 512 / planks;
+      ctx.strokeStyle = 'rgba(60, 32, 10, 0.28)';
+      ctx.lineWidth = 1.5;
+      for (let i = 1; i < planks; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * plWidth, 0);
+        ctx.lineTo(i * plWidth, 512);
+        ctx.stroke();
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(1.5, 1.5);
+      return texture;
+    }
+
+    function createSignTexture(text, isGreen = false) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 160;
+      const ctx = canvas.getContext('2d');
+
+      // Clear glassy background with soft white border
+      ctx.fillStyle = 'rgba(245, 250, 255, 0.88)';
+      ctx.fillRect(0, 0, 512, 160);
+
+      // Accent border
+      ctx.strokeStyle = isGreen ? '#059669' : '#0284c7';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(10, 10, 492, 140);
+
+      // Inner thin border
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(18, 18, 476, 124);
+
+      // Text
+      ctx.font = 'bold 44px "Tajawal", "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#0f172a';
+      ctx.fillText(text, 256, 80);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    function createDualDisplayTexture(vVal, aVal) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#05070c';
+      ctx.fillRect(0, 0, 256, 128);
+
+      // Bezel
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(4, 4, 248, 120);
+
+      // Red LED Display
+      ctx.font = 'bold 36px "Courier New", monospace';
+      ctx.fillStyle = '#ef4444';
+      ctx.textAlign = 'right';
+      ctx.fillText(vVal + ' V', 230, 48);
+
+      // Green LED Display
+      ctx.fillStyle = '#22c55e';
+      ctx.fillText(aVal + ' A', 230, 104);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    // ----------------------------------------------------
+    // 2. Scene, Camera, Renderer Setup
+    // ----------------------------------------------------
+    const container = document.getElementById('webgl-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0e17);
+
+    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 100);
+    // Initial camera: Showing the complete L-shaped workstation and shop!
+    camera.position.set(2.85, 1.85, 2.75);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.18;
+    container.appendChild(renderer.domElement);
+
+    const labelRenderer = new THREE.CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0px';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    labelRenderer.domElement.style.zIndex = '5';
+    container.appendChild(labelRenderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(1.35, 1.05, 4.65);
+    controls.maxPolarAngle = Math.PI / 2 + 0.05;
+    controls.minDistance = 0.5;
+    controls.maxDistance = 25;
+
+    // ----------------------------------------------------
+    // 3. Materials
+    // ----------------------------------------------------
+    const floorTexture = createMarbleTileTexture();
+    const ceilingTexture = createCeilingTexture();
+    const pinkWoodTexture = createPinkWoodTexture();
+
+    const floorMaterial = new THREE.MeshPhysicalMaterial({
+      map: floorTexture,
+      roughness: 0.12,
+      metalness: 0.05,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.06,
+      reflectivity: 0.98
+    });
+
+    const pinkWallMaterial = new THREE.MeshStandardMaterial({
+      map: pinkWoodTexture,
+      color: new THREE.Color('#db4681'),
+      roughness: 0.4,
+      metalness: 0.05
+    });
+
+    const beigeWallMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#7d8c99'), // Default modern tech grey
+      roughness: 0.55,
+      metalness: 0.02
+    });
+
+    const mirrorMaterial = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0xffffff),
+      roughness: 0.0,
+      metalness: 0.98,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.0,
+      reflectivity: 1.0
+    });
+
+    const exteriorWallMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#1e293b'),
+      roughness: 0.8
+    });
+
+    const ceilingMaterial = new THREE.MeshStandardMaterial({
+      map: ceilingTexture,
+      roughness: 0.65,
+      metalness: 0.1,
+      side: THREE.DoubleSide
+    });
+
+    const glassMaterial = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color('#e0f2fe'),
+      transparent: true,
+      opacity: 0.35,
+      transmission: 0.92,
+      roughness: 0.05,
+      metalness: 0.1,
+      ior: 1.52,
+      reflectivity: 0.95,
+      side: THREE.DoubleSide
+    });
+
+    const chromeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xf1f5f9,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    const darkMetalMaterial = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      roughness: 0.4,
+      metalness: 0.7
+    });
+
+    const ledWarmEmissive = new THREE.MeshBasicMaterial({
+      color: 0xfff6db
+    });
+
+    const blueShutterMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#1d4ed8'),
+      roughness: 0.4,
+      metalness: 0.2
+    });
+
+    const baseboardMaterial = new THREE.MeshStandardMaterial({
+      map: floorTexture,
+      color: 0xffffff,
+      roughness: 0.15,
+      metalness: 0.05
+    });
+
+    const oakWoodTexture = createOakWoodTexture();
+    const oakWoodMaterial = new THREE.MeshStandardMaterial({
+      map: oakWoodTexture,
+      roughness: 0.35,
+      metalness: 0.02
+    });
+
+    const matteBlackMetalMaterial = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      roughness: 0.45,
+      metalness: 0.82
+    });
+
+    const esdMatMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#0284c7'),
+      roughness: 0.85,
+      metalness: 0.02
+    });
+
+    // ----------------------------------------------------
+    // 4. Shop Architecture & Furniture Groups
+    // ----------------------------------------------------
+    const shopGroup = new THREE.Group();
+    scene.add(shopGroup);
+
+    let dimsGroup = new THREE.Group();
+    shopGroup.add(dimsGroup);
+
+    let furnitureGroup = new THREE.Group();
+    shopGroup.add(furnitureGroup);
+
+    const ledLightsList = [];
+
+    const shopHeight = 3.00;
+    const thickness = 0.15;
+    const headerHeight = 0.55;
+    const glassHeight = shopHeight - headerHeight;
+
+    let doorsOnRight = true;
+    let doorPivotRef = null;
+
+    function buildShopModel(onRight = true) {
+      while (shopGroup.children.length > 0) {
+        const obj = shopGroup.children[0];
+        shopGroup.remove(obj);
+      }
+      dimsGroup = new THREE.Group();
+      dimsGroup.name = 'dimensionAnnotations';
+      shopGroup.add(dimsGroup);
+
+      furnitureGroup = new THREE.Group();
+      furnitureGroup.name = 'shopFurniture';
+      shopGroup.add(furnitureGroup);
+      ledLightsList.length = 0;
+
+      // Coordinates:
+      // Back wall = 4.00m, Front wall = 3.00m
+      let P1, P2, P3, P4;
+
+      if (onRight) {
+        P1 = new THREE.Vector2(0.00, 0.00);
+        P2 = new THREE.Vector2(4.00, 0.00); // Back = 4.00m
+        P4 = new THREE.Vector2(0.50, 5.68); // Left = 5.70m
+        P3 = new THREE.Vector2(3.48, 5.98); // Right = 6.00m
+      } else {
+        P1 = new THREE.Vector2(0.00, 0.00);
+        P2 = new THREE.Vector2(4.00, 0.00); // Back = 4.00m
+        P4 = new THREE.Vector2(0.52, 5.98); // Left = 6.00m
+        P3 = new THREE.Vector2(3.50, 5.68); // Right = 5.70m
+      }
+
+      // Floor
+      const floorShape = new THREE.Shape();
+      floorShape.moveTo(P1.x, P1.y);
+      floorShape.lineTo(P2.x, P2.y);
+      floorShape.lineTo(P3.x, P3.y);
+      floorShape.lineTo(P4.x, P4.y);
+      floorShape.closePath();
+
+      const floorGeometry = new THREE.ShapeGeometry(floorShape);
+      const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+      floorMesh.rotation.x = Math.PI / 2;
+      floorMesh.receiveShadow = true;
+      shopGroup.add(floorMesh);
+
+      const slabGeo = new THREE.ExtrudeGeometry(floorShape, { depth: 0.12, bevelEnabled: false });
+      const slabMesh = new THREE.Mesh(slabGeo, new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+      slabMesh.rotation.x = Math.PI / 2;
+      slabMesh.position.y = -0.12;
+      shopGroup.add(slabMesh);
+
+      // Ceiling
+      const ceilingGeo = new THREE.ShapeGeometry(floorShape);
+      window.ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMaterial);
+      window.ceilingMesh.rotation.x = Math.PI / 2;
+      window.ceilingMesh.position.y = shopHeight;
+      window.ceilingMesh.receiveShadow = true;
+      shopGroup.add(window.ceilingMesh);
+
+      // Solid Walls (Back 4m, Front 3m)
+      function addSolidWall(vStart, vEnd, name) {
+        const dx = vEnd.x - vStart.x;
+        const dz = vEnd.y - vStart.y;
+        const len = Math.hypot(dx, dz);
+        const ang = Math.atan2(dz, dx);
+
+        const wg = new THREE.Group();
+        const geo = new THREE.BoxGeometry(len, shopHeight, thickness);
+        // All faces of the solid wall (inside, top cap, and outside) use the dynamic wall material
+        const m = new THREE.Mesh(geo, beigeWallMaterial);
+        m.castShadow = true;
+        m.receiveShadow = true;
+        m.position.set(len / 2, shopHeight / 2, 0);
+        wg.add(m);
+
+        const bg = new THREE.BoxGeometry(len, 0.10, 0.02);
+        const bm = new THREE.Mesh(bg, baseboardMaterial);
+        bm.position.set(len / 2, 0.05, thickness / 2 + 0.01);
+        wg.add(bm);
+
+        wg.position.set(vStart.x, 0, vStart.y);
+        wg.rotation.y = -ang;
+        shopGroup.add(wg);
+        return wg;
+      }
+
+      addSolidWall(P1, P2, 'wall4m_back_beige');
+      addSolidWall(P3, P4, 'wall3m_front_beige');
+
+      // The 5.70m Solid Wall
+      const vSolidStart = onRight ? P4 : P2;
+      const vSolidEnd = onRight ? P1 : P3;
+      addSolidWall(vSolidStart, vSolidEnd, 'wall57m_beige');
+
+      // 3 Structural Columns on the 5.70m wall as specified by user:
+      // 1. Column at the beginning (corner with 4m wall)
+      // 2. Column in the middle (exactly 2.80m from Column 1)
+      // 3. Column at the end (remaining 2.90m from Column 2, corner with 3m wall)
+      const cols57Group = new THREE.Group();
+      cols57Group.name = 'columns_570m_wall';
+
+      const vSolidStartCol = onRight ? P1 : P3;
+      const vSolidEndCol = onRight ? P4 : P2;
+      const dxSolidCol = vSolidEndCol.x - vSolidStartCol.x;
+      const dzSolidCol = vSolidEndCol.y - vSolidStartCol.y;
+      const solidLengthCol = Math.hypot(dxSolidCol, dzSolidCol);
+      const angSolidCol = Math.atan2(dzSolidCol, dxSolidCol);
+
+      const colWidth57 = 0.35; // width along wall
+      const colDepth57 = 0.22; // protrusion into room
+
+      // Distance along wall: Col 1 at start (0.18m), Col 2 at 2.80m, Col 3 at end (5.52m)
+      const colDistances57 = [0.18, 2.80, 5.52];
+
+      colDistances57.forEach((dist) => {
+        const t = dist / solidLengthCol;
+        const wx = vSolidStartCol.x + dxSolidCol * t;
+        const wz = vSolidStartCol.y + dzSolidCol * t;
+
+        const nx = onRight ? Math.sin(angSolidCol) : -Math.sin(angSolidCol);
+        const nz = onRight ? -Math.cos(angSolidCol) : Math.cos(angSolidCol);
+
+        const colMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(colWidth57, shopHeight, colDepth57),
+          beigeWallMaterial
+        );
+        colMesh.castShadow = true;
+        colMesh.receiveShadow = true;
+        colMesh.position.set(wx + (colDepth57 / 2) * nx, shopHeight / 2, wz + (colDepth57 / 2) * nz);
+        colMesh.rotation.y = onRight ? -angSolidCol : angSolidCol;
+        cols57Group.add(colMesh);
+
+        const colBaseMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(colWidth57 + 0.02, 0.10, colDepth57 + 0.02),
+          baseboardMaterial
+        );
+        colBaseMesh.position.set(colMesh.position.x, 0.05, colMesh.position.z);
+        colBaseMesh.rotation.y = colMesh.rotation.y;
+        cols57Group.add(colBaseMesh);
+      });
+
+      shopGroup.add(cols57Group);
+
+      // The 6.00m Wall
+      const vDoorStart = onRight ? P2 : P1;
+      const vDoorEnd = onRight ? P3 : P4;
+
+      const wall6Group = new THREE.Group();
+      const dx6 = vDoorEnd.x - vDoorStart.x;
+      const dz6 = vDoorEnd.y - vDoorStart.y;
+      const length6 = Math.hypot(dx6, dz6);
+      const angle6 = Math.atan2(dz6, dx6);
+
+      wall6Group.position.set(vDoorStart.x, 0, vDoorStart.y);
+      wall6Group.rotation.y = -angle6;
+
+      function addWallBlock(xStart, len, name) {
+        const geo = new THREE.BoxGeometry(len, shopHeight, thickness);
+        const mats = [
+          exteriorWallMaterial, exteriorWallMaterial, exteriorWallMaterial, exteriorWallMaterial,
+          pinkWallMaterial, exteriorWallMaterial
+        ];
+        const m = new THREE.Mesh(geo, mats);
+        m.castShadow = true;
+        m.receiveShadow = true;
+        m.position.set(xStart + len / 2, shopHeight / 2, 0);
+        wall6Group.add(m);
+
+        const bg = new THREE.BoxGeometry(len, 0.10, 0.02);
+        const bm = new THREE.Mesh(bg, baseboardMaterial);
+        bm.position.set(xStart + len / 2, 0.05, thickness / 2 + 0.01);
+        wall6Group.add(bm);
+      }
+
+      function addHeaderAndShutter(xStart, len, hasAC = false) {
+        const hGeo = new THREE.BoxGeometry(len, headerHeight, thickness);
+        const hMesh = new THREE.Mesh(hGeo, pinkWallMaterial);
+        hMesh.position.set(xStart + len / 2, shopHeight - headerHeight / 2, 0);
+        wall6Group.add(hMesh);
+
+        const sBoxGeo = new THREE.BoxGeometry(len - 0.04, 0.30, 0.22);
+        const sBoxMesh = new THREE.Mesh(sBoxGeo, blueShutterMaterial);
+        sBoxMesh.position.set(xStart + len / 2, shopHeight - 0.22, 0);
+        wall6Group.add(sBoxMesh);
+
+        if (hasAC) {
+          const acGroup = new THREE.Group();
+          const acBodyGeo = new THREE.BoxGeometry(0.85, 0.28, 0.22);
+          const acMesh = new THREE.Mesh(acBodyGeo, new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.3 }));
+          acGroup.add(acMesh);
+
+          const acGrillMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.78, 0.06, 0.04),
+            new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 })
+          );
+          acGrillMesh.position.set(0, -0.09, 0.10);
+          acGroup.add(acGrillMesh);
+
+          acGroup.position.set(xStart + len / 2, shopHeight - 0.60, 0.12);
+          wall6Group.add(acGroup);
+        }
+      }
+
+      // 1. Segment 1: 0.00 to 0.50m (Pink Wall)
+      addWallBlock(0.00, 0.50, 'pink_start_0.5m');
+
+      // 2. Segment 2: 0.50 to 2.00m (Door 1: OPEN ENTRANCE DOOR - NO AC)
+      addHeaderAndShutter(0.50, 1.50, false);
+
+      const d1Group = new THREE.Group();
+      d1Group.position.set(0.50, 0, 0);
+
+      // Fixed Glass on the right half (towards maintenance desk, from x=0.75 to 1.48)
+      const d1FixedMesh = new THREE.Mesh(new THREE.BoxGeometry(0.72, glassHeight - 0.02, 0.015), glassMaterial);
+      d1FixedMesh.position.set(0.75 + 0.72 / 2 + 0.01, (glassHeight - 0.02) / 2, 0);
+      d1Group.add(d1FixedMesh);
+
+      const d1Frame = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.06, 0.06), chromeMaterial);
+      d1Frame.position.set(1.50 / 2, 0.03, 0);
+      d1Group.add(d1Frame);
+
+      const d1Mullion = new THREE.Mesh(new THREE.BoxGeometry(0.03, glassHeight, 0.04), chromeMaterial);
+      d1Mullion.position.set(0.75, glassHeight / 2, 0);
+      d1Group.add(d1Mullion);
+
+      const handleGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.70, 16);
+
+      // Swinging Leaf on the left half (hinged at jamb near 4m wall, opening inwards towards 4m wall)
+      const d1Pivot = new THREE.Group();
+      d1Pivot.position.set(0.02, 0, 0);
+
+      const d1OpenMesh = new THREE.Mesh(new THREE.BoxGeometry(0.71, glassHeight - 0.02, 0.015), glassMaterial);
+      d1OpenMesh.position.set(0.71 / 2, (glassHeight - 0.02) / 2, 0);
+      d1Pivot.add(d1OpenMesh);
+
+      const h1Outer = new THREE.Mesh(handleGeo, chromeMaterial);
+      h1Outer.position.set(0.62, 1.10, 0.04);
+      d1Pivot.add(h1Outer);
+      const h1Inner = h1Outer.clone();
+      h1Inner.position.z = -0.04;
+      d1Pivot.add(h1Inner);
+
+      const swingSign = onRight ? 1 : -1;
+      // Opens inwards towards the 4m wall (away from maintenance desk)
+      d1Pivot.rotation.y = -swingSign * (Math.PI / 1.95);
+      doorPivotRef = d1Pivot;
+      d1Group.add(d1Pivot);
+
+      wall6Group.add(d1Group);
+
+      // 3. Segment 3: 2.00 to 3.50m (Pink Wall with Column & Mirror)
+      addWallBlock(2.00, 1.50, 'pink_mid_1.5m');
+
+      const midColGroup = new THREE.Group();
+      const midColWidth = 0.50;
+      const midColDepth = 0.28;
+      const midColGeo = new THREE.BoxGeometry(midColWidth, shopHeight, midColDepth);
+      const midColMesh = new THREE.Mesh(midColGeo, pinkWallMaterial);
+      midColMesh.castShadow = true;
+      midColMesh.receiveShadow = true;
+      midColGroup.add(midColMesh);
+
+      const mirrorWidth = 0.42;
+      const mirrorHeight = 2.30;
+      const mirrorMesh = new THREE.Mesh(new THREE.BoxGeometry(mirrorWidth, mirrorHeight, 0.02), mirrorMaterial);
+      mirrorMesh.position.set(0, 0, midColDepth / 2 + 0.01);
+      midColGroup.add(mirrorMesh);
+
+      const mirrorFrameMesh = new THREE.Mesh(new THREE.BoxGeometry(mirrorWidth + 0.04, mirrorHeight + 0.04, 0.015), chromeMaterial);
+      mirrorFrameMesh.position.set(0, 0, midColDepth / 2 + 0.005);
+      midColGroup.add(mirrorFrameMesh);
+
+      const fanBaseGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.04, 16);
+      fanBaseGeo.rotateX(Math.PI / 2);
+      const fanBaseMesh = new THREE.Mesh(fanBaseGeo, chromeMaterial);
+      fanBaseMesh.position.set(0, 1.35, midColDepth / 2 + 0.03);
+      midColGroup.add(fanBaseMesh);
+
+      const fanCageGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.06, 16);
+      fanCageGeo.rotateX(Math.PI / 2);
+      const fanCageMesh = new THREE.Mesh(fanCageGeo, new THREE.MeshStandardMaterial({ color: 0x94a3b8, wireframe: true }));
+      fanCageMesh.position.set(0, 1.42, midColDepth / 2 + 0.08);
+      midColGroup.add(fanCageMesh);
+
+      const midColBase = new THREE.Mesh(new THREE.BoxGeometry(midColWidth + 0.02, 0.10, midColDepth + 0.02), baseboardMaterial);
+      midColBase.position.set(0, -shopHeight / 2 + 0.05, 0);
+      midColGroup.add(midColBase);
+
+      midColGroup.position.set(2.75, shopHeight / 2, midColDepth / 2);
+      wall6Group.add(midColGroup);
+
+      // 4. Segment 4: 3.50 to 5.00m (Door 2: FIXED / CLOSED DOOR WITH NATIONAL AC ABOVE)
+      addHeaderAndShutter(3.50, 1.50, true);
+
+      const d2Group = new THREE.Group();
+      d2Group.position.set(3.50, 0, 0);
+
+      const d2Mesh = new THREE.Mesh(new THREE.BoxGeometry(1.48, glassHeight - 0.02, 0.015), glassMaterial);
+      d2Mesh.position.set(1.50 / 2, (glassHeight - 0.02) / 2, 0);
+      d2Group.add(d2Mesh);
+
+      const d2Frame = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.06, 0.06), chromeMaterial);
+      d2Frame.position.set(1.50 / 2, 0.03, 0);
+      d2Group.add(d2Frame);
+
+      const d2Mullion = new THREE.Mesh(new THREE.BoxGeometry(0.03, glassHeight, 0.04), chromeMaterial);
+      d2Mullion.position.set(0.75, glassHeight / 2, 0);
+      d2Group.add(d2Mullion);
+
+      const h2Outer = new THREE.Mesh(handleGeo, chromeMaterial);
+      h2Outer.position.set(0.68, 1.10, 0.04);
+      d2Group.add(h2Outer);
+      const h2Inner = h2Outer.clone();
+      h2Inner.position.z = -0.04;
+      d2Group.add(h2Inner);
+
+      wall6Group.add(d2Group);
+
+      // 5. Segment 5: 5.00 to 6.00m (Pink Wall)
+      addWallBlock(5.00, 1.00, 'pink_end_1.0m');
+
+      shopGroup.add(wall6Group);
+
+      // ----------------------------------------------------
+      // 5. FURNITURE & COMMERCIAL MERCHANDISING (PROPOSAL 1)
+      // ----------------------------------------------------
+      buildProposal1Furniture(onRight, P1, P2, P3, P4, vSolidStart, vSolidEnd);
+
+      // ----------------------------------------------------
+      // 6. Floating Dimensions & Markers
+      // ----------------------------------------------------
+      function createDimLine(pStart, pEnd, labelText, offsetVec, color = 0xf43f5e) {
+        const lg = new THREE.Group();
+        const v1 = new THREE.Vector3(pStart.x + offsetVec.x, offsetVec.y, pStart.y + offsetVec.z);
+        const v2 = new THREE.Vector3(pEnd.x + offsetVec.x, offsetVec.y, pEnd.y + offsetVec.z);
+
+        const line = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([v1, v2]),
+          new THREE.LineBasicMaterial({ color: color, linewidth: 2 })
+        );
+        lg.add(line);
+
+        const tg = new THREE.CylinderGeometry(0.04, 0.04, 0.20, 8);
+        const tm = new THREE.MeshBasicMaterial({ color: color });
+        const t1 = new THREE.Mesh(tg, tm); t1.position.copy(v1); lg.add(t1);
+        const t2 = new THREE.Mesh(tg, tm); t2.position.copy(v2); lg.add(t2);
+
+        const mid = new THREE.Vector3().addVectors(v1, v2).multiplyScalar(0.5);
+        const div = document.createElement('div');
+        div.className = 'label-3d label-dimension';
+        div.innerHTML = `<i class="fa-solid fa-arrows-left-right"></i> ${labelText}`;
+        const l3d = new THREE.CSS2DObject(div);
+        l3d.position.copy(mid);
+        l3d.position.y += 0.22;
+        lg.add(l3d);
+
+        dimsGroup.add(lg);
+      }
+
+      function createMarker(pos, text, cssClass = 'label-step', icon = 'fa-tag') {
+        const div = document.createElement('div');
+        div.className = `label-3d ${cssClass}`;
+        div.innerHTML = `<i class="fa-solid ${icon}"></i> ${text}`;
+        const obj = new THREE.CSS2DObject(div);
+        obj.position.copy(pos);
+        dimsGroup.add(obj);
+      }
+
+      createDimLine(P4, P3, 'الحائط الموازي (الصيانة): 3.00 متر بالضبط', new THREE.Vector3(0, 0.25, 0.45), 0xe11d48);
+      createDimLine(P1, P2, 'حائط ظهر الباب: 4.00 متر بالضبط', new THREE.Vector3(0, 0.25, -0.45), 0xf43f5e);
+
+      if (onRight) {
+        createDimLine(P2, P3, 'حائط البابين والمرايا: 6.00 متر بالضبط (بينك)', new THREE.Vector3(0.55, 0.25, 0), 0xdb4681);
+        createDimLine(P1, P4, 'حائط الإكسسوارات: 5.70 متر بالضبط (3 أعمدة: 2.80م بين 1 و2 + 2.90م للباقي)', new THREE.Vector3(-0.45, 0.25, 0), 0x3b82f6);
+      } else {
+        createDimLine(P1, P4, 'حائط البابين والمرايا: 6.00 متر بالضبط (بينك)', new THREE.Vector3(-0.55, 0.25, 0), 0xdb4681);
+        createDimLine(P2, P3, 'حائط الإكسسوارات: 5.70 متر بالضبط (3 أعمدة: 2.80م بين 1 و2 + 2.90م للباقي)', new THREE.Vector3(0.45, 0.25, 0), 0x3b82f6);
+      }
+
+      // Feature Markers
+      createMarker(new THREE.Vector3(1.5, 1.8, 4.6), 'محطة الصيانة المتكاملة حرف L (مع الفواصل والميكروسكوب والكرسي)', 'label-repair', 'fa-chair');
+      createMarker(new THREE.Vector3(2.5, 1.6, 3.23), 'كاونترين بينك (ملاصق للحيطة بعد المرايا)', 'label-counter', 'fa-cash-register');
+      createMarker(new THREE.Vector3(1.8, 1.5, 1.2), 'فاترينات الموبايلات الزجاج (حرف L عند المدخل)', 'label-vitrine', 'fa-mobile-screen');
+
+      const ledMarkerX = onRight ? 0.6 : 3.4;
+      createMarker(new THREE.Vector3(ledMarkerX, 2.5, 1.45), 'جدار الإكسسوارات سلات وول بضلف سفلية (ضلعان 2.40م × 2.40م)', 'label-led-wall', 'fa-wand-magic-sparkles');
+    }
+
+    // ----------------------------------------------------
+    // 5. PROPOSAL 1 DETAILED 3D FURNITURE BUILDER
+    // ----------------------------------------------------
+    function buildProposal1Furniture(onRight, P1, P2, P3, P4, vSolidStart, vSolidEnd) {
+      // ----------------------------------------------------
+      // A. REUSABLE COMMERCIAL-GRADE WORKSTATION FIXTURES & EQUIPMENT
+      // (عناصر ورشة الصيانة الاحترافية المشتركة بين الخيارات الثلاثة)
+      // ----------------------------------------------------
+      const deskH = 0.76;
+      const topThick = 0.04;
+      const topY = deskH - topThick / 2;
+      const frameMat = matteBlackMetalMaterial;
+      const legSize = 0.038;
+
+      function createLegLoop(depth, height) {
+        const loopG = new THREE.Group();
+        const vLegGeo = new THREE.BoxGeometry(legSize, height, legSize);
+        const fLeg = new THREE.Mesh(vLegGeo, frameMat);
+        fLeg.position.set(0, height / 2, depth / 2 - legSize / 2);
+        loopG.add(fLeg);
+        const bLeg = new THREE.Mesh(vLegGeo, frameMat);
+        bLeg.position.set(0, height / 2, -depth / 2 + legSize / 2);
+        loopG.add(bLeg);
+        const runnerGeo = new THREE.BoxGeometry(legSize, legSize, depth);
+        const runner = new THREE.Mesh(runnerGeo, frameMat);
+        runner.position.set(0, legSize / 2, 0);
+        loopG.add(runner);
+        const topBar = new THREE.Mesh(runnerGeo, frameMat);
+        topBar.position.set(0, height - legSize / 2, 0);
+        loopG.add(topBar);
+        return loopG;
+      }
+
+      function createSMDOrganizer(w, h, d, cols, rows) {
+        const smdG = new THREE.Group();
+        const cabinet = new THREE.Mesh(new THREE.BoxGeometry(d, h, w), darkMetalMaterial);
+        cabinet.position.set(0, h / 2, 0);
+        smdG.add(cabinet);
+        const dw = (w - 0.02) / cols;
+        const dh = (h - 0.02) / rows;
+        const dGeo = new THREE.BoxGeometry(0.01, dh - 0.004, dw - 0.004);
+        const dMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.2, metalness: 0.1 });
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const drawer = new THREE.Mesh(dGeo, dMat);
+            drawer.position.set(d / 2 + 0.002, 0.01 + dh / 2 + r * dh, -w / 2 + 0.01 + dw / 2 + c * dw);
+            smdG.add(drawer);
+          }
+        }
+        return smdG;
+      }
+
+      function createMicroscope() {
+        const scopeGroup = new THREE.Group();
+        const scopeBase = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 0.22), chromeMaterial);
+        scopeBase.position.set(0, 0.01, 0);
+        scopeGroup.add(scopeBase);
+        const scopePole = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.38, 16), chromeMaterial);
+        scopePole.position.set(-0.06, 0.19, 0);
+        scopeGroup.add(scopePole);
+        const scopeArm = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.04), darkMetalMaterial);
+        scopeArm.position.set(0, 0.32, 0);
+        scopeGroup.add(scopeArm);
+        const scopeBody = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.13, 0.11), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 }));
+        scopeBody.position.set(0.06, 0.28, 0);
+        scopeGroup.add(scopeBody);
+        [-0.03, 0.03].forEach(zEye => {
+          const eyeTube = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.08, 12), darkMetalMaterial);
+          eyeTube.rotation.z = -Math.PI / 4;
+          eyeTube.position.set(0.09, 0.36, zEye);
+          scopeGroup.add(eyeTube);
+          const rubberCup = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.015, 0.02, 12), new THREE.MeshStandardMaterial({ color: 0x111827 }));
+          rubberCup.rotation.z = -Math.PI / 4;
+          rubberCup.position.set(0.12, 0.39, zEye);
+          scopeGroup.add(rubberCup);
+        });
+        const ringLight = new THREE.Mesh(new THREE.TorusGeometry(0.032, 0.008, 8, 20), ledWarmEmissive);
+        ringLight.rotation.x = Math.PI / 2;
+        ringLight.position.set(0.06, 0.20, 0);
+        scopeGroup.add(ringLight);
+        return scopeGroup;
+      }
+
+      function createPhoneModel(colorHex, screenOn = false) {
+        const phG = new THREE.Group();
+        const phBody = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.008, 0.15), new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.8, roughness: 0.2 }));
+        phG.add(phBody);
+        const scrMat = new THREE.MeshStandardMaterial({
+          color: 0x050505,
+          emissive: screenOn ? 0x0284c7 : 0x000000,
+          emissiveIntensity: screenOn ? 0.6 : 0.0,
+          roughness: 0.1
+        });
+        const phScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.07, 0.142), scrMat);
+        phScreen.rotation.x = -Math.PI / 2;
+        phScreen.position.set(0, 0.0045, 0);
+        phG.add(phScreen);
+        return phG;
+      }
+
+      function createEsdMat() {
+        const matG = new THREE.Group();
+        const matGeo = new THREE.BoxGeometry(0.38, 0.008, 0.54);
+        const matMesh = new THREE.Mesh(matGeo, esdMatMaterial);
+        matMesh.position.set(0, 0.004, 0);
+        matMesh.receiveShadow = true;
+        matG.add(matMesh);
+
+        const wellGeo = new THREE.BoxGeometry(0.06, 0.003, 0.50);
+        const wellMesh = new THREE.Mesh(wellGeo, new THREE.MeshStandardMaterial({ color: 0x0369a1, roughness: 0.9 }));
+        wellMesh.position.set(-0.16, 0.009, 0);
+        matG.add(wellMesh);
+
+        const phUnderRepair = createPhoneModel(0x0f172a, false);
+        phUnderRepair.position.set(0.02, 0.008, 0);
+        phUnderRepair.rotation.y = 0.08;
+        matG.add(phUnderRepair);
+
+        const tweezer = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.004, 0.12), chromeMaterial);
+        tweezer.position.set(0.14, 0.008, 0.10);
+        tweezer.rotation.y = -0.2;
+        matG.add(tweezer);
+        return matG;
+      }
+
+      function createSolderingStation() {
+        const solderGroup = new THREE.Group();
+        const stBody = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.11, 0.16), new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.4 }));
+        stBody.position.set(0, 0.055, 0);
+        solderGroup.add(stBody);
+        const stFront = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.09), new THREE.MeshBasicMaterial({ map: createDualDisplayTexture('380', 'SET') }));
+        stFront.rotation.y = Math.PI / 2;
+        stFront.position.set(0.071, 0.055, 0);
+        solderGroup.add(stFront);
+        const standCoil = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.025, 0.09, 10), chromeMaterial);
+        standCoil.rotation.z = Math.PI / 3;
+        standCoil.position.set(0.02, 0.07, 0.14);
+        solderGroup.add(standCoil);
+        const ironPencil = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.009, 0.16, 8), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
+        ironPencil.rotation.z = Math.PI / 3;
+        ironPencil.position.set(0.05, 0.11, 0.14);
+        solderGroup.add(ironPencil);
+        return solderGroup;
+      }
+
+      function createPowerSupply() {
+        const psGroup = new THREE.Group();
+        const psBody = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.15), new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.4 }));
+        psBody.position.set(0, 0.07, 0);
+        psGroup.add(psBody);
+        const psDisplay = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.11), new THREE.MeshBasicMaterial({ map: createDualDisplayTexture('4.20', '1.85') }));
+        psDisplay.rotation.y = Math.PI / 2;
+        psDisplay.position.set(0.081, 0.07, 0);
+        psGroup.add(psDisplay);
+        return psGroup;
+      }
+
+      function createScrewdriverRack() {
+        const rackGroup = new THREE.Group();
+        const rackBlock = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.04, 0.22), oakWoodMaterial);
+        rackBlock.position.set(0, 0.02, 0);
+        rackGroup.add(rackBlock);
+        const driverColors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0x8b5cf6, 0x06b6d4];
+        driverColors.forEach((col, idx) => {
+          const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.09, 8), new THREE.MeshStandardMaterial({ color: col, metalness: 0.6 }));
+          handle.position.set(0, 0.06, -0.08 + idx * 0.032);
+          rackGroup.add(handle);
+        });
+        return rackGroup;
+      }
+
+      function createErgonomicChair() {
+        const chairGroup = new THREE.Group();
+        const seatMesh = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.08, 0.46), new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.7 }));
+        seatMesh.position.set(0, 0.46, 0);
+        chairGroup.add(seatMesh);
+        const backGeo = new THREE.BoxGeometry(0.44, 0.52, 0.04);
+        const backMesh = new THREE.Mesh(backGeo, new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.5 }));
+        backMesh.position.set(0, 0.74, -0.22);
+        chairGroup.add(backMesh);
+        [-0.24, 0.24].forEach(xArm => {
+          const armGeo = new THREE.BoxGeometry(0.04, 0.22, 0.26);
+          const armM = new THREE.Mesh(armGeo, darkMetalMaterial);
+          armM.position.set(xArm, 0.56, -0.04);
+          chairGroup.add(armM);
+        });
+        const stemMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.28, 12), chromeMaterial);
+        stemMesh.position.set(0, 0.28, 0);
+        chairGroup.add(stemMesh);
+        const baseCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.04, 10), darkMetalMaterial);
+        baseCenter.position.set(0, 0.12, 0);
+        chairGroup.add(baseCenter);
+        for (let star = 0; star < 5; star++) {
+          const angle = (star / 5) * Math.PI * 2;
+          const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.28), darkMetalMaterial);
+          spoke.position.set(Math.sin(angle) * 0.14, 0.10, Math.cos(angle) * 0.14);
+          spoke.rotation.y = angle;
+          chairGroup.add(spoke);
+          const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.02, 8), darkMetalMaterial);
+          wheel.rotation.z = Math.PI / 2;
+          wheel.position.set(Math.sin(angle) * 0.26, 0.04, Math.cos(angle) * 0.26);
+          chairGroup.add(wheel);
+        }
+        return chairGroup;
+      }
+
+
+      // --- MOBILE REPAIR MULTI-TIER PLASTIC STORAGE DRAWER TOWER ---
+      // (وحدة أدراج بلاستيكية متعددة الطوابق مسنودة على الحائط تحت المكتب لحفظ الشاشات والبطاريات وقطع الغيار)
+      function createPlasticDrawerTower(width = 0.50, depth = 0.60, height = 0.65, numDrawers = 4) {
+        const towerGroup = new THREE.Group();
+        towerGroup.name = 'plasticStorageDrawerTower';
+
+        const frameColor = 0x334155; // dark slate molded plastic frame
+        const drawerColor = 0xf1f5f9; // frosted semi-translucent polypropylene
+        const frameMat = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.45 });
+        const drawerMat = new THREE.MeshStandardMaterial({
+          color: drawerColor,
+          roughness: 0.25,
+          transparent: true,
+          opacity: 0.85,
+          metalness: 0.05
+        });
+
+        // 1. Base with 4 small caster wheels
+        [-width / 2 + 0.03, width / 2 - 0.03].forEach(wx => {
+          [-depth / 2 + 0.04, depth / 2 - 0.04].forEach(dz => {
+            const caster = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.015, 8), darkMetalMaterial);
+            caster.rotation.z = Math.PI / 2;
+            caster.position.set(wx, 0.018, dz);
+            towerGroup.add(caster);
+          });
+        });
+
+        // 2. Plastic Frame uprights & top tray
+        const bottomBase = new THREE.Mesh(new THREE.BoxGeometry(width, 0.02, depth), frameMat);
+        bottomBase.position.set(0, 0.035, 0);
+        towerGroup.add(bottomBase);
+
+        const topTray = new THREE.Mesh(new THREE.BoxGeometry(width, 0.025, depth), frameMat);
+        topTray.position.set(0, height - 0.012, 0);
+        towerGroup.add(topTray);
+
+        // Top tray shallow rim
+        const rimGeo = new THREE.BoxGeometry(width + 0.01, 0.015, 0.01);
+        const rimF = new THREE.Mesh(rimGeo, frameMat);
+        rimF.position.set(0, height + 0.005, depth / 2);
+        towerGroup.add(rimF);
+        const rimB = rimF.clone();
+        rimB.position.z = -depth / 2;
+        towerGroup.add(rimB);
+
+        // Corner posts / frame columns
+        [-width / 2 + 0.01, width / 2 - 0.01].forEach(px => {
+          [-depth / 2 + 0.01, depth / 2 - 0.01].forEach(pz => {
+            const post = new THREE.Mesh(new THREE.BoxGeometry(0.02, height - 0.06, 0.02), frameMat);
+            post.position.set(px, (height + 0.04) / 2, pz);
+            towerGroup.add(post);
+          });
+        });
+
+        // 3. Sliding Frosted Drawers
+        const drawerH = (height - 0.08) / numDrawers; // ~0.14m each
+        const dW = width - 0.03;
+        const dD = depth - 0.02;
+
+        for (let d = 0; d < numDrawers; d++) {
+          const dY = 0.05 + (d + 0.5) * drawerH;
+          const drawerG = new THREE.Group();
+
+          // Drawer front face (frosted translucent)
+          const dFront = new THREE.Mesh(new THREE.BoxGeometry(dW, drawerH - 0.01, 0.012), drawerMat);
+          dFront.position.set(0, 0, dD / 2 - 0.006);
+          drawerG.add(dFront);
+
+          // Drawer sides & bottom
+          const dBottom = new THREE.Mesh(new THREE.BoxGeometry(dW - 0.01, 0.008, dD - 0.02), drawerMat);
+          dBottom.position.set(0, -drawerH / 2 + 0.01, 0);
+          drawerG.add(dBottom);
+
+          // Molded wide recessed curved pull handle on front (matches full desk width)
+          const handleW = width >= 0.45 ? 0.24 : 0.10;
+          const handle = new THREE.Mesh(
+            new THREE.BoxGeometry(handleW, 0.024, 0.015),
+            new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 })
+          );
+          handle.position.set(0, 0.015, dD / 2 + 0.002);
+          drawerG.add(handle);
+
+          // Classification label sticker
+          const label = new THREE.Mesh(
+            new THREE.PlaneGeometry(0.06, 0.018),
+            new THREE.MeshBasicMaterial({ color: 0xffffff })
+          );
+          label.position.set(0, -0.025, dD / 2 + 0.001);
+          drawerG.add(label);
+
+          // Silhouettes of parts inside translucent drawer
+          if (d === 0) {
+            // Replacement mobile screens
+            for (let s = -1; s <= 1; s++) {
+              const scr = new THREE.Mesh(
+                new THREE.BoxGeometry(0.07, 0.005, 0.14),
+                new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.1 })
+              );
+              scr.position.set(s * 0.08, -drawerH / 4, 0);
+              drawerG.add(scr);
+            }
+          } else if (d === 1) {
+            // Mobile batteries
+            for (let b = -1; b <= 1; b++) {
+              const batt = new THREE.Mesh(
+                new THREE.BoxGeometry(0.05, 0.01, 0.09),
+                new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 })
+              );
+              batt.position.set(b * 0.07, -drawerH / 4, 0.02);
+              drawerG.add(batt);
+            }
+          } else {
+            // Flex cables / IC chips bins
+            const bin = new THREE.Mesh(
+              new THREE.BoxGeometry(0.18, 0.03, 0.20),
+              new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 })
+            );
+            bin.position.set(0, -drawerH / 4, 0);
+            drawerG.add(bin);
+          }
+
+          drawerG.position.set(0, dY, 0);
+          towerGroup.add(drawerG);
+        }
+
+        return towerGroup;
+      }
+
+      // Geometry references along Wall 4 (5.70m) and Wall 3 (3.00m)
+      const angDeskSolid = Math.atan2(P4.x - P1.x, P4.y - P1.y);
+      const uDir = new THREE.Vector2(Math.sin(angDeskSolid), Math.cos(angDeskSolid));
+      const uNorm = new THREE.Vector2(Math.cos(angDeskSolid), -Math.sin(angDeskSolid));
+
+      const vWall3 = new THREE.Vector2().subVectors(P3, P4);
+      const uDir3 = new THREE.Vector2().copy(vWall3).normalize();
+      const uNorm3 = new THREE.Vector2(uDir3.y, -uDir3.x);
+      const angWall3 = Math.atan2(uDir3.x, uDir3.y);
+
+      // ====================================================
+      // OPTION 1: COMPACT L-DESK (Arm 1 = 1.60m, Arm 2 = 0.95m)
+      // ====================================================
+      const deskOption1 = new THREE.Group();
+      deskOption1.name = 'deskOption1';
+
+      {
+        const arm1Len = 1.60;
+        const arm1Depth = 0.65;
+        const arm1Group = new THREE.Group();
+
+        const arm1Top = new THREE.Mesh(new THREE.BoxGeometry(arm1Depth, topThick, arm1Len), oakWoodMaterial);
+        arm1Top.position.set(0, topY, arm1Len / 2);
+        arm1Top.castShadow = true;
+        arm1Top.receiveShadow = true;
+        arm1Group.add(arm1Top);
+
+        const leg1 = createLegLoop(arm1Depth, deskH - topThick);
+        leg1.position.set(0, 0, arm1Len - legSize / 2);
+        arm1Group.add(leg1);
+
+        const apron1 = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, arm1Len - 0.08), oakWoodMaterial);
+        apron1.position.set(-arm1Depth / 2 + 0.02, deskH - 0.15, arm1Len / 2);
+        arm1Group.add(apron1);
+
+        // Upper Shelf Hutch along Arm 1
+        const hutchH = 0.52;
+        const hutchDepth = 0.28;
+        const hutchGroup = new THREE.Group();
+        hutchGroup.position.set(-arm1Depth / 2 + hutchDepth / 2, deskH, arm1Len / 2);
+
+        const backboard = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH, arm1Len), oakWoodMaterial);
+        backboard.position.set(-hutchDepth / 2 + 0.009, hutchH / 2, 0);
+        hutchGroup.add(backboard);
+
+        const hutchTop = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth, 0.03, arm1Len), oakWoodMaterial);
+        hutchTop.position.set(0, hutchH - 0.015, 0);
+        hutchGroup.add(hutchTop);
+
+        [-arm1Len / 2 + legSize / 2, arm1Len / 2 - legSize / 2].forEach(zP => {
+          const hp = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          hp.position.set(hutchDepth / 2 - legSize / 2, hutchH / 2, zP);
+          hutchGroup.add(hp);
+        });
+
+        const cubbyH = 0.18;
+        const cubbyDivGeo = new THREE.BoxGeometry(hutchDepth - 0.02, cubbyH, 0.018);
+        [-0.32, 0.10, 0.50].forEach(zPos => {
+          const div = new THREE.Mesh(cubbyDivGeo, oakWoodMaterial);
+          div.position.set(0, hutchH - cubbyH / 2 - 0.03, zPos);
+          hutchGroup.add(div);
+        });
+
+        const smdBox1 = createSMDOrganizer(0.38, 0.16, 0.22, 4, 3);
+        smdBox1.position.set(0, hutchH - 0.21, 0.30);
+        hutchGroup.add(smdBox1);
+
+        const ledStripMesh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, arm1Len - 0.15), ledWarmEmissive);
+        ledStripMesh.position.set(0, hutchH - cubbyH - 0.04, 0);
+        hutchGroup.add(ledStripMesh);
+
+        const deskLight = new THREE.PointLight(0xfff1cc, 2.0, 3.5, 1.5);
+        deskLight.position.set(0, hutchH - cubbyH - 0.06, 0);
+        deskLight.castShadow = true;
+        hutchGroup.add(deskLight);
+        ledLightsList.push(deskLight);
+
+        arm1Group.add(hutchGroup);
+
+        // Benchtop Equipment on Arm 1
+        const scope = createMicroscope();
+        scope.position.set(0.08, deskH, 0.25);
+        arm1Group.add(scope);
+
+        const esdMat = createEsdMat();
+        esdMat.position.set(0.08, deskH, 0.75);
+        arm1Group.add(esdMat);
+
+        const rack = createScrewdriverRack();
+        rack.position.set(-0.12, deskH, 0.75);
+        arm1Group.add(rack);
+
+        const solder = createSolderingStation();
+        solder.position.set(0.06, deskH, 1.15);
+        arm1Group.add(solder);
+
+        const ps = createPowerSupply();
+        ps.position.set(0.06, deskH, 1.40);
+        arm1Group.add(ps);
+
+
+        // Plastic Storage Drawer Tower resting against 5.70m wall under desk (بعرض مكتب الصيانة)
+        const plasticDrawers1 = createPlasticDrawerTower(0.50, 0.60, 0.65, 4);
+        // Back of drawers rests against 5.70m wall, front face extends flush with desk front (+X)
+        plasticDrawers1.rotation.y = Math.PI / 2;
+        plasticDrawers1.position.set(-arm1Depth / 2 + 0.60 / 2 + 0.02, 0, 1.25);
+        arm1Group.add(plasticDrawers1);
+
+        deskOption1.add(arm1Group);
+
+        // --- Arm 2: Compact 95 cm into center of shop ---
+        const arm2Len = 0.95;
+        const arm2Depth = 0.60;
+        const arm2Group = new THREE.Group();
+
+        const arm2Top = new THREE.Mesh(new THREE.BoxGeometry(arm2Len, topThick, arm2Depth), oakWoodMaterial);
+        arm2Top.position.set(arm1Depth / 2 + arm2Len / 2, topY, arm2Depth / 2);
+        arm2Top.castShadow = true;
+        arm2Top.receiveShadow = true;
+        arm2Group.add(arm2Top);
+
+        const leg2 = createLegLoop(arm2Depth, deskH - topThick);
+        leg2.rotation.y = Math.PI / 2;
+        leg2.position.set(arm1Depth / 2 + arm2Len - legSize / 2, 0, arm2Depth / 2);
+        arm2Group.add(leg2);
+
+        const cornerLeg = new THREE.Mesh(new THREE.BoxGeometry(legSize, deskH - topThick, legSize), frameMat);
+        cornerLeg.position.set(arm1Depth / 2 + legSize / 2, (deskH - topThick) / 2, arm2Depth + legSize / 2);
+        arm2Group.add(cornerLeg);
+
+        const apron2 = new THREE.Mesh(new THREE.BoxGeometry(arm2Len - 0.08, 0.22, 0.018), oakWoodMaterial);
+        apron2.position.set(arm1Depth / 2 + arm2Len / 2, deskH - 0.15, 0.02);
+        arm2Group.add(apron2);
+
+        // Arm 2 Upper Shelf (0.95m)
+        const hutch2Group = new THREE.Group();
+        hutch2Group.position.set(arm1Depth / 2 + arm2Len / 2, deskH, hutchDepth / 2);
+
+        const hutch2Top = new THREE.Mesh(new THREE.BoxGeometry(arm2Len, 0.03, hutchDepth), oakWoodMaterial);
+        hutch2Top.position.set(0, hutchH - 0.015, 0);
+        hutch2Group.add(hutch2Top);
+
+        [-arm2Len / 2 + legSize / 2, arm2Len / 2 - legSize / 2].forEach(xPost => {
+          const post = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          post.position.set(xPost, hutchH / 2, -hutchDepth / 2 + legSize / 2);
+          hutch2Group.add(post);
+          const postFront = post.clone();
+          postFront.position.z = hutchDepth / 2 - legSize / 2;
+          hutch2Group.add(postFront);
+        });
+
+        const divMesh = new THREE.Mesh(new THREE.BoxGeometry(0.018, cubbyH, hutchDepth - 0.02), oakWoodMaterial);
+        divMesh.position.set(0, hutchH - cubbyH / 2 - 0.03, 0);
+        hutch2Group.add(divMesh);
+
+        [-0.22, 0.22].forEach((xBox, idx) => {
+          const boxM = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.18), new THREE.MeshStandardMaterial({
+            color: idx === 0 ? 0xffffff : 0x1e293b,
+            roughness: 0.3
+          }));
+          boxM.position.set(xBox, hutchH - 0.12, 0);
+          hutch2Group.add(boxM);
+        });
+
+        arm2Group.add(hutch2Group);
+
+        // Acrylic Signs on Arm 2
+        const signGeo = new THREE.BoxGeometry(0.36, 0.13, 0.012);
+        const signReadyMesh = new THREE.Mesh(signGeo, new THREE.MeshStandardMaterial({
+          map: createSignTexture('هواتف جاهزة للتسليم', true),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signReadyMesh.position.set(arm1Depth / 2 + 0.70, deskH + 0.065, arm2Depth - 0.14);
+        arm2Group.add(signReadyMesh);
+
+        const signRepairMesh = new THREE.Mesh(signGeo, new THREE.MeshStandardMaterial({
+          map: createSignTexture('هواتف تحت الصيانة', false),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signRepairMesh.position.set(arm1Depth / 2 + 0.28, deskH + 0.065, arm2Depth - 0.14);
+        arm2Group.add(signRepairMesh);
+
+        const phone1 = createPhoneModel(0x1e293b, true);
+        phone1.position.set(arm1Depth / 2 + 0.28, deskH + 0.006, arm2Depth - 0.22);
+        arm2Group.add(phone1);
+
+        const phone2 = createPhoneModel(0xd1d5db, false);
+        phone2.position.set(arm1Depth / 2 + 0.70, deskH + 0.006, arm2Depth - 0.22);
+        arm2Group.add(phone2);
+
+        deskOption1.add(arm2Group);
+
+        // Ergonomic Chair
+        const chair = createErgonomicChair();
+        chair.position.set(arm1Depth / 2 + 0.35, 0, arm2Depth + 0.35);
+        chair.rotation.y = -Math.PI / 4;
+        deskOption1.add(chair);
+
+        // Floating 3D label badge for Option 1
+        const tagDiv1 = document.createElement('div');
+        tagDiv1.className = 'label-3d label-repair';
+        tagDiv1.innerHTML = '<i class="fa-solid fa-arrows-split-up-and-left"></i> مقترح 1: حرف L مدمج (ضلع 95 سم بالوسط - ممر 1.60م واسع)';
+        const tag1 = new THREE.CSS2DObject(tagDiv1);
+        tag1.position.set(arm1Depth / 2 + 0.45, 1.85, arm2Depth / 2);
+        deskOption1.add(tag1);
+
+        // Position deskOption1 in the shop
+        if (onRight) {
+          const dStart = 4.05;
+          const wallStart = new THREE.Vector2().copy(P1).addScaledVector(uDir, dStart);
+          const offsetDist = arm1Depth / 2 + 0.02;
+          const finalPos2D = new THREE.Vector2().copy(wallStart).addScaledVector(uNorm, offsetDist);
+          deskOption1.position.set(finalPos2D.x, 0, finalPos2D.y);
+          deskOption1.rotation.y = angDeskSolid;
+        } else {
+          const dStart = 4.05;
+          const wallStart = new THREE.Vector2().copy(P2).addScaledVector(new THREE.Vector2(-uDir.x, uDir.y), dStart);
+          deskOption1.position.set(wallStart.x - (arm1Depth / 2 + 0.02), 0, wallStart.y);
+          deskOption1.rotation.y = -angDeskSolid;
+          deskOption1.scale.x = -1;
+        }
+      }
+
+      // ====================================================
+      // OPTION 2: 3-SIDED U-DESK (مستطيل ناقص ضلع)
+      // Spanning:
+      // Side 1: Wall 4 (5.70m) - 1.50m Auxiliary Repair & Drawer Tower
+      // Side 2: Wall 3 (3.00m) - 3.00m Full-Width Primary Workbench
+      // Side 3: Wall 6 (6.00m) - 0.50m Customer Service & Reception Return
+      // Side 4: Open walk-in cockpit (2.23m spacious clearance)
+      // ====================================================
+      const deskOption2 = new THREE.Group();
+      deskOption2.name = 'deskOption2';
+
+      {
+        const arm1Len = 1.50;
+        const arm1Depth = 0.60;
+        const arm2Depth = 0.60;
+        const len3 = vWall3.length();
+        const arm2Len = len3 - arm1Depth; // 2.40m along Wall 3 (covers remaining distance to Corner P3)
+        const arm3Len = 0.50; // 50 cm solid wall return on 6.00m wall
+        const arm3Depth = 0.50;
+
+        const hutchH = 0.52;
+        const hutchDepth = 0.28;
+        const cubbyH = 0.18;
+
+        // Vector math for Wall 6 from Corner P3 towards P2
+        const vWall6FromP3 = new THREE.Vector2().subVectors(P2, P3);
+        const uDir6FromP3 = new THREE.Vector2().copy(vWall6FromP3).normalize();
+        const uNorm6FromP3 = new THREE.Vector2(uDir6FromP3.y, -uDir6FromP3.x); // points inward (-X)
+        const angWall6FromP3 = Math.atan2(uDir6FromP3.x, uDir6FromP3.y);
+
+        // ====================================================
+        // --- SIDE 1: Along Wall 4 (5.70m solid wall, ending at corner P4) ---
+        // ====================================================
+        const arm1Group = new THREE.Group();
+        const arm1Top = new THREE.Mesh(new THREE.BoxGeometry(arm1Depth, topThick, arm1Len), oakWoodMaterial);
+        arm1Top.position.set(0, topY, 0);
+        arm1Top.castShadow = true;
+        arm1Top.receiveShadow = true;
+        arm1Group.add(arm1Top);
+
+        const leg1 = createLegLoop(arm1Depth, deskH - topThick);
+        leg1.position.set(0, 0, -arm1Len / 2 + legSize / 2);
+        arm1Group.add(leg1);
+
+        const apron1 = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, arm1Len - 0.04), oakWoodMaterial);
+        apron1.position.set(-arm1Depth / 2 + 0.02, deskH - 0.15, 0);
+        arm1Group.add(apron1);
+
+        // Upper Hutch on Side 1
+        const hutch1 = new THREE.Group();
+        hutch1.position.set(-arm1Depth / 2 + hutchDepth / 2, deskH, 0);
+
+        const back1 = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH, arm1Len), oakWoodMaterial);
+        back1.position.set(-hutchDepth / 2 + 0.009, hutchH / 2, 0);
+        hutch1.add(back1);
+
+        const top1 = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth, 0.03, arm1Len), oakWoodMaterial);
+        top1.position.set(0, hutchH - 0.015, 0);
+        hutch1.add(top1);
+
+        [-arm1Len / 2 + legSize / 2, arm1Len / 2 - legSize / 2].forEach(zP => {
+          const hp = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          hp.position.set(hutchDepth / 2 - legSize / 2, hutchH / 2, zP);
+          hutch1.add(hp);
+        });
+
+        const cubbyDivGeo1 = new THREE.BoxGeometry(hutchDepth - 0.02, cubbyH, 0.018);
+        [-0.30, 0.15].forEach(zPos => {
+          const div = new THREE.Mesh(cubbyDivGeo1, oakWoodMaterial);
+          div.position.set(0, hutchH - cubbyH / 2 - 0.03, zPos);
+          hutch1.add(div);
+        });
+
+        const smdBox1 = createSMDOrganizer(0.35, 0.16, 0.22, 4, 3);
+        smdBox1.position.set(0, hutchH - 0.21, 0.35);
+        hutch1.add(smdBox1);
+
+        const ledStrip1 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, arm1Len - 0.10), ledWarmEmissive);
+        ledStrip1.position.set(0, hutchH - cubbyH - 0.04, 0);
+        hutch1.add(ledStrip1);
+
+        const light1 = new THREE.PointLight(0xfff1cc, 1.8, 3.5, 1.5);
+        light1.position.set(0, hutchH - cubbyH - 0.06, 0);
+        hutch1.add(light1);
+        ledLightsList.push(light1);
+
+        arm1Group.add(hutch1);
+
+        // Microscope & Soldering Tools on Side 1
+        const scope = createMicroscope();
+        scope.position.set(0.08, deskH, -0.35);
+        arm1Group.add(scope);
+
+        const esdMat1 = createEsdMat();
+        esdMat1.position.set(0.08, deskH, 0.10);
+        arm1Group.add(esdMat1);
+
+        const rack1 = createScrewdriverRack();
+        rack1.position.set(-0.12, deskH, 0.10);
+        arm1Group.add(rack1);
+
+        // Plastic Storage Drawer Tower resting against 5.70m wall (بعرض مكتب الصيانة بالكامل)
+        const plasticDrawers2 = createPlasticDrawerTower(0.50, 0.58, 0.65, 4);
+        plasticDrawers2.rotation.y = Math.PI / 2;
+        plasticDrawers2.position.set(-arm1Depth / 2 + 0.58 / 2 + 0.02, 0, -0.40);
+        arm1Group.add(plasticDrawers2);
+
+        // Position Side 1 along Wall 4
+        const posArm1_2D = new THREE.Vector2().copy(P4).addScaledVector(uDir, -arm1Len / 2).addScaledVector(uNorm, arm1Depth / 2 + 0.02);
+        arm1Group.position.set(posArm1_2D.x, 0, posArm1_2D.y);
+        arm1Group.rotation.y = angDeskSolid;
+        deskOption2.add(arm1Group);
+
+        // ====================================================
+        // --- SIDE 2: Along Wall 3 (3.00m wall, full width to Corner P3) ---
+        // ====================================================
+        const arm2Group = new THREE.Group();
+        const arm2Top = new THREE.Mesh(new THREE.BoxGeometry(arm2Depth, topThick, arm2Len), oakWoodMaterial);
+        arm2Top.position.set(0, topY, 0);
+        arm2Top.castShadow = true;
+        arm2Top.receiveShadow = true;
+        arm2Group.add(arm2Top);
+
+        const leg2 = createLegLoop(arm2Depth, deskH - topThick);
+        leg2.position.set(0, 0, arm2Len / 2 - legSize / 2);
+        arm2Group.add(leg2);
+
+        const leg2Mid = createLegLoop(arm2Depth, deskH - topThick);
+        leg2Mid.position.set(0, 0, -arm2Len / 2 + legSize / 2);
+        arm2Group.add(leg2Mid);
+
+        const apron2 = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, arm2Len - 0.04), oakWoodMaterial);
+        apron2.position.set(-arm2Depth / 2 + 0.02, deskH - 0.15, 0);
+        arm2Group.add(apron2);
+
+        // Full-length Upper Hutch along Wall 3 (2.40m continuous storage)
+        const hutch2 = new THREE.Group();
+        hutch2.position.set(-arm2Depth / 2 + hutchDepth / 2, deskH, 0);
+
+        const back2 = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH, arm2Len), oakWoodMaterial);
+        back2.position.set(-hutchDepth / 2 + 0.009, hutchH / 2, 0);
+        hutch2.add(back2);
+
+        const top2 = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth, 0.03, arm2Len), oakWoodMaterial);
+        top2.position.set(0, hutchH - 0.015, 0);
+        hutch2.add(top2);
+
+        [-arm2Len / 2 + legSize / 2, 0, arm2Len / 2 - legSize / 2].forEach(zP => {
+          const hp = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          hp.position.set(hutchDepth / 2 - legSize / 2, hutchH / 2, zP);
+          hutch2.add(hp);
+        });
+
+        [-0.70, -0.20, 0.35, 0.85].forEach(zPos => {
+          const div = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth - 0.02, cubbyH, 0.018), oakWoodMaterial);
+          div.position.set(0, hutchH - cubbyH / 2 - 0.03, zPos);
+          hutch2.add(div);
+        });
+
+        const ledStrip2 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, arm2Len - 0.10), ledWarmEmissive);
+        ledStrip2.position.set(0, hutchH - cubbyH - 0.04, 0);
+        hutch2.add(ledStrip2);
+
+        const light2 = new THREE.PointLight(0xfff1cc, 2.0, 4.0, 1.4);
+        light2.position.set(0, hutchH - cubbyH - 0.06, 0);
+        hutch2.add(light2);
+        ledLightsList.push(light2);
+
+        arm2Group.add(hutch2);
+
+        // Benchtop Equipment on Side 2
+        const solder = createSolderingStation();
+        solder.position.set(0.06, deskH, -0.65);
+        arm2Group.add(solder);
+
+        const ps = createPowerSupply();
+        ps.position.set(0.06, deskH, -0.20);
+        arm2Group.add(ps);
+
+        const esdMat2 = createEsdMat();
+        esdMat2.position.set(0.08, deskH, 0.35);
+        arm2Group.add(esdMat2);
+
+        const signRepairMesh = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.13, 0.012), new THREE.MeshStandardMaterial({
+          map: createSignTexture('هواتف تحت الصيانة', false),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signRepairMesh.position.set(0.12, deskH + 0.065, 0.35);
+        arm2Group.add(signRepairMesh);
+
+        const phone1 = createPhoneModel(0x1e293b, true);
+        phone1.position.set(0.12, deskH + 0.006, 0.35);
+        arm2Group.add(phone1);
+
+        const phone2 = createPhoneModel(0xd1d5db, false);
+        phone2.position.set(0.12, deskH + 0.006, 0.85);
+        arm2Group.add(phone2);
+
+        // Position Side 2 along Wall 3
+        const posArm2_2D = new THREE.Vector2().copy(P4).addScaledVector(uDir3, arm1Depth + arm2Len / 2).addScaledVector(uNorm3, arm2Depth / 2 + 0.02);
+        arm2Group.position.set(posArm2_2D.x, 0, posArm2_2D.y);
+        arm2Group.rotation.y = angWall3;
+        deskOption2.add(arm2Group);
+
+        // ====================================================
+        // --- SIDE 3: Along Wall 6 (0.50m solid wall return at Corner P3) ---
+        // ====================================================
+        const arm3Group = new THREE.Group();
+        const arm3Top = new THREE.Mesh(new THREE.BoxGeometry(arm3Depth, topThick, arm3Len), oakWoodMaterial);
+        arm3Top.position.set(0, topY, 0);
+        arm3Top.castShadow = true;
+        arm3Top.receiveShadow = true;
+        arm3Group.add(arm3Top);
+
+        const leg3 = createLegLoop(arm3Depth, deskH - topThick);
+        leg3.position.set(0, 0, arm3Len / 2 - legSize / 2);
+        arm3Group.add(leg3);
+
+        const apron3 = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, arm3Len - 0.04), oakWoodMaterial);
+        apron3.position.set(-arm3Depth / 2 + 0.02, deskH - 0.15, 0);
+        arm3Group.add(apron3);
+
+        // Customer Reception & Ready Handover Stand on Side 3
+        const signReadyMesh = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.13, 0.012), new THREE.MeshStandardMaterial({
+          map: createSignTexture('استلام وتسليم الأجهزة', true),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signReadyMesh.position.set(0.08, deskH + 0.065, 0);
+        arm3Group.add(signReadyMesh);
+
+        const receptionPad = new THREE.Mesh(
+          new THREE.BoxGeometry(0.28, 0.008, 0.32),
+          new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 })
+        );
+        receptionPad.position.set(0.05, deskH + 0.004, 0);
+        arm3Group.add(receptionPad);
+
+        // Position Side 3 along Wall 6 from Corner P3
+        const posArm3_2D = new THREE.Vector2().copy(P3).addScaledVector(uDir6FromP3, arm2Depth + arm3Len / 2).addScaledVector(uNorm6FromP3, arm3Depth / 2 + 0.02);
+        arm3Group.position.set(posArm3_2D.x, 0, posArm3_2D.y);
+        arm3Group.rotation.y = angWall6FromP3;
+        deskOption2.add(arm3Group);
+
+        // ====================================================
+        // Technician ergonomic rolling chair in central cockpit
+        // ====================================================
+        const chair = createErgonomicChair();
+        const posChair2D = new THREE.Vector2().copy(P4).addScaledVector(uNorm, 0.90).addScaledVector(uNorm3, 1.10);
+        chair.position.set(posChair2D.x, 0, posChair2D.y);
+        chair.rotation.y = Math.atan2(P4.x + uDir3.x * 1.5 - posChair2D.x, P4.y + uDir3.y * 1.5 - posChair2D.y);
+        deskOption2.add(chair);
+
+        // Floating 3D label badge for Option 2
+        const tagDiv2 = document.createElement('div');
+        tagDiv2.className = 'label-3d label-repair';
+        tagDiv2.innerHTML = '<i class="fa-solid fa-shapes"></i> مقترح 2: ورشة U-Desk شاملة (مستطيل ناقص ضلع بكامل حائط 3م + ضلع 50سم)';
+        const tag2 = new THREE.CSS2DObject(tagDiv2);
+        tag2.position.set(P4.x + 1.25, 1.85, P4.y - 0.70);
+        deskOption2.add(tag2);
+      }
+
+      // ====================================================
+      // OPTION 3: STRAIGHT 2.00M DESK FLUSH ALONG WALL 5.70M
+      // ====================================================
+      const deskOption3 = new THREE.Group();
+      deskOption3.name = 'deskOption3';
+
+      {
+        const deskLen = 2.00;
+        const deskDepth = 0.65;
+        const hutchH = 0.52;
+        const hutchDepth = 0.28;
+        const cubbyH = 0.18;
+
+        const mainTop = new THREE.Mesh(new THREE.BoxGeometry(deskDepth, topThick, deskLen), oakWoodMaterial);
+        mainTop.position.set(0, topY, 0);
+        mainTop.castShadow = true;
+        mainTop.receiveShadow = true;
+        deskOption3.add(mainTop);
+
+        // 3 Legs: front, center, back
+        [-deskLen / 2 + legSize / 2, 0, deskLen / 2 - legSize / 2].forEach(zLeg => {
+          const leg = createLegLoop(deskDepth, deskH - topThick);
+          leg.position.set(0, 0, zLeg);
+          deskOption3.add(leg);
+        });
+
+        // Modesty apron along the back
+        const apron = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, deskLen - 0.08), oakWoodMaterial);
+        apron.position.set(-deskDepth / 2 + 0.02, deskH - 0.15, 0);
+        deskOption3.add(apron);
+
+        // Full 2.00m Upper Hutch
+        const hutchGroup = new THREE.Group();
+        hutchGroup.position.set(-deskDepth / 2 + hutchDepth / 2, deskH, 0);
+
+        const backboard = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH, deskLen), oakWoodMaterial);
+        backboard.position.set(-hutchDepth / 2 + 0.009, hutchH / 2, 0);
+        hutchGroup.add(backboard);
+
+        const hutchTop = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth, 0.03, deskLen), oakWoodMaterial);
+        hutchTop.position.set(0, hutchH - 0.015, 0);
+        hutchGroup.add(hutchTop);
+
+        [-deskLen / 2 + legSize / 2, 0, deskLen / 2 - legSize / 2].forEach(zP => {
+          const hp = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          hp.position.set(hutchDepth / 2 - legSize / 2, hutchH / 2, zP);
+          hutchGroup.add(hp);
+        });
+
+        const cubbyDivGeo = new THREE.BoxGeometry(hutchDepth - 0.02, cubbyH, 0.018);
+        [-0.50, -0.15, 0.35, 0.70].forEach(zPos => {
+          const div = new THREE.Mesh(cubbyDivGeo, oakWoodMaterial);
+          div.position.set(0, hutchH - cubbyH / 2 - 0.03, zPos);
+          hutchGroup.add(div);
+        });
+
+        const smdBox1 = createSMDOrganizer(0.32, 0.16, 0.22, 4, 3);
+        smdBox1.position.set(0, hutchH - 0.21, -0.32);
+        hutchGroup.add(smdBox1);
+
+        const smdBox2 = createSMDOrganizer(0.32, 0.16, 0.22, 4, 3);
+        smdBox2.position.set(0, hutchH - 0.21, 0.52);
+        hutchGroup.add(smdBox2);
+
+        // Full-length warm LED strip
+        const ledStripMesh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, deskLen - 0.15), ledWarmEmissive);
+        ledStripMesh.position.set(0, hutchH - cubbyH - 0.04, 0);
+        hutchGroup.add(ledStripMesh);
+
+        const deskLight = new THREE.PointLight(0xfff1cc, 2.2, 4.0, 1.5);
+        deskLight.position.set(0, hutchH - cubbyH - 0.06, 0);
+        deskLight.castShadow = true;
+        hutchGroup.add(deskLight);
+        ledLightsList.push(deskLight);
+
+        deskOption3.add(hutchGroup);
+
+        // Benchtop Equipment
+        const scope = createMicroscope();
+        scope.position.set(0.08, deskH, -0.65);
+        deskOption3.add(scope);
+
+        const esdMat = createEsdMat();
+        esdMat.position.set(0.08, deskH, -0.20);
+        deskOption3.add(esdMat);
+
+        const rack = createScrewdriverRack();
+        rack.position.set(-0.12, deskH, -0.20);
+        deskOption3.add(rack);
+
+        const solder = createSolderingStation();
+        solder.position.set(0.06, deskH, 0.22);
+        deskOption3.add(solder);
+
+        const ps = createPowerSupply();
+        ps.position.set(0.06, deskH, 0.50);
+        deskOption3.add(ps);
+
+        // Acrylic signs on right side
+        const signRepairMesh = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.13, 0.012), new THREE.MeshStandardMaterial({
+          map: createSignTexture('هواتف تحت الصيانة', false),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signRepairMesh.position.set(0.12, deskH + 0.065, 0.72);
+        deskOption3.add(signRepairMesh);
+
+        const signReadyMesh = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.13, 0.012), new THREE.MeshStandardMaterial({
+          map: createSignTexture('هواتف جاهزة للتسليم', true),
+          transparent: true,
+          roughness: 0.1
+        }));
+        signReadyMesh.position.set(0.12, deskH + 0.065, 0.92);
+        deskOption3.add(signReadyMesh);
+
+        const phone1 = createPhoneModel(0x1e293b, true);
+        phone1.position.set(0.12, deskH + 0.006, 0.72);
+        deskOption3.add(phone1);
+
+        const phone2 = createPhoneModel(0xd1d5db, false);
+        phone2.position.set(0.12, deskH + 0.006, 0.92);
+        deskOption3.add(phone2);
+
+        // Plastic Storage Drawer Tower resting against 5.70m wall under desk (بعرض مكتب الصيانة)
+        const plasticDrawers3 = createPlasticDrawerTower(0.50, 0.60, 0.65, 4);
+        plasticDrawers3.rotation.y = Math.PI / 2;
+        plasticDrawers3.position.set(-deskDepth / 2 + 0.60 / 2 + 0.02, 0, 0.65);
+        deskOption3.add(plasticDrawers3);
+
+        // Chair facing desk
+        const chair = createErgonomicChair();
+        chair.position.set(deskDepth / 2 + 0.40, 0, -0.20);
+        chair.rotation.y = -Math.PI / 2;
+        deskOption3.add(chair);
+
+        // Floating 3D label badge for Option 3
+        const tagDiv3 = document.createElement('div');
+        tagDiv3.className = 'label-3d label-repair';
+        tagDiv3.innerHTML = '<i class="fa-solid fa-ruler-horizontal"></i> مقترح 3: مكتب طولي 2.00م ملاصق للحائط (ممر 2.55م فائق الاتساع)';
+        const tag3 = new THREE.CSS2DObject(tagDiv3);
+        tag3.position.set(0.65, 1.85, 0.0);
+        deskOption3.add(tag3);
+
+        // Position deskOption3 along Wall 4
+        if (onRight) {
+          const dCenter = 4.65;
+          const wallPos = new THREE.Vector2().copy(P1).addScaledVector(uDir, dCenter);
+          const offsetDist = deskDepth / 2 + 0.02;
+          const finalPos2D = new THREE.Vector2().copy(wallPos).addScaledVector(uNorm, offsetDist);
+          deskOption3.position.set(finalPos2D.x, 0, finalPos2D.y);
+          deskOption3.rotation.y = angDeskSolid;
+        } else {
+          const dCenter = 4.65;
+          const wallPos = new THREE.Vector2().copy(P2).addScaledVector(new THREE.Vector2(-uDir.x, uDir.y), dCenter);
+          deskOption3.position.set(wallPos.x - (deskDepth / 2 + 0.02), 0, wallPos.y);
+          deskOption3.rotation.y = -angDeskSolid;
+          deskOption3.scale.x = -1;
+        }
+      }
+
+      // Add all 3 options to a container group and register globally
+      const maintenanceDeskContainer = new THREE.Group();
+      maintenanceDeskContainer.name = 'maintenanceDeskContainer';
+      maintenanceDeskContainer.add(deskOption1);
+      maintenanceDeskContainer.add(deskOption2);
+      maintenanceDeskContainer.add(deskOption3);
+      furnitureGroup.add(maintenanceDeskContainer);
+
+      window.deskOption1 = deskOption1;
+      window.deskOption2 = deskOption2;
+      window.deskOption3 = deskOption3;
+
+      deskOption1.visible = true;
+      deskOption2.visible = false;
+      deskOption3.visible = false;
+
+      // ----------------------------------------------------
+      // B. THE 2 PINK WOODEN COUNTERS WITH GLASS TOPS (1.20m + 1.20m = 2.40m) (1.20m + 1.20m = 2.40m)
+      // Acts as the barrier & reception desk separating repair from retail!
+      // ----------------------------------------------------
+      const counterGroup = new THREE.Group();
+      counterGroup.name = 'receptionBarrierCounters';
+
+      function createSinglePinkCounter(width = 1.20) {
+        const cg = new THREE.Group();
+
+        // 1. Lower solid pink wood body (height 0.70m, depth 0.55m)
+        const bodyGeo = new THREE.BoxGeometry(width, 0.70, 0.55);
+        const bodyMesh = new THREE.Mesh(bodyGeo, pinkWallMaterial);
+        bodyMesh.position.set(0, 0.35, 0);
+        bodyMesh.castShadow = true;
+        bodyMesh.receiveShadow = true;
+        cg.add(bodyMesh);
+
+        // White aluminum / chrome protective trim
+        const trimMesh = new THREE.Mesh(new THREE.BoxGeometry(width + 0.01, 0.04, 0.56), chromeMaterial);
+        trimMesh.position.set(0, 0.71, 0);
+        cg.add(trimMesh);
+
+        // 2. Upper Glass Display Box (height 0.26m) with clear glass top and sides
+        const topGlassMesh = new THREE.Mesh(new THREE.BoxGeometry(width - 0.02, 0.015, 0.52), glassMaterial);
+        topGlassMesh.position.set(0, 0.98, 0);
+        cg.add(topGlassMesh);
+
+        const frontGlassMesh = new THREE.Mesh(new THREE.BoxGeometry(width - 0.02, 0.24, 0.015), glassMaterial);
+        frontGlassMesh.position.set(0, 0.85, 0.25);
+        cg.add(frontGlassMesh);
+
+        const sideGlassGeo = new THREE.BoxGeometry(0.015, 0.24, 0.50);
+        const sideG1 = new THREE.Mesh(sideGlassGeo, glassMaterial);
+        sideG1.position.set(-width / 2 + 0.02, 0.85, 0);
+        cg.add(sideG1);
+        const sideG2 = sideG1.clone();
+        sideG2.position.x = width / 2 - 0.02;
+        cg.add(sideG2);
+
+        // Items inside top glass (high-end charger boxes & AirPods)
+        for (let i = -2; i <= 2; i++) {
+          const itemBox = new THREE.Mesh(
+            new THREE.BoxGeometry(0.12, 0.04, 0.12),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 })
+          );
+          itemBox.position.set(i * 0.22, 0.75, 0);
+          cg.add(itemBox);
+        }
+
+        return cg;
+      }
+
+      // Counter 1 (Left part: 1.20m)
+      const counter1 = createSinglePinkCounter(1.20);
+      counter1.position.set(-0.60, 0, 0);
+      counterGroup.add(counter1);
+
+      // Counter 2 (Right part: 1.20m with POS Terminal & Barcode Scanner)
+      const counter2 = createSinglePinkCounter(1.20);
+      counter2.position.set(0.60, 0, 0);
+
+      // POS Cashier Screen on counter 2
+      const posGroup = new THREE.Group();
+      const posScreen = new THREE.Mesh(
+        new THREE.BoxGeometry(0.32, 0.22, 0.03),
+        new THREE.MeshStandardMaterial({ color: 0x111827, emissive: 0x1e3a8a, emissiveIntensity: 0.5 })
+      );
+      posScreen.position.set(0, 0.20, 0);
+      posScreen.rotation.x = -0.3; // angled for touch
+      posGroup.add(posScreen);
+
+      const posStand = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.15, 8), darkMetalMaterial);
+      posStand.position.set(0, 0.08, -0.04);
+      posGroup.add(posStand);
+
+      posGroup.position.set(0.30, 0.98, 0);
+      counter2.add(posGroup);
+
+      counterGroup.add(counter2);
+
+      // Position the 2.40m counter spanning from the right pink wall across the room:
+      // "لازق في الحيطة ناحية الباب الجزء الحائط اللي بعد المرايا"
+      // Pink wall interior at z = 3.23m is at x ≈ 3.72. With counter total width 2.40m, center X = 3.72 - 1.20 = 2.52m.
+      const counterX = onRight ? 2.52 : 1.48;
+      counterGroup.position.set(counterX, 0, 3.23);
+      // Face towards entrance door (-Z) so glass and POS face the customer entering:
+      counterGroup.rotation.y = Math.PI;
+      furnitureGroup.add(counterGroup);
+
+      // ----------------------------------------------------
+      // C. WALL 5.70M: 2.40M HIGH ACCESSORY UNITS WITH INTERNAL LED STRIPS!
+      // (علب الإكسسوارات بارتفاع 2.40م مدمج بها ليدات مخفية)
+      // ----------------------------------------------------
+      // ----------------------------------------------------
+      // C. L-SHAPED SLATWALL ACCESSORY DISPLAY UNITS (2.40m x 2.40m)
+      // All 4 units (each width 1.20m x height 2.40m) face INTO the room!
+      // Coordinated with White & Red Slatwalls + Lower Cabinet Doors
+      // ----------------------------------------------------
+      const unitDepth = 0.28;
+      const unitWidth = 1.20;
+
+      function buildAccessoryUnit(width = 1.20, depth = 0.28, colorOffset = 0, slatColorType = 'white') {
+        const colGroup = new THREE.Group();
+        colGroup.name = 'slatwallAccessoryUnit';
+        colGroup.slatMeshes = [];
+
+        const totalHeight = 2.40;
+        const plinthHeight = 0.08;
+        const lowerCabHeight = 0.54; // reaches y = 0.62m
+        const lowerDepth = 0.38; // lower cabinet with doors is deeper (0.38m)
+        const upperDepth = 0.28; // upper slatwall section depth
+        const headerHeight = 0.16; // top canopy height (from 2.24m to 2.40m)
+        const wallThick = 0.022;
+
+        // Frame colors: modern graphite finish
+        const frameColor = 0x1e2430;
+        const doorColor = 0x242c3b;
+        const aluColor = 0xc0c7d0; // bright aluminum T-channel inserts
+
+        // Slat material based on slatColorType
+        const isRed = (slatColorType === 'red');
+        const slatColor = isRed ? 0xdc2626 : 0xf8fafc;
+
+        const frameMat = new THREE.MeshStandardMaterial({ color: frameColor, roughness: 0.35, metalness: 0.1 });
+        const doorMat = new THREE.MeshStandardMaterial({ color: doorColor, roughness: 0.3, metalness: 0.05 });
+        if (!window.slatwallWhiteMat) {
+          window.slatwallWhiteMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.35, metalness: 0.0 });
+        }
+        if (!window.slatwallRedMat) {
+          window.slatwallRedMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.35, metalness: 0.05 });
+        }
+        const slatMat = isRed ? window.slatwallRedMat : window.slatwallWhiteMat;
+        const aluMat = new THREE.MeshStandardMaterial({ color: aluColor, roughness: 0.2, metalness: 0.85 });
+        const handleMat = chromeMaterial;
+
+        // 1. Bottom Plinth / Toe-kick (القاعدة السفلية)
+        const plinthGeo = new THREE.BoxGeometry(width - 0.04, plinthHeight, lowerDepth - 0.04);
+        const plinth = new THREE.Mesh(plinthGeo, new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 }));
+        plinth.position.set(0, plinthHeight / 2, (lowerDepth - upperDepth) / 2 - 0.02);
+        colGroup.add(plinth);
+
+        // 2. Lower Storage Cabinet (العلبة السفلية بضلف للغلق)
+        const cabBodyGeo = new THREE.BoxGeometry(width, lowerCabHeight - 0.02, lowerDepth);
+        const cabBody = new THREE.Mesh(cabBodyGeo, frameMat);
+        cabBody.position.set(0, plinthHeight + (lowerCabHeight - 0.02) / 2, (lowerDepth - upperDepth) / 2);
+        cabBody.castShadow = true;
+        cabBody.receiveShadow = true;
+        colGroup.add(cabBody);
+
+        // Countertop Ledge on top of lower cabinet (قرصة الرف الأوسط)
+        const counterTopGeo = new THREE.BoxGeometry(width + 0.01, 0.025, lowerDepth + 0.015);
+        const counterTop = new THREE.Mesh(counterTopGeo, frameMat);
+        counterTop.position.set(0, plinthHeight + lowerCabHeight - 0.012, (lowerDepth - upperDepth) / 2 + 0.007);
+        colGroup.add(counterTop);
+
+        // 2 Hinged Cabinet Doors with Modern Chrome Handles (ضلف للغلق)
+        const doorW = (width - 0.03) / 2;
+        const doorH = lowerCabHeight - 0.05;
+        const doorGeo = new THREE.BoxGeometry(doorW - 0.006, doorH, 0.018);
+
+        [-doorW / 2 - 0.002, doorW / 2 + 0.002].forEach((xDoor, idx) => {
+          const door = new THREE.Mesh(doorGeo, doorMat);
+          door.position.set(xDoor, plinthHeight + lowerCabHeight / 2 - 0.01, lowerDepth / 2 + (lowerDepth - upperDepth) / 2 + 0.009);
+          door.castShadow = true;
+          colGroup.add(door);
+
+          // Sleek modern vertical bar handle (مقبض ستانلس شيك)
+          const handleG = new THREE.Group();
+          const hBar = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.16, 12), handleMat);
+          handleG.add(hBar);
+          [-0.06, 0.06].forEach(yPost => {
+            const post = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.03, 8), handleMat);
+            post.rotation.x = Math.PI / 2;
+            post.position.set(0, yPost, -0.015);
+            handleG.add(post);
+          });
+          const handleX = idx === 0 ? xDoor + doorW / 2 - 0.07 : xDoor - doorW / 2 + 0.07;
+          handleG.position.set(handleX, plinthHeight + lowerCabHeight / 2, lowerDepth / 2 + (lowerDepth - upperDepth) / 2 + 0.038);
+          colGroup.add(handleG);
+        });
+
+        // 3. Upper Outer Frame & Top Header Canopy (الهيكل والتاج العلوي)
+        const upperYStart = plinthHeight + lowerCabHeight; // 0.62m
+        const upperH = totalHeight - upperYStart; // 1.78m
+
+        const sideGeo = new THREE.BoxGeometry(wallThick, upperH, upperDepth);
+        const leftSide = new THREE.Mesh(sideGeo, frameMat);
+        leftSide.position.set(-width / 2 + wallThick / 2, upperYStart + upperH / 2, 0);
+        leftSide.castShadow = true;
+        colGroup.add(leftSide);
+
+        const rightSide = new THREE.Mesh(sideGeo, frameMat);
+        rightSide.position.set(width / 2 - wallThick / 2, upperYStart + upperH / 2, 0);
+        rightSide.castShadow = true;
+        colGroup.add(rightSide);
+
+        const topRoof = new THREE.Mesh(new THREE.BoxGeometry(width, wallThick, upperDepth), frameMat);
+        topRoof.position.set(0, totalHeight - wallThick / 2, 0);
+        colGroup.add(topRoof);
+
+        // Front Header Valance
+        const valanceGeo = new THREE.BoxGeometry(width - 2 * wallThick, headerHeight, 0.02);
+        const valance = new THREE.Mesh(valanceGeo, frameMat);
+        valance.position.set(0, totalHeight - headerHeight / 2, upperDepth / 2 - 0.01);
+        colGroup.add(valance);
+
+        // Top LED strip & PointLight
+        const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(width - 0.08, 0.015, 0.025), ledWarmEmissive);
+        ledStrip.position.set(0, totalHeight - headerHeight - 0.01, upperDepth / 2 - 0.04);
+        colGroup.add(ledStrip);
+
+        const downLight = new THREE.PointLight(0xfffae8, 1.4, 3.2, 1.6);
+        downLight.position.set(0, totalHeight - headerHeight - 0.05, upperDepth / 2 - 0.06);
+        downLight.castShadow = true;
+        colGroup.add(downLight);
+        ledLightsList.push(downLight);
+
+        // 4. Slatwall Backing & Horizontal Aluminum Grooves (لوح السلات وول ومجاري الألومنيوم)
+        const slatwallH = upperH - headerHeight; // ~1.62m
+        const slatwallW = width - 2 * wallThick; // ~1.15m
+        const slatwallY = upperYStart + slatwallH / 2;
+        const slatwallZ = -upperDepth / 2 + 0.018;
+
+        const backboard = new THREE.Mesh(new THREE.BoxGeometry(slatwallW, slatwallH, 0.018), frameMat);
+        backboard.position.set(0, slatwallY, slatwallZ - 0.009);
+        colGroup.add(backboard);
+
+        const numSlats = 11;
+        const slatHeight = slatwallH / numSlats; // ~0.147m each
+        const slatThickness = 0.016;
+
+        for (let i = 0; i < numSlats; i++) {
+          const slatY = upperYStart + (i + 0.5) * slatHeight;
+          const slatMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(slatwallW - 0.004, slatHeight - 0.012, slatThickness),
+            slatMat
+          );
+          slatMesh.position.set(0, slatY, slatwallZ + slatThickness / 2);
+          slatMesh.receiveShadow = true;
+          colGroup.add(slatMesh);
+          colGroup.slatMeshes.push(slatMesh);
+
+          if (i > 0) {
+            const aluChannel = new THREE.Mesh(
+              new THREE.BoxGeometry(slatwallW, 0.010, slatThickness + 0.004),
+              aluMat
+            );
+            aluChannel.position.set(0, upperYStart + i * slatHeight, slatwallZ + slatThickness / 2);
+            colGroup.add(aluChannel);
+          }
+        }
+
+        // 5. Hanging Accessories & Hooks
+        const hookRows = [2, 4, 6, 8, 10];
+        const hookCols = (width > 0.80) ? [-0.42, -0.21, 0.0, 0.21, 0.42] : [-0.16, 0.0, 0.16];
+        const pkgColorsWhite = [0xef4444, 0x3b82f6, 0x10b981, 0x8b5cf6, 0x0ea5e9, 0xf59e0b, 0xec4899, 0x1e293b];
+        const pkgColorsRed = [0xffffff, 0x0f172a, 0xe2e8f0, 0x1e293b, 0xfacc15, 0x38bdf8];
+
+        const activeColors = isRed ? pkgColorsRed : pkgColorsWhite;
+
+        hookRows.forEach((rowIdx, r) => {
+          const hookY = upperYStart + rowIdx * slatHeight;
+          hookCols.forEach((colX, c) => {
+            const hookG = new THREE.Group();
+            const hookArm = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.12, 8), handleMat);
+            hookArm.rotation.x = Math.PI / 2;
+            hookArm.position.set(0, 0, 0.06);
+            hookG.add(hookArm);
+            const hookTip = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.02, 8), handleMat);
+            hookTip.position.set(0, 0.01, 0.12);
+            hookG.add(hookTip);
+
+            const itemType = (r + c) % 3;
+            if (itemType === 0) {
+              const pkgGeo = new THREE.BoxGeometry(0.085, 0.16, 0.015);
+              const col = activeColors[(colorOffset * 5 + r * 3 + c) % activeColors.length];
+              const pkgMesh = new THREE.Mesh(pkgGeo, new THREE.MeshStandardMaterial({ color: col, roughness: 0.2, metalness: 0.1 }));
+              pkgMesh.position.set(0, -0.09, 0.07);
+              hookG.add(pkgMesh);
+            } else if (itemType === 1) {
+              const cableBoxGeo = new THREE.BoxGeometry(0.07, 0.14, 0.022);
+              const cableBox = new THREE.Mesh(cableBoxGeo, new THREE.MeshStandardMaterial({ color: isRed ? 0xffffff : 0x0f172a, roughness: 0.3 }));
+              cableBox.position.set(0, -0.08, 0.08);
+              hookG.add(cableBox);
+            } else {
+              const airGeo = new THREE.BoxGeometry(0.08, 0.10, 0.028);
+              const airBox = new THREE.Mesh(airGeo, new THREE.MeshStandardMaterial({ color: isRed ? 0xffffff : 0x1e293b, roughness: 0.2 }));
+              airBox.position.set(0, -0.06, 0.08);
+              hookG.add(airBox);
+            }
+
+            hookG.position.set(colX, hookY, slatwallZ + slatThickness + 0.002);
+            colGroup.add(hookG);
+          });
+        });
+
+        // Boxed items on the middle counter ledge
+        const ledgeBoxPositions = (width > 0.80) ? [-0.35, -0.12, 0.12, 0.35] : [-0.14, 0.14];
+        ledgeBoxPositions.forEach((bx, idx) => {
+          const standBox = new THREE.Mesh(
+            new THREE.BoxGeometry(0.14, 0.07, 0.10),
+            new THREE.MeshStandardMaterial({ color: idx % 2 === 0 ? 0xffffff : 0x1e293b, roughness: 0.25 })
+          );
+          standBox.position.set(bx, plinthHeight + lowerCabHeight + 0.035, (lowerDepth - upperDepth) / 2 + 0.04);
+          colGroup.add(standBox);
+        });
+
+        return colGroup;
+      }
+
+      // ====================================================
+      // C. L-SHAPED SLATWALL ACCESSORY WALLS (2.40m x 2.40m)
+      // All 4 units (each width 1.20m x height 2.40m) face INTO the room!
+      // Coordinated with White & Red Slatwalls + Lower Cabinet Doors
+      // ====================================================
+
+      // Wall 5.70m Orientation & Math
+      const angWall57 = Math.atan2(P4.x - P1.x, P4.y - P1.y);
+      const uDir57 = new THREE.Vector2(Math.sin(angWall57), Math.cos(angWall57));
+      const uNorm57 = new THREE.Vector2(Math.cos(angWall57), -Math.sin(angWall57)); // points into the shop!
+      const rotY_57 = Math.atan2(uNorm57.x, uNorm57.y); // faces into shop!
+
+      // Unit 1 (Wall 5.70m): White Slatwall (width 1.20m, d = 0.40m to 1.60m)
+      const unit1 = buildAccessoryUnit(unitWidth, unitDepth, 0, 'white');
+      const pos1_2D = new THREE.Vector2().copy(P1).addScaledVector(uDir57, 0.40 + unitWidth / 2).addScaledVector(uNorm57, unitDepth / 2 + 0.02);
+      unit1.position.set(pos1_2D.x, 0, pos1_2D.y);
+      unit1.rotation.y = rotY_57;
+      furnitureGroup.add(unit1);
+
+      // Unit 2 (Wall 5.70m): Red Slatwall (width 1.20m, d = 1.60m to 2.80m)
+      const unit2 = buildAccessoryUnit(unitWidth, unitDepth, 1, 'red');
+      const pos2_2D = new THREE.Vector2().copy(P1).addScaledVector(uDir57, 0.40 + unitWidth + unitWidth / 2).addScaledVector(uNorm57, unitDepth / 2 + 0.02);
+      unit2.position.set(pos2_2D.x, 0, pos2_2D.y);
+      unit2.rotation.y = rotY_57;
+      furnitureGroup.add(unit2);
+
+      // Unit 3 (Wall 4.00m): Red Slatwall (width 1.20m, x = 0.40m to 1.60m)
+      const unit3 = buildAccessoryUnit(unitWidth, unitDepth, 2, 'red');
+      unit3.position.set(0.40 + unitWidth / 2, 0, unitDepth / 2 + 0.02);
+      unit3.rotation.y = 0; // faces +Z into shop!
+      furnitureGroup.add(unit3);
+
+      // Unit 4 (Wall 4.00m): White Slatwall (width 1.20m, x = 1.60m to 2.80m)
+      const unit4 = buildAccessoryUnit(unitWidth, unitDepth, 3, 'white');
+      unit4.position.set(0.40 + unitWidth + unitWidth / 2, 0, unitDepth / 2 + 0.02);
+      unit4.rotation.y = 0; // faces +Z into shop!
+      furnitureGroup.add(unit4);
+
+      // ====================================================
+      // Unit 5 (Wall 5.70m): 60cm Slatwall Unit AFTER Middle Column!
+      // (جدار إكسسوارات إضافي بعرض 60 سم بعد العمود على حائط 5.70م بنفس التصميم)
+      // ====================================================
+      const unit5Width = 0.60;
+      // Column 2 center is at 2.80m, ending at ~2.98m.
+      // Unit 5 starts at d = 3.00m and extends to d = 3.60m (Center: 3.30m)
+      const unit5 = buildAccessoryUnit(unit5Width, unitDepth, 4, 'white');
+      const pos5_2D = new THREE.Vector2().copy(P1).addScaledVector(uDir57, 3.00 + unit5Width / 2).addScaledVector(uNorm57, unitDepth / 2 + 0.02);
+      unit5.position.set(pos5_2D.x, 0, pos5_2D.y);
+      unit5.rotation.y = rotY_57;
+      furnitureGroup.add(unit5);
+
+      window.slatUnits = [unit1, unit2, unit3, unit4, unit5];
+
+      // ----------------------------------------------------
+      // D. THE 2 ALL-GLASS VITRINES (1.50M EACH) - CENTRAL DISPLAY ISLAND
+      // (فاترينتين زجاج بالكامل 1.50م في منتصف المحل - شفافية مخففة + 2 رف داخلي + بضاعة معروضة كاملة)
+      // ----------------------------------------------------
+      const vitrineGlassMaterial = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color('#d4ecf9'),
+        transparent: true,
+        opacity: 0.65,
+        transmission: 0.30,
+        roughness: 0.08,
+        metalness: 0.12,
+        ior: 1.52,
+        reflectivity: 0.92,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      const vitrineShelfGlassMaterial = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color('#c2e5f5'),
+        transparent: true,
+        opacity: 0.70,
+        transmission: 0.28,
+        roughness: 0.06,
+        metalness: 0.15,
+        ior: 1.52,
+        reflectivity: 0.94,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      const vitrineBaseMat = new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.35,
+        metalness: 0.6
+      });
+
+      const vitrineFloorMat = new THREE.MeshStandardMaterial({
+        color: 0xf8fafc,
+        roughness: 0.25,
+        metalness: 0.1
+      });
+
+      function createPhoneItem(bodyHex, screenHex, hasGlow = true) {
+        const item = new THREE.Group();
+
+        // Clear acrylic wedge stand
+        const standGeo = new THREE.BoxGeometry(0.075, 0.035, 0.065);
+        const standMat = new THREE.MeshPhysicalMaterial({
+          color: 0xffffff, transparent: true, opacity: 0.50, roughness: 0.1
+        });
+        const stand = new THREE.Mesh(standGeo, standMat);
+        stand.position.set(0, 0.018, -0.01);
+        item.add(stand);
+
+        // Phone body
+        const bodyGeo = new THREE.BoxGeometry(0.075, 0.155, 0.008);
+        const bodyMat = new THREE.MeshStandardMaterial({
+          color: bodyHex, metalness: 0.85, roughness: 0.2
+        });
+        const phone = new THREE.Mesh(bodyGeo, bodyMat);
+        phone.position.set(0, 0.082, 0);
+        phone.rotation.x = -0.32;
+
+        // Glowing Screen
+        const screenGeo = new THREE.BoxGeometry(0.070, 0.148, 0.002);
+        const screenMat = new THREE.MeshStandardMaterial({
+          color: screenHex,
+          emissive: screenHex,
+          emissiveIntensity: hasGlow ? 0.38 : 0.05,
+          roughness: 0.1,
+          metalness: 0.5
+        });
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        screen.position.set(0, 0, 0.0045);
+        phone.add(screen);
+
+        // Triple Camera bump on back
+        const bumpGeo = new THREE.BoxGeometry(0.026, 0.028, 0.004);
+        const bumpMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.2 });
+        const bump = new THREE.Mesh(bumpGeo, bumpMat);
+        bump.position.set(-0.02, 0.055, -0.005);
+        phone.add(bump);
+
+        item.add(phone);
+        return item;
+      }
+
+      function createWatchItem(bandHex, faceHex, dialGlowHex = 0x38bdf8) {
+        const item = new THREE.Group();
+
+        // Curved stand
+        const standGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.030, 16);
+        const standMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.9, roughness: 0.15 });
+        const stand = new THREE.Mesh(standGeo, standMat);
+        stand.rotation.z = Math.PI / 2;
+        stand.position.set(0, 0.040, 0);
+        item.add(stand);
+
+        // Stand base peg
+        const pegGeo = new THREE.CylinderGeometry(0.006, 0.008, 0.035, 12);
+        const peg = new THREE.Mesh(pegGeo, standMat);
+        peg.position.set(0, 0.018, 0);
+        item.add(peg);
+
+        // Watch case
+        const caseGeo = new THREE.BoxGeometry(0.036, 0.044, 0.010);
+        const caseMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.2 });
+        const wCase = new THREE.Mesh(caseGeo, caseMat);
+        wCase.position.set(0, 0.040, 0.024);
+        item.add(wCase);
+
+        // Watch glowing OLED face
+        const faceGeo = new THREE.BoxGeometry(0.031, 0.039, 0.002);
+        const faceMat = new THREE.MeshStandardMaterial({
+          color: faceHex,
+          emissive: dialGlowHex,
+          emissiveIntensity: 0.45,
+          roughness: 0.1
+        });
+        const face = new THREE.Mesh(faceGeo, faceMat);
+        face.position.set(0, 0, 0.0055);
+        wCase.add(face);
+
+        // Strap wrapped around stand
+        const strapGeo = new THREE.BoxGeometry(0.022, 0.082, 0.050);
+        const strapMat = new THREE.MeshStandardMaterial({ color: bandHex, roughness: 0.6, metalness: 0.1 });
+        const strap = new THREE.Mesh(strapGeo, strapMat);
+        strap.position.set(0, 0.040, 0);
+        item.add(strap);
+
+        return item;
+      }
+
+      function createEarbudsCase(isOpen = false, colorHex = 0xffffff) {
+        const item = new THREE.Group();
+        const caseGeo = new THREE.BoxGeometry(0.055, 0.042, 0.022);
+        const caseMat = new THREE.MeshStandardMaterial({
+          color: colorHex, roughness: 0.15, metalness: 0.2
+        });
+        const caseMesh = new THREE.Mesh(caseGeo, caseMat);
+        caseMesh.position.set(0, 0.021, 0);
+        item.add(caseMesh);
+
+        // Tiny status LED
+        const ledGeo = new THREE.SphereGeometry(0.002, 8, 8);
+        const ledMat = new THREE.MeshBasicMaterial({ color: isOpen ? 0x22c55e : 0xf59e0b });
+        const led = new THREE.Mesh(ledGeo, ledMat);
+        led.position.set(0, 0.022, 0.012);
+        item.add(led);
+
+        if (isOpen) {
+          const lidGeo = new THREE.BoxGeometry(0.055, 0.020, 0.022);
+          const lid = new THREE.Mesh(lidGeo, caseMat);
+          lid.position.set(0, 0.048, -0.010);
+          lid.rotation.x = -0.7;
+          item.add(lid);
+
+          const budGeo = new THREE.SphereGeometry(0.005, 8, 8);
+          const budMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x38bdf8, emissiveIntensity: 0.25 });
+          const bud1 = new THREE.Mesh(budGeo, budMat);
+          bud1.position.set(-0.014, 0.038, 0);
+          item.add(bud1);
+          const bud2 = bud1.clone();
+          bud2.position.x = 0.014;
+          item.add(bud2);
+        }
+        return item;
+      }
+
+      function createPowerBank(colorHex, isDark = true) {
+        const item = new THREE.Group();
+        const pbGeo = new THREE.BoxGeometry(0.065, 0.130, 0.020);
+        const pbMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.7, roughness: 0.3 });
+        const pb = new THREE.Mesh(pbGeo, pbMat);
+        pb.position.set(0, 0.010, 0);
+        pb.rotation.x = Math.PI / 2;
+        item.add(pb);
+
+        // Digital LED % display screen
+        const screenGeo = new THREE.BoxGeometry(0.028, 0.002, 0.018);
+        const screenMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+        const screen = new THREE.Mesh(screenGeo, screenMat);
+        screen.position.set(0, 0.021, -0.04);
+        item.add(screen);
+
+        return item;
+      }
+
+      function createRetailBox(w, h, d, boxHex, accentHex) {
+        const item = new THREE.Group();
+        const boxGeo = new THREE.BoxGeometry(w, h, d);
+        const boxMat = new THREE.MeshStandardMaterial({ color: boxHex, roughness: 0.4, metalness: 0.1 });
+        const box = new THREE.Mesh(boxGeo, boxMat);
+        box.position.set(0, h / 2, 0);
+        item.add(box);
+
+        const stripeGeo = new THREE.BoxGeometry(w * 0.85, h * 0.28, 0.002);
+        const stripeMat = new THREE.MeshBasicMaterial({ color: accentHex });
+        const stripe = new THREE.Mesh(stripeGeo, stripeMat);
+        stripe.position.set(0, h * 0.55, d / 2 + 0.001);
+        item.add(stripe);
+
+        return item;
+      }
+
+      function createHeadphonesOnStand(colorHex) {
+        const item = new THREE.Group();
+
+        const baseGeo = new THREE.CylinderGeometry(0.038, 0.042, 0.010, 16);
+        const baseMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.15 });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.position.set(0, 0.005, 0);
+        item.add(base);
+
+        const poleGeo = new THREE.CylinderGeometry(0.006, 0.006, 0.160, 12);
+        const pole = new THREE.Mesh(poleGeo, baseMat);
+        pole.position.set(0, 0.085, 0);
+        item.add(pole);
+
+        const archGeo = new THREE.TorusGeometry(0.042, 0.005, 8, 24, Math.PI);
+        const archMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.4, roughness: 0.4 });
+        const arch = new THREE.Mesh(archGeo, archMat);
+        arch.position.set(0, 0.160, 0);
+        item.add(arch);
+
+        const cupGeo = new THREE.CylinderGeometry(0.020, 0.020, 0.018, 16);
+        const cupMat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.8, roughness: 0.2 });
+        const c1 = new THREE.Mesh(cupGeo, cupMat);
+        c1.rotation.z = Math.PI / 2;
+        c1.position.set(-0.045, 0.145, 0);
+        item.add(c1);
+
+        const c2 = c1.clone();
+        c2.position.x = 0.045;
+        item.add(c2);
+
+        return item;
+      }
+
+      function createMagSafeDock() {
+        const item = new THREE.Group();
+        const baseGeo = new THREE.CylinderGeometry(0.035, 0.040, 0.008, 16);
+        const metalMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.9, roughness: 0.15 });
+        const base = new THREE.Mesh(baseGeo, metalMat);
+        base.position.set(0, 0.004, 0);
+        item.add(base);
+
+        const stemGeo = new THREE.CylinderGeometry(0.004, 0.004, 0.085, 12);
+        const stem = new THREE.Mesh(stemGeo, metalMat);
+        stem.position.set(0, 0.045, -0.010);
+        stem.rotation.x = 0.25;
+        item.add(stem);
+
+        const puckGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.006, 20);
+        const puckMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+        const puck = new THREE.Mesh(puckGeo, puckMat);
+        puck.position.set(0, 0.082, 0.005);
+        puck.rotation.x = Math.PI / 3;
+        item.add(puck);
+
+        return item;
+      }
+
+      function createAllGlassVitrine(width = 1.50, depth = 0.50, height = 0.95, variant = 1) {
+        const vg = new THREE.Group();
+
+        // 1. Base Cabinet Plinth (قاعدة سفلية أنيقة)
+        const bottomBase = new THREE.Mesh(new THREE.BoxGeometry(width, 0.10, depth), vitrineBaseMat);
+        bottomBase.position.set(0, 0.05, 0);
+        vg.add(bottomBase);
+
+        // Display Floor Plate
+        const floorPlate = new THREE.Mesh(new THREE.BoxGeometry(width - 0.04, 0.012, depth - 0.04), vitrineFloorMat);
+        floorPlate.position.set(0, 0.106, 0);
+        vg.add(floorPlate);
+
+        // 2. Slim Chrome Corner Pillars & Structural Frame
+        const legOffsets = [
+          [-width / 2 + 0.015, height / 2 + 0.05, -depth / 2 + 0.015],
+          [width / 2 - 0.015, height / 2 + 0.05, -depth / 2 + 0.015],
+          [-width / 2 + 0.015, height / 2 + 0.05, depth / 2 - 0.015],
+          [width / 2 - 0.015, height / 2 + 0.05, depth / 2 - 0.015]
+        ];
+        const pillarGeo = new THREE.BoxGeometry(0.015, height - 0.10, 0.015);
+        legOffsets.forEach(([lx, ly, lz]) => {
+          const pillar = new THREE.Mesh(pillarGeo, chromeMaterial);
+          pillar.position.set(lx, ly, lz);
+          vg.add(pillar);
+        });
+
+        // Top Horizontal Chrome Frame Rails
+        const topRailLongGeo = new THREE.BoxGeometry(width, 0.014, 0.014);
+        const rTop1 = new THREE.Mesh(topRailLongGeo, chromeMaterial);
+        rTop1.position.set(0, height - 0.007, depth / 2 - 0.007);
+        vg.add(rTop1);
+        const rTop2 = rTop1.clone();
+        rTop2.position.z = -depth / 2 + 0.007;
+        vg.add(rTop2);
+
+        const topRailShortGeo = new THREE.BoxGeometry(0.014, 0.014, depth - 0.028);
+        const rTop3 = new THREE.Mesh(topRailShortGeo, chromeMaterial);
+        rTop3.position.set(width / 2 - 0.007, height - 0.007, 0);
+        vg.add(rTop3);
+        const rTop4 = rTop3.clone();
+        rTop4.position.x = -width / 2 + 0.007;
+        vg.add(rTop4);
+
+        // ----------------------------------------------------
+        // 3. THE 2 INTERIOR FLOATING GLASS SHELVES (الرفين الزجاج بالداخل)
+        // ----------------------------------------------------
+        const shelfHeights = [0.38, 0.68]; // Shelf 1 (Lower) and Shelf 2 (Upper)
+        const bracketGeo = new THREE.BoxGeometry(0.025, 0.014, 0.025);
+
+        shelfHeights.forEach((shY) => {
+          // Floating Tempered Glass Shelf Plate
+          const shelf = new THREE.Mesh(
+            new THREE.BoxGeometry(width - 0.04, 0.012, depth - 0.04),
+            vitrineShelfGlassMaterial
+          );
+          shelf.position.set(0, shY, 0);
+          vg.add(shelf);
+
+          // 4 Chrome Support Brackets
+          const bracketOffsets = [
+            [-width / 2 + 0.024, shY - 0.007, -depth / 2 + 0.024],
+            [width / 2 - 0.024, shY - 0.007, -depth / 2 + 0.024],
+            [-width / 2 + 0.024, shY - 0.007, depth / 2 - 0.024],
+            [width / 2 - 0.024, shY - 0.007, depth / 2 - 0.024]
+          ];
+          bracketOffsets.forEach(([bx, by, bz]) => {
+            const br = new THREE.Mesh(bracketGeo, chromeMaterial);
+            br.position.set(bx, by, bz);
+            vg.add(br);
+          });
+        });
+
+        // ----------------------------------------------------
+        // 4. RICH MERCHANDISE DISPLAY ACROSS ALL 3 LEVELS (بضاعة معروضة كاملة)
+        // ----------------------------------------------------
+        if (variant === 1) {
+          // ==================== VITRINE 1 ====================
+          // Level 2 (Upper Shelf - y = 0.68): Flagship Smartphones & Retail Boxes
+          const p1 = createPhoneItem(0x475569, 0x06b6d4); // Natural Titanium / Cyan
+          p1.position.set(-0.48, 0.686, 0.02);
+          vg.add(p1);
+
+          const b1 = createRetailBox(0.09, 0.17, 0.045, 0xffffff, 0x0284c7);
+          b1.position.set(-0.48, 0.686, -0.12);
+          vg.add(b1);
+
+          const p2 = createPhoneItem(0x1e1b4b, 0xa855f7); // Deep Purple / Violet
+          p2.position.set(-0.16, 0.686, 0.02);
+          vg.add(p2);
+
+          const p3 = createPhoneItem(0x0f172a, 0xf59e0b); // Space Black / Amber
+          p3.position.set(0.16, 0.686, 0.02);
+          vg.add(p3);
+
+          const p4 = createPhoneItem(0x78350f, 0x34d399); // Desert Gold / Emerald
+          p4.position.set(0.48, 0.686, 0.02);
+          vg.add(p4);
+
+          const b2 = createRetailBox(0.09, 0.17, 0.045, 0x0f172a, 0xf59e0b);
+          b2.position.set(0.48, 0.686, -0.12);
+          vg.add(b2);
+
+          // Level 1 (Lower Shelf - y = 0.38): Smartwatches & Wireless Earbuds
+          const w1 = createWatchItem(0x0f172a, 0x0284c7, 0x38bdf8); // Black band
+          w1.position.set(-0.50, 0.386, 0.0);
+          vg.add(w1);
+
+          const w2 = createWatchItem(0xe2e8f0, 0xec4899, 0xf43f5e); // Silver / Starlight band
+          w2.position.set(-0.25, 0.386, 0.0);
+          vg.add(w2);
+
+          const w3 = createWatchItem(0xea580c, 0xffffff, 0xf97316); // Ultra Orange band
+          w3.position.set(0.00, 0.386, 0.0);
+          vg.add(w3);
+
+          const eb1 = createEarbudsCase(true, 0xffffff); // Open white AirPods
+          eb1.position.set(0.26, 0.386, 0.0);
+          vg.add(eb1);
+
+          const eb2 = createEarbudsCase(false, 0x1e293b); // Closed matte black
+          eb2.position.set(0.48, 0.386, 0.0);
+          vg.add(eb2);
+
+          // Level 0 (Bottom Floor - y = 0.11): Power Banks & GaN Fast Chargers
+          const pb1 = createPowerBank(0x0f172a);
+          pb1.position.set(-0.48, 0.112, 0.0);
+          vg.add(pb1);
+
+          const pb2 = createPowerBank(0x64748b);
+          pb2.position.set(-0.25, 0.112, 0.0);
+          vg.add(pb2);
+
+          const dock1 = createMagSafeDock();
+          dock1.position.set(0.00, 0.112, 0.0);
+          vg.add(dock1);
+
+          const chBox1 = createRetailBox(0.08, 0.12, 0.04, 0xf8fafc, 0x10b981);
+          chBox1.position.set(0.25, 0.112, 0.0);
+          vg.add(chBox1);
+
+          const cableBox = createRetailBox(0.09, 0.14, 0.03, 0xffffff, 0x6366f1);
+          cableBox.position.set(0.48, 0.112, 0.0);
+          vg.add(cableBox);
+
+        } else {
+          // ==================== VITRINE 2 ====================
+          // Level 2 (Upper Shelf - y = 0.68): Foldables, Audio & Cases
+          // Galaxy Fold open
+          const foldBody = new THREE.Mesh(
+            new THREE.BoxGeometry(0.140, 0.160, 0.008),
+            new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.2 })
+          );
+          foldBody.position.set(-0.46, 0.686 + 0.08, 0.0);
+          foldBody.rotation.x = -0.30;
+          const foldScreen = new THREE.Mesh(
+            new THREE.BoxGeometry(0.134, 0.154, 0.002),
+            new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.4 })
+          );
+          foldScreen.position.set(0, 0, 0.0045);
+          foldBody.add(foldScreen);
+          vg.add(foldBody);
+
+          const pV2_1 = createPhoneItem(0xf1f5f9, 0x0284c7); // Ceramic White / Blue
+          pV2_1.position.set(-0.15, 0.686, 0.02);
+          vg.add(pV2_1);
+
+          const pV2_2 = createPhoneItem(0x064e3b, 0x34d399); // Alpine Green / Emerald
+          pV2_2.position.set(0.15, 0.686, 0.02);
+          vg.add(pV2_2);
+
+          // Luxury MagSafe Case Retail Box on Easel
+          const caseBox1 = createRetailBox(0.085, 0.165, 0.025, 0x78350f, 0xf59e0b); // Leather tan
+          caseBox1.position.set(0.46, 0.686, 0.02);
+          caseBox1.rotation.y = -0.25;
+          vg.add(caseBox1);
+
+          // Level 1 (Lower Shelf - y = 0.38): Studio Headphones, Gaming Earbuds & Stylus
+          const hp = createHeadphonesOnStand(0x334155); // Over-ear Space Grey headphones
+          hp.position.set(-0.45, 0.386, 0.0);
+          vg.add(hp);
+
+          const gEar1 = createEarbudsCase(true, 0x0f172a); // Gaming TWS
+          gEar1.position.set(-0.12, 0.386, 0.0);
+          vg.add(gEar1);
+
+          const gEar2 = createEarbudsCase(false, 0xffffff);
+          gEar2.position.set(0.12, 0.386, 0.0);
+          vg.add(gEar2);
+
+          // Stylus Pen in magnetic stand
+          const penStand = new THREE.Mesh(
+            new THREE.BoxGeometry(0.04, 0.03, 0.04),
+            new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.2 })
+          );
+          penStand.position.set(0.35, 0.386 + 0.015, 0.0);
+          const pen = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.004, 0.004, 0.15, 12),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.2, roughness: 0.3 })
+          );
+          pen.position.set(0, 0.065, 0);
+          pen.rotation.z = -0.3;
+          penStand.add(pen);
+          vg.add(penStand);
+
+          const dock2 = createMagSafeDock();
+          dock2.position.set(0.50, 0.386, 0.0);
+          vg.add(dock2);
+
+          // Level 0 (Bottom Floor - y = 0.11): Heavy Duty Power & Multi-Charging Pads
+          const pbHeavy = createPowerBank(0x18181b);
+          pbHeavy.position.set(-0.46, 0.112, 0.0);
+          vg.add(pbHeavy);
+
+          // 3-in-1 Charging Pad
+          const padGeo = new THREE.BoxGeometry(0.18, 0.012, 0.08);
+          const padMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.5 });
+          const pad = new THREE.Mesh(padGeo, padMat);
+          pad.position.set(-0.12, 0.112 + 0.006, 0.0);
+          vg.add(pad);
+
+          const pbSlim = createPowerBank(0x0284c7);
+          pbSlim.position.set(0.18, 0.112, 0.0);
+          vg.add(pbSlim);
+
+          const accBox1 = createRetailBox(0.09, 0.13, 0.035, 0xffffff, 0xef4444);
+          accBox1.position.set(0.42, 0.112, -0.04);
+          vg.add(accBox1);
+          const accBox2 = createRetailBox(0.09, 0.13, 0.035, 0x0f172a, 0x38bdf8);
+          accBox2.position.set(0.50, 0.112, 0.05);
+          vg.add(accBox2);
+        }
+
+        // ----------------------------------------------------
+        // 5. CRYSTAL GLASS PANELS (All 4 Sides & Top)
+        // With Reduced Transparency (شفافية مخففة ومظهر كريستالي واضح)
+        // ----------------------------------------------------
+        const topGlass = new THREE.Mesh(new THREE.BoxGeometry(width, 0.015, depth), vitrineGlassMaterial);
+        topGlass.position.set(0, height, 0);
+        vg.add(topGlass);
+
+        const frontG = new THREE.Mesh(new THREE.BoxGeometry(width - 0.02, height - 0.11, 0.014), vitrineGlassMaterial);
+        frontG.position.set(0, height / 2 + 0.05, depth / 2 - 0.007);
+        vg.add(frontG);
+
+        const backG = frontG.clone();
+        backG.position.z = -depth / 2 + 0.007;
+        vg.add(backG);
+
+        const sideGGeo = new THREE.BoxGeometry(0.014, height - 0.11, depth - 0.028);
+        const sideG1 = new THREE.Mesh(sideGGeo, vitrineGlassMaterial);
+        sideG1.position.set(-width / 2 + 0.007, height / 2 + 0.05, 0);
+        vg.add(sideG1);
+
+        const sideG2 = sideG1.clone();
+        sideG2.position.x = width / 2 - 0.007;
+        vg.add(sideG2);
+
+        // ----------------------------------------------------
+        // 6. INTERNAL SHOWCASE SPOTLIGHTING
+        // ----------------------------------------------------
+        const vSpotTop = new THREE.PointLight(0xfffae8, 0.65, 2.2, 1.8);
+        vSpotTop.position.set(0, height - 0.04, 0);
+        vg.add(vSpotTop);
+        ledLightsList.push(vSpotTop);
+
+        const vSpotMid = new THREE.PointLight(0xffffff, 0.45, 1.6, 2.0);
+        vSpotMid.position.set(0, 0.67, 0);
+        vg.add(vSpotMid);
+        ledLightsList.push(vSpotMid);
+
+        return vg;
+      }
+
+      // Vitrine 1 (1.50m) - الهواتف الرائدة والساعات الذكية
+      const vitrine1 = createAllGlassVitrine(1.50, 0.50, 0.95, 1);
+      // Vitrine 2 (1.50m) - الهواتف القابلة للطي والصوتيات والطاقة
+      const vitrine2 = createAllGlassVitrine(1.50, 0.50, 0.95, 2);
+
+      if (onRight) {
+        vitrine1.rotation.y = Math.PI / 2;
+        vitrine1.position.set(1.45, 0, 1.75);
+        vitrine2.rotation.y = 0;
+        vitrine2.position.set(2.20, 0, 1.00);
+      } else {
+        vitrine1.rotation.y = Math.PI / 2;
+        vitrine1.position.set(2.55, 0, 1.75);
+        vitrine2.rotation.y = 0;
+        vitrine2.position.set(1.80, 0, 1.00);
+      }
+
+      furnitureGroup.add(vitrine1);
+      furnitureGroup.add(vitrine2);
+    }
+
+    // Build the default model with doors on Right and furnished Proposal 1!
+    buildShopModel(doorsOnRight);
+
+    // ----------------------------------------------------
+    // 6. Interactive Controls
+    // ----------------------------------------------------
+    let furnitureVisible = true;
+    function toggleFurniture() {
+      furnitureVisible = !furnitureVisible;
+      furnitureGroup.visible = furnitureVisible;
+      const btn = document.getElementById('btn-toggle-furniture');
+      const text = document.getElementById('furnish-btn-text');
+      btn.classList.toggle('active', furnitureVisible);
+      text.innerText = furnitureVisible ? 'الفرش: ظاهر' : 'الفرش: مخفي';
+    }
+
+    let ledLightingOn = true;
+    function toggleLedLighting() {
+      ledLightingOn = !ledLightingOn;
+      const btn = document.getElementById('btn-toggle-led');
+      btn.classList.toggle('active', ledLightingOn);
+      ledLightsList.forEach(light => {
+        light.intensity = ledLightingOn ? 0.35 : 0.0;
+      });
+      ledWarmEmissive.color.setHex(ledLightingOn ? 0xfff6db : 0x475569);
+    }
+
+    let isLeafOpen = true;
+    function toggleLeaf() {
+      if (!doorPivotRef) return;
+      isLeafOpen = !isLeafOpen;
+      const swingSign = doorsOnRight ? 1 : -1;
+      // Opens inwards towards the 4m wall (away from maintenance desk)
+      const targetAngle = isLeafOpen ? (-swingSign * (Math.PI / 1.95)) : 0;
+
+      new TWEEN.Tween(doorPivotRef.rotation)
+        .to({ y: targetAngle }, 700)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+
+      const btn = document.getElementById('btn-toggle-door');
+      const text = document.getElementById('door-btn-text');
+      btn.classList.toggle('active', isLeafOpen);
+      text.innerText = isLeafOpen ? 'إغلاق الدلفة' : 'فتح الدلفة';
+    }
+    document.getElementById('btn-toggle-door').addEventListener('click', toggleLeaf);
+
+    function toggleDoorsSide() {
+      doorsOnRight = !doorsOnRight;
+      buildShopModel(doorsOnRight);
+
+      const sideText = document.getElementById('side-btn-text');
+      sideText.innerText = doorsOnRight ? 'البابين: اليمين' : 'البابين: الشمال';
+
+      resetCamera();
+    }
+
+    // ----------------------------------------------------
+    // 7. Lighting
+    // ----------------------------------------------------
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.1);
+    sunLight.position.set(6, 7, 7);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.bias = -0.0001;
+    scene.add(sunLight);
+
+    const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x1e293b, 0.55);
+    scene.add(hemiLight);
+
+    const interiorSpotlights = [];
+    const spotCoords = [
+      { x: 1.2, z: 1.5 }, { x: 2.8, z: 1.5 },
+      { x: 1.1, z: 3.2 }, { x: 2.7, z: 3.2 },
+      { x: 1.2, z: 4.8 }, { x: 2.6, z: 4.8 }
+    ];
+
+    spotCoords.forEach(c => {
+      const spot = new THREE.PointLight(0xfff3d6, 0.85, 4.5, 1.8);
+      spot.position.set(c.x, shopHeight - 0.15, c.z);
+      spot.castShadow = true;
+      spot.shadow.bias = -0.001;
+      shopGroup.add(spot);
+      interiorSpotlights.push(spot);
+
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 12), new THREE.MeshBasicMaterial({ color: 0xfffae8 }));
+      bulb.position.copy(spot.position);
+      shopGroup.add(bulb);
+    });
+
+    // ----------------------------------------------------
+    // 8. Camera Preset Views (tailored for Proposal 1!)
+    // ----------------------------------------------------
+    function getCameraPresets() {
+      const opt = window.activeDeskOption || 1;
+      if (doorsOnRight) {
+        let repairPos = new THREE.Vector3(2.85, 1.85, 2.75);
+        let repairTarget = new THREE.Vector3(1.35, 1.05, 4.65);
+        let microPos = new THREE.Vector3(1.40, 1.30, 4.50);
+        let microTarget = new THREE.Vector3(0.68, 0.95, 4.95);
+        let techPos = new THREE.Vector3(1.50, 1.35, 5.02);
+        let techTarget = new THREE.Vector3(2.10, 1.05, 3.80);
+
+        if (opt === 2) {
+          repairPos = new THREE.Vector3(2.80, 2.00, 3.50);
+          repairTarget = new THREE.Vector3(1.30, 0.95, 5.20);
+          microPos = new THREE.Vector3(1.30, 1.30, 4.50);
+          microTarget = new THREE.Vector3(0.55, 0.95, 4.90);
+          techPos = new THREE.Vector3(1.20, 1.35, 5.15);
+          techTarget = new THREE.Vector3(2.30, 1.10, 3.20);
+        } else if (opt === 3) {
+          repairPos = new THREE.Vector3(2.65, 1.80, 3.50);
+          repairTarget = new THREE.Vector3(0.60, 0.95, 4.65);
+          microPos = new THREE.Vector3(1.40, 1.25, 3.75);
+          microTarget = new THREE.Vector3(0.55, 0.95, 4.05);
+          techPos = new THREE.Vector3(1.05, 1.35, 4.45);
+          techTarget = new THREE.Vector3(0.40, 1.05, 4.45);
+        }
+
+        return {
+          repairCounterView: { pos: repairPos, target: repairTarget },
+          microscopeZoomView: { pos: microPos, target: microTarget },
+          technicianEyeView: { pos: techPos, target: techTarget },
+          // 4. Customer view walking through open door 2
+          customerEntryView: {
+            pos: new THREE.Vector3(3.2, 1.65, 4.6),
+            target: new THREE.Vector3(1.2, 1.5, 3.2)
+          },
+          // 5. Slatwall Accessory Wall with Doors (L-Shape 2.40m x 2.40m)
+          ledWallView: {
+            pos: new THREE.Vector3(2.7, 1.65, 2.4),
+            target: new THREE.Vector3(0.9, 1.25, 0.95)
+          },
+          // 6. All-Glass Mobile Phone Vitrines Island
+          glassVitrinesView: {
+            pos: new THREE.Vector3(2.8, 1.5, 2.2),
+            target: new THREE.Vector3(1.8, 0.9, 1.2)
+          },
+          // 7. Floor Marble Veining
+          floorView: {
+            pos: new THREE.Vector3(2.0, 2.0, 2.5),
+            target: new THREE.Vector3(2.0, 0.0, 3.8)
+          },
+          // 8. Architectural Floor Plan
+          top: {
+            pos: new THREE.Vector3(2.0, 9.2, 3.0),
+            target: new THREE.Vector3(2.0, 0, 3.0)
+          },
+          // 9. Isometric 3D
+          iso: {
+            pos: new THREE.Vector3(-4.5, 6.0, -3.5),
+            target: new THREE.Vector3(2.0, 1.0, 3.0)
+          }
+        };
+      } else {
+        return {
+          repairCounterView: {
+            pos: new THREE.Vector3(1.15, 1.85, 2.75),
+            target: new THREE.Vector3(2.65, 1.05, 4.65)
+          },
+          microscopeZoomView: {
+            pos: new THREE.Vector3(2.60, 1.30, 4.50),
+            target: new THREE.Vector3(3.32, 0.95, 4.95)
+          },
+          technicianEyeView: {
+            pos: new THREE.Vector3(2.50, 1.35, 5.02),
+            target: new THREE.Vector3(1.90, 1.05, 3.80)
+          },
+          customerEntryView: {
+            pos: new THREE.Vector3(0.6, 1.65, 4.25),
+            target: new THREE.Vector3(2.0, 1.20, 4.20)
+          },
+          ledWallView: {
+            pos: new THREE.Vector3(1.7, 1.65, 3.80),
+            target: new THREE.Vector3(3.65, 1.50, 3.80)
+          },
+          glassVitrinesView: {
+            pos: new THREE.Vector3(0.7, 1.55, 3.20),
+            target: new THREE.Vector3(1.9, 0.95, 4.30)
+          },
+          floorView: {
+            pos: new THREE.Vector3(2.0, 2.0, 2.5),
+            target: new THREE.Vector3(2.0, 0.0, 3.8)
+          },
+          top: {
+            pos: new THREE.Vector3(2.0, 9.5, 3.0),
+            target: new THREE.Vector3(2.0, 0, 3.0)
+          },
+          iso: {
+            pos: new THREE.Vector3(8.0, 6.5, -3.5),
+            target: new THREE.Vector3(2.0, 1.0, 3.0)
+          }
+        };
+      }
+    }
+
+    // ----------------------------------------------------
+    // Interior 360 Panorama & Look-Around Engine
+    // ----------------------------------------------------
+    let isInterior360 = true; // Default directly into interior 360 mode!
+    let interiorYaw = Math.PI; // Face towards maintenance bench (+Z)
+    let targetYaw = Math.PI;
+    let interiorPitch = 0.0;
+    let targetPitch = 0.0;
+    const interiorEye = new THREE.Vector3(2.00, 1.55, 3.00); // Eye-level inside center aisle
+
+    // Clamp camera strictly inside shop perimeter walls (cannot exit outside walls!)
+    function clampInsideShop(pos) {
+      const margin = 0.35;
+      pos.z = Math.max(margin, Math.min(5.50, pos.z));
+      const t = Math.max(0, Math.min(1, pos.z / 5.8));
+      const minX = (0.00 + 0.50 * t) + margin;
+      const maxX = (4.00 - 0.52 * t) - margin;
+      pos.x = Math.max(minX, Math.min(maxX, pos.x));
+      pos.y = Math.max(1.20, Math.min(1.85, pos.y));
+      return pos;
+    }
+
+    // Interior Standing Spots
+    const interiorSpots = {
+      center: {
+        pos: new THREE.Vector3(2.00, 1.55, 3.00),
+        target: new THREE.Vector3(1.50, 1.20, 5.00),
+        name: 'وسط المحل (صالة العرض 360°)'
+      },
+      desk: {
+        pos: new THREE.Vector3(1.85, 1.55, 4.10),
+        target: new THREE.Vector3(1.10, 1.05, 5.15),
+        name: 'أمام ورشة الصيانة'
+      },
+      technician: {
+        pos: new THREE.Vector3(1.25, 1.35, 5.05),
+        target: new THREE.Vector3(2.20, 1.30, 3.00),
+        name: 'كرسي فني الصيانة (قمرة العمل)'
+      },
+      entry: {
+        pos: new THREE.Vector3(2.60, 1.55, 1.10),
+        target: new THREE.Vector3(1.80, 1.40, 3.80),
+        name: 'مدخل الزبائن عند الباب'
+      },
+      vitrines: {
+        pos: new THREE.Vector3(2.50, 1.45, 2.20),
+        target: new THREE.Vector3(1.85, 0.75, 1.35),
+        name: 'فاترينات العرض الزجاجية (2 رف وبضاعة كاملة)'
+      }
+    };
+
+    function jumpToSpot(spotKey, duration = 800) {
+      const spot = interiorSpots[spotKey];
+      if (!spot) return;
+
+      setInterior360Mode(true);
+
+      // Update spot pill UI
+      document.querySelectorAll('.spot-pill').forEach(p => p.classList.remove('active'));
+      const btn = document.getElementById('spot-btn-' + spotKey);
+      if (btn) btn.classList.add('active');
+
+      showToastNotification(`📍 ${spot.name}`);
+
+      // Tween eye position
+      new TWEEN.Tween(interiorEye)
+        .to(spot.pos, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+
+      // Compute target yaw and pitch
+      const dx = spot.target.x - spot.pos.x;
+      const dy = spot.target.y - spot.pos.y;
+      const dz = spot.target.z - spot.pos.z;
+      const horizDist = Math.sqrt(dx * dx + dz * dz);
+      const newYaw = Math.atan2(dx, -dz);
+      const newPitch = Math.atan2(dy, horizDist);
+
+      let diffYaw = (newYaw - targetYaw) % (Math.PI * 2);
+      if (diffYaw > Math.PI) diffYaw -= Math.PI * 2;
+      if (diffYaw < -Math.PI) diffYaw += Math.PI * 2;
+      const endYaw = targetYaw + diffYaw;
+
+      new TWEEN.Tween({ y: targetYaw, p: targetPitch })
+        .to({ y: endYaw, p: newPitch }, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .onUpdate((obj) => {
+          targetYaw = obj.y;
+          targetPitch = obj.p;
+        })
+        .start();
+    }
+
+    function setInterior360Mode(enable = true) {
+      isInterior360 = enable;
+      controls.enabled = !enable;
+
+      const btn360 = document.getElementById('btn-mode-360');
+      const btnOrbit = document.getElementById('btn-orbit-view');
+      const spotsBar = document.getElementById('interior-spots-bar');
+
+      if (btn360) btn360.classList.toggle('active', enable);
+      if (btnOrbit) btnOrbit.classList.toggle('active', !enable);
+      if (spotsBar) spotsBar.style.display = enable ? 'flex' : 'none';
+
+      if (enable) {
+        clampInsideShop(interiorEye);
+        controls.autoRotate = false;
+        showToastNotification('🔄 بانوراما 360° من الداخل: اسحب بالماوس أو اللمس للف في مكانك');
+      } else {
+        showToastNotification('🌐 المنظور الخارجي 3D: اسحب لتدوير الموديل بالكامل');
+      }
+    }
+
+    function setExteriorOrbitMode() {
+      setInterior360Mode(false);
+      animateCameraTo(new THREE.Vector3(-4.5, 6.0, -3.5), new THREE.Vector3(2.0, 1.0, 3.0), 1000);
+    }
+
+    function toggleInterior360Mode() {
+      if (isInterior360) {
+        setExteriorOrbitMode();
+      } else {
+        jumpToSpot('center');
+      }
+    }
+
+    function animateCameraTo(targetPos, targetLookAt, duration = 1200) {
+      new TWEEN.Tween(camera.position)
+        .to(targetPos, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+
+      new TWEEN.Tween(controls.target)
+        .to(targetLookAt, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+    }
+
+    function switchCameraView(viewKey) {
+      const presets = getCameraPresets();
+      const preset = presets[viewKey];
+      if (!preset) return;
+
+      document.querySelectorAll('.btn-view').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.btn-view')).find(b => b.getAttribute('onclick')?.includes(viewKey));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (viewKey === 'top' || viewKey === 'iso') {
+        if (viewKey === 'top' && window.ceilingMesh) {
+          window.ceilingMesh.visible = false;
+          const btnCeil = document.getElementById('btn-toggle-ceiling');
+          if (btnCeil) btnCeil.classList.remove('active');
+        }
+        setExteriorOrbitMode();
+        animateCameraTo(preset.pos, preset.target);
+      } else {
+        // Interior view: switch to interior 360 mode anchored at that location!
+        setInterior360Mode(true);
+        if (viewKey === 'repairCounterView') {
+          jumpToSpot('desk');
+        } else if (viewKey === 'technicianEyeView') {
+          jumpToSpot('technician');
+        } else if (viewKey === 'customerEntryView') {
+          jumpToSpot('entry');
+        } else if (viewKey === 'ledWallView' || viewKey === 'glassVitrinesView') {
+          jumpToSpot('vitrines');
+        } else {
+          // Custom interior view
+          new TWEEN.Tween(interiorEye)
+            .to(preset.pos, 800)
+            .easing(TWEEN.Easing.Cubic.InOut)
+            .start();
+
+          const dx = preset.target.x - preset.pos.x;
+          const dy = preset.target.y - preset.pos.y;
+          const dz = preset.target.z - preset.pos.z;
+          const horizDist = Math.sqrt(dx * dx + dz * dz);
+          const newYaw = Math.atan2(dx, -dz);
+          const newPitch = Math.atan2(dy, horizDist);
+
+          let diffYaw = (newYaw - targetYaw) % (Math.PI * 2);
+          if (diffYaw > Math.PI) diffYaw -= Math.PI * 2;
+          if (diffYaw < -Math.PI) diffYaw += Math.PI * 2;
+          const endYaw = targetYaw + diffYaw;
+
+          new TWEEN.Tween({ y: targetYaw, p: targetPitch })
+            .to({ y: endYaw, p: newPitch }, 800)
+            .easing(TWEEN.Easing.Cubic.InOut)
+            .onUpdate((obj) => {
+              targetYaw = obj.y;
+              targetPitch = obj.p;
+            })
+            .start();
+        }
+      }
+    }
+
+    // --- Interactive Wall Color Theme Switcher (Harmonizing with Fixed Pink) ---
+    window.currentWallTheme = 'grey'; // Default to modern recommended light grey
+
+    function showToastNotification(msg) {
+      let toast = document.getElementById('floating-toast-notif');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'floating-toast-notif';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '85px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(15, 23, 42, 0.95)';
+        toast.style.backdropFilter = 'blur(12px)';
+        toast.style.border = '1px solid rgba(56, 189, 248, 0.4)';
+        toast.style.color = '#fff';
+        toast.style.padding = '9px 22px';
+        toast.style.borderRadius = '30px';
+        toast.style.fontSize = '13px';
+        toast.style.fontWeight = '700';
+        toast.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.6)';
+        toast.style.zIndex = '99999';
+        toast.style.transition = 'all 0.35s ease';
+        toast.style.pointerEvents = 'none';
+        toast.style.fontFamily = "'Cairo', sans-serif";
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(10px)';
+      }, 2400);
+    }
+
+    const wallColorThemes = {
+      grey: {
+        name: 'رمادي عصري ناعم (Modern Tech Grey)',
+        hex: 0x7d8c99,
+        outerHex: 0x64748b,
+        badge: '#7d8c99',
+        desc: 'أفضل تناسق متوازن وهادئ مع فاترينات البينك ومكتب الصيانة'
+      },
+      white: {
+        name: 'أبيض لؤلؤي صافي (Pure Pearl White)',
+        hex: 0xffffff,
+        outerHex: 0xe2e8f0,
+        badge: '#ffffff',
+        desc: 'يعطي أقصى اتساع بصري للمحل ويعكس الإضاءة بشكل رائع'
+      },
+      greige: {
+        name: 'جريج كشمير دافئ (Cashmere Greige)',
+        hex: 0xaa9d8d,
+        outerHex: 0x8c7e6e,
+        badge: '#aa9d8d',
+        desc: 'مزيج فاخر بين البيج والرمادي يمنح راحة وفخامة لافتة'
+      },
+      charcoal: {
+        name: 'أنثراسيت ملكي فاحم (Luxury Charcoal)',
+        hex: 0x2b3440,
+        outerHex: 0x1e2430,
+        badge: '#2b3440',
+        desc: 'تباين قوي وفخم يبرز لون البينك والأجهزة المضيئة'
+      },
+      beige: {
+        name: 'بيج لاتيه دافئ (Warm Latte Beige)',
+        hex: 0xcfb492,
+        outerHex: 0xb59772,
+        badge: '#cfb492',
+        desc: 'إحساس بالدفء والترحيب وتناغم كلاسيكي راقي'
+      }
+    };
+
+    window.setWallColorTheme = function(themeKey) {
+      const theme = wallColorThemes[themeKey];
+      if (!theme) return;
+      window.currentWallTheme = themeKey;
+
+      // Update the shared material assigned to the shop walls and columns.
+      beigeWallMaterial.color.setHex(theme.hex);
+      beigeWallMaterial.roughness = 0.55;
+      beigeWallMaterial.metalness = 0.05;
+      beigeWallMaterial.needsUpdate = true;
+
+      // The wall around the pink entrance uses a separate neutral material.
+      // Theme it too, while leaving the pink faces and blue shutters untouched.
+      exteriorWallMaterial.color.setHex(theme.outerHex);
+      exteriorWallMaterial.needsUpdate = true;
+
+      ['grey', 'white', 'greige', 'charcoal', 'beige'].forEach((key) => {
+        const button = document.getElementById('btn-wall-' + key);
+        if (button) button.classList.toggle('active', key === themeKey);
+      });
+
+      document.querySelectorAll('.wall-color-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById('wall-color-' + themeKey);
+      if (activeCard) activeCard.classList.add('active');
+
+      const bannerName = document.getElementById('current-color-name');
+      if (bannerName) {
+        bannerName.innerHTML = `<span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${theme.badge}; border:1px solid #fff; margin-left:6px; vertical-align:middle;"></span>${theme.name}`;
+      }
+
+      showToastNotification(`🎨 تم تطبيق: <b>${theme.name}</b>`);
+    };
+    // Keep the earlier function name available for any existing callers.
+    window.switchWallColor = window.setWallColorTheme;
+
+    window.toggleDrawer = function(forceOpen) {
+      const drawer = document.getElementById('app-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      if (!drawer) return;
+
+      const isOpen = (typeof forceOpen === 'boolean') ? forceOpen : !drawer.classList.contains('open');
+      drawer.classList.toggle('open', isOpen);
+      if (overlay) overlay.classList.toggle('active', isOpen);
+    };
+
+    function toggleSpecs() {
+      toggleDrawer();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleDrawer(false);
+      }
+    });
+
+    function resetCamera() {
+      jumpToSpot('center');
+    }
+
+    window.activeDeskOption = 1;
+
+    function updateDeskSpecsBox(optIndex) {
+      const specsBox = document.getElementById('desk-specs-box');
+      if (!specsBox) return;
+
+      if (optIndex === 1) {
+        specsBox.innerHTML = `
+          <div class="breakdown-title">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>1. المقترح 1: حرف L مدمج (ضلع 95 سم في وسط المحل):</span>
+          </div>
+          <div class="breakdown-step">
+            <span>ضلع الأجهزة والمعدات (حائط 5.70م):</span>
+            <span style="font-weight:700; color:#38bdf8;">1.60م (ميكروسكوب + هوت إير + باور سبلاي)</span>
+          </div>
+          <div class="breakdown-step">
+            <span>ضلع الاستلام والفحص (وسط المحل):</span>
+            <span style="font-weight:700; color:#34d399;">95 سم فقط (ممر واسع 1.60م بدون أي تداخل)</span>
+          </div>
+          <div class="breakdown-step">
+            <span>حركة الزبائن والممر:</span>
+            <span style="font-weight:700; color:#fbbf24;">ممر واسع ومريح (1.60م) بدون أي اختناق مع كاونترات البينك</span>
+          </div>
+          <div class="breakdown-step">
+            <span>تجهيزات الصيانة:</span>
+            <span style="font-weight:700; color:#a78bfa;">ميكروسكوب + باد سيليكون أزرق + فواصل أكريليك + ليد ورم</span>
+          </div>
+        `;
+      } else if (optIndex === 2) {
+        specsBox.innerHTML = `
+          <div class="breakdown-title">
+            <i class="fa-solid fa-shapes" style="color:#38bdf8;"></i>
+            <span>2. المقترح 2: ورشة U-Desk متكاملة (مستطيل ناقص ضلع):</span>
+          </div>
+          <div class="breakdown-step">
+            <span>ضلع الصيانة والميكروسكوب (حائط 5.70م):</span>
+            <span style="font-weight:700; color:#38bdf8;">1.50م + أدراج بلاستيك بعرض المكتب (عمق 60سم)</span>
+          </div>
+          <div class="breakdown-step">
+            <span>ضلع العمل والأجهزة الرئيسي (حائط 3.00م):</span>
+            <span style="font-weight:700; color:#34d399;">3.00م بكامل عرض الحائط مع رف وليدات ورم</span>
+          </div>
+          <div class="breakdown-step">
+            <span>ضلع الاستلام والزبائن (حائط 6.00م):</span>
+            <span style="font-weight:700; color:#fbbf24;">50 سم ملاصق للحائط عند الباب لاستلام وتسليم الأجهزة</span>
+          </div>
+          <div class="breakdown-step">
+            <span>بروز المكتب في وسط المحل:</span>
+            <span style="font-weight:700; color:#10b981;">صفر (0 سم) - وسط المحل مفتوح بممر واسع 2.23م</span>
+          </div>
+          <div class="breakdown-step">
+            <span>مساحة الفني الداخلية:</span>
+            <span style="font-weight:700; color:#a78bfa;">قمرة عمل 360° بكرسي دوّار يتحرك بحرية بين 3 كاونترات</span>
+          </div>
+        `;
+      } else if (optIndex === 3) {
+        specsBox.innerHTML = `
+          <div class="breakdown-title">
+            <i class="fa-solid fa-ruler-horizontal"></i>
+            <span>3. المقترح 3: مكتب طولي مستقيم 2.00م ملاصق للحائط:</span>
+          </div>
+          <div class="breakdown-step">
+            <span>طول المكتب (حائط 5.70م):</span>
+            <span style="font-weight:700; color:#38bdf8;">2.00 متر طولي مستقيم × عمق 65 سم</span>
+          </div>
+          <div class="breakdown-step">
+            <span>بروز المكتب في الصالة:</span>
+            <span style="font-weight:700; color:#10b981;">65 سم فقط ملاصق تماماً للحائط</span>
+          </div>
+          <div class="breakdown-step">
+            <span>عرض الممر المتبقي:</span>
+            <span style="font-weight:700; color:#34d399;">2.55 متر ممر فائق الاتساع في الصالة</span>
+          </div>
+          <div class="breakdown-step">
+            <span>تجهيزات الصيانة:</span>
+            <span style="font-weight:700; color:#a78bfa;">ميكروسكوب + هوت إير + باور سبلاي + شاشة ليد</span>
+          </div>
+        `;
+      }
+    }
+
+    window.switchDeskOption = function(optIndex) {
+      window.activeDeskOption = optIndex;
+
+      if (window.deskOption1) window.deskOption1.visible = (optIndex === 1);
+      if (window.deskOption2) window.deskOption2.visible = (optIndex === 2);
+      if (window.deskOption3) window.deskOption3.visible = (optIndex === 3);
+
+      document.querySelectorAll('.btn-desk-opt, .drawer-opt-card').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-opt-' + optIndex);
+      const activeDrawerCard = document.getElementById('drawer-opt-' + optIndex);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activeDrawerCard) activeDrawerCard.classList.add('active');
+
+      updateDeskSpecsBox(optIndex);
+
+      if (optIndex === 1) {
+        showToastNotification('🔧 تم تفعيل المقترح 1: حرف L مدمج (95 سم)');
+      } else if (optIndex === 2) {
+        showToastNotification('📐 تم تفعيل المقترح 2: ورشة U-Desk متكاملة (3×1.50م)');
+      } else if (optIndex === 3) {
+        showToastNotification('📏 تم تفعيل المقترح 3: مكتب طولي مستقيم (2.00م)');
+      }
+    };
+
+    // ----------------------------------------------------
+    // Slatwall Color Coordination Switcher (أبيض وأحمر)
+    // ----------------------------------------------------
+    window.currentSlatwallCoord = 'alternating';
+
+    const slatwallCoordPresets = {
+      alternating: {
+        name: 'تبادلي مخطط (أبيض وأحمر متناغم)',
+        badge: 'linear-gradient(135deg, #ffffff 50%, #dc2626 50%)',
+        desc: 'ألوان سلات وول متبادلة حزام أبيض وأحمر تعطي حيوية مذهلة وتناسق راقي'
+      },
+      white: {
+        name: 'أبيض لؤلؤي بالكامل (Pure White)',
+        badge: '#ffffff',
+        desc: 'شرائح سلات وول بيضاء ناصعة بالكامل تعكس أقصى إضاءة وتبرز المنتجات'
+      },
+      red: {
+        name: 'أحمر رياضي عصري (Bold Red)',
+        badge: '#dc2626',
+        desc: 'شرائح حمراء مفعمة بالطاقة تمنح لمسة عصرية حيوية للمحل'
+      }
+    };
+
+    window.switchSlatwallCoord = function(coordKey) {
+      const preset = slatwallCoordPresets[coordKey];
+      if (!preset) return;
+      window.currentSlatwallCoord = coordKey;
+
+      if (window.slatwallWhiteMat && window.slatwallRedMat) {
+        if (coordKey === 'alternating') {
+          window.slatwallWhiteMat.color.setHex(0xf8fafc);
+          window.slatwallRedMat.color.setHex(0xdc2626);
+        } else if (coordKey === 'white') {
+          window.slatwallWhiteMat.color.setHex(0xf8fafc);
+          window.slatwallRedMat.color.setHex(0xf8fafc);
+        } else if (coordKey === 'red') {
+          window.slatwallWhiteMat.color.setHex(0xdc2626);
+          window.slatwallRedMat.color.setHex(0xdc2626);
+        }
+        window.slatwallWhiteMat.needsUpdate = true;
+        window.slatwallRedMat.needsUpdate = true;
+      }
+
+      document.querySelectorAll('.slat-coord-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById('slat-coord-' + coordKey);
+      if (activeCard) activeCard.classList.add('active');
+
+      const banner = document.getElementById('current-slat-name');
+      if (banner) {
+        banner.innerHTML = `<span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${preset.badge}; border:1px solid #fff; margin-left:6px; vertical-align:middle;"></span>${preset.name}`;
+      }
+
+      showToastNotification(`🔲 تم تطبيق: <b>${preset.name}</b>`);
+    };
+
+    // ----------------------------------------------------
+    // Pointer Drag & Look-Around Event Handlers
+    // ----------------------------------------------------
+    let isPointerDown = false;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+
+    renderer.domElement.style.touchAction = 'none';
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      if (!isInterior360) return;
+      isPointerDown = true;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isPointerDown || !isInterior360) return;
+      const dx = e.clientX - lastPointerX;
+      const dy = e.clientY - lastPointerY;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+
+      // Natural 360 look sensitivity
+      const sens = 0.0032;
+      targetYaw -= dx * sens;
+      targetPitch += dy * sens;
+
+      // Clamp vertical pitch (-80 deg to +80 deg) so scene never flips upside-down
+      targetPitch = Math.max(-1.40, Math.min(1.40, targetPitch));
+    });
+
+    window.addEventListener('pointerup', () => { isPointerDown = false; });
+    window.addEventListener('pointercancel', () => { isPointerDown = false; });
+
+    // Optical Zoom via FOV in Interior 360 Mode (Never penetrates walls!)
+    renderer.domElement.addEventListener('wheel', (e) => {
+      if (!isInterior360) return;
+      e.preventDefault();
+      const delta = Math.sign(e.deltaY) * 3;
+      camera.fov = Math.max(30, Math.min(80, camera.fov + delta));
+      camera.updateProjectionMatrix();
+      showToastNotification(`عدسة الكاميرا: ${Math.round(camera.fov)}°`);
+    }, { passive: false });
+
+    // ----------------------------------------------------
+    // Interactive Toggles
+    // ----------------------------------------------------
+    let dimensionsVisible = true;
+    document.getElementById('btn-toggle-dims').addEventListener('click', function () {
+      dimensionsVisible = !dimensionsVisible;
+      dimsGroup.visible = dimensionsVisible;
+      this.classList.toggle('active', dimensionsVisible);
+    });
+
+    let ceilingVisible = true;
+    document.getElementById('btn-toggle-ceiling').addEventListener('click', function () {
+      ceilingVisible = !ceilingVisible;
+      if (window.ceilingMesh) window.ceilingMesh.visible = ceilingVisible;
+      this.classList.toggle('active', ceilingVisible);
+    });
+
+    let spotlightsOn = false;
+    document.getElementById('btn-toggle-lights').addEventListener('click', function () {
+      spotlightsOn = !spotlightsOn;
+      this.classList.toggle('active', spotlightsOn);
+
+      interiorSpotlights.forEach(spot => {
+        spot.intensity = spotlightsOn ? 1.6 : 0.85;
+      });
+      ambientLight.intensity = spotlightsOn ? 0.45 : 0.75;
+      sunLight.intensity = spotlightsOn ? 0.6 : 1.4;
+      scene.background.setHex(spotlightsOn ? 0x05070d : 0x0a0e17);
+    });
+
+    let autoRotate = false;
+    function toggleAutoRotate() {
+      autoRotate = !autoRotate;
+      const btn = document.getElementById('btn-autorotate');
+      if (btn) btn.classList.toggle('active', autoRotate);
+
+      if (isInterior360) {
+        controls.autoRotate = false;
+        showToastNotification(autoRotate ? '🔄 بدأ الدوران البانورامي 360° داخل المحل' : '⏸ تم إيقاف الدوران التلقائي');
+      } else {
+        controls.autoRotate = autoRotate;
+        controls.autoRotateSpeed = 1.2;
+        showToastNotification(autoRotate ? '🔄 بدأ الدوران الخارجي حول الموديل' : '⏸ تم إيقاف الدوران التلقائي');
+      }
+    }
+
+    // ----------------------------------------------------
+    // Interior Keyboard Movement (WASD / Arrows)
+    // ----------------------------------------------------
+    const keys = { KeyW: false, KeyS: false, KeyA: false, KeyD: false, ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+
+    window.addEventListener('keydown', (e) => {
+      if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
+    });
+    window.addEventListener('keyup', (e) => {
+      if (keys.hasOwnProperty(e.code)) keys[e.code] = false;
+    });
+
+    function updateInteriorWalk(delta) {
+      if (!isInterior360) return;
+
+      const speed = 2.4 * delta;
+      // Forward vector on XZ plane based on interiorYaw
+      const forward = new THREE.Vector3(Math.sin(interiorYaw), 0, -Math.cos(interiorYaw)).normalize();
+      const right = new THREE.Vector3(forward.z, 0, -forward.x).normalize();
+
+      const move = new THREE.Vector3();
+      if (keys.KeyW || keys.ArrowUp) move.add(forward);
+      if (keys.KeyS || keys.ArrowDown) move.sub(forward);
+      if (keys.KeyD || keys.ArrowRight) move.sub(right);
+      if (keys.KeyA || keys.ArrowLeft) move.add(right);
+
+      if (move.lengthSq() > 0) {
+        move.normalize().multiplyScalar(speed);
+        interiorEye.add(move);
+        clampInsideShop(interiorEye);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Render Loop
+    // ----------------------------------------------------
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const clock = new THREE.Clock();
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      const delta = clock.getDelta();
+
+      TWEEN.update();
+
+      if (isInterior360) {
+        controls.enabled = false;
+        updateInteriorWalk(delta);
+
+        // Smooth Auto-Rotate 360 from inside room
+        if (autoRotate) {
+          targetYaw += 0.0035;
+        }
+
+        // Smooth damping
+        interiorYaw += (targetYaw - interiorYaw) * 0.12;
+        interiorPitch += (targetPitch - interiorPitch) * 0.12;
+
+        const cosPitch = Math.cos(interiorPitch);
+        const dir = new THREE.Vector3(
+          Math.sin(interiorYaw) * cosPitch,
+          Math.sin(interiorPitch),
+          -Math.cos(interiorYaw) * cosPitch
+        );
+
+        camera.position.copy(interiorEye);
+        const lookTarget = interiorEye.clone().add(dir);
+        camera.lookAt(lookTarget);
+      } else {
+        controls.enabled = true;
+        controls.update();
+      }
+
+      renderer.render(scene, camera);
+      labelRenderer.render(scene, camera);
+    }
+
+    renderLoop();
+    window.switchDeskOption(1);
+    jumpToSpot("center", 0);
+  </script>
+</body>
+
+</html>
