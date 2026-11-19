@@ -48,6 +48,7 @@
     #webgl-container {
       width: 100%;
       height: 100%;
+      height: 100dvh;
       position: absolute;
       top: 0;
       left: 0;
@@ -605,48 +606,45 @@
 
     /* Floating Corner Menu Button */
     .corner-menu-btn {
-      position: absolute;
-      top: 18px;
-      right: 20px;
-      z-index: 100;
+      position: fixed;
+      top: 50%;
+      right: max(12px, env(safe-area-inset-right));
+      z-index: 1001;
       background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.16);
       color: #fff;
-      padding: 10px 20px;
-      border-radius: 30px;
+      width: 54px;
+      height: 58px;
+      padding: 0;
+      border-radius: 16px;
       font-family: 'Cairo', sans-serif;
       font-size: 14px;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
       cursor: pointer;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(-50%);
+      transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
     .corner-menu-btn:hover {
       background: rgba(30, 41, 59, 0.95);
       border-color: #38bdf8;
-      transform: translateY(-2px) scale(1.02);
+      transform: translateY(calc(-50% - 2px)) scale(1.02);
       box-shadow: 0 14px 35px rgba(56, 189, 248, 0.3);
     }
 
     .corner-menu-btn i {
       color: #38bdf8;
-      font-size: 16px;
+      font-size: 20px;
     }
 
-    .corner-menu-badge {
-      background: #e11d48;
-      color: white;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 1px 7px;
-      border-radius: 10px;
-      margin-right: 4px;
+    .corner-menu-btn span {
+      display: none;
     }
 
     /* Slide-Out Drawer / Sidebar */
@@ -655,9 +653,10 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: 400px;
-      max-width: 92vw;
+      width: min(420px, calc(100vw - 14px));
+      max-width: calc(100vw - 14px);
       height: 100vh;
+      height: 100dvh;
       background: rgba(15, 23, 42, 0.94);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
@@ -698,7 +697,7 @@
 
     /* Drawer Header */
     .drawer-header {
-      padding: 18px 20px;
+      padding: max(14px, env(safe-area-inset-top)) 18px 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-between;
@@ -739,10 +738,12 @@
     .drawer-body {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 18px;
+      padding: 14px 16px max(20px, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
     }
 
     .drawer-body::-webkit-scrollbar {
@@ -914,6 +915,25 @@
       gap: 6px;
     }
 
+    .drawer-spots-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .drawer-spots-grid .spot-pill {
+      width: 100%;
+      min-height: 44px;
+      justify-content: flex-start;
+      text-align: right;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .drawer-mode-grid .btn-drawer-toggle:last-child {
+      grid-column: 1 / -1;
+    }
+
     .btn-drawer-view {
       background: rgba(30, 41, 59, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.06);
@@ -978,9 +998,49 @@
       color: #34d399;
     }
 
-    /* Hide the old floating bars */
-    .top-header, .desk-options-bar, .view-controls, .specs-panel {
+    /* Keep the model unobstructed; all model controls live in the side drawer. */
+    .top-header,
+    .desk-options-bar,
+    .view-controls,
+    .specs-panel,
+    .interior-spots-bar,
+    .bottom-bar,
+    .walk-help {
       display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      .corner-menu-btn {
+        right: max(8px, env(safe-area-inset-right));
+        width: 48px;
+        height: 52px;
+        border-radius: 14px;
+      }
+
+      .app-drawer {
+        width: calc(100vw - 12px);
+        max-width: calc(100vw - 12px);
+      }
+
+      .drawer-header {
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+
+      .drawer-body {
+        padding-right: 12px;
+        padding-left: 12px;
+        gap: 14px;
+      }
+
+      .drawer-opt-card {
+        padding: 10px 11px;
+      }
+
+      .btn-drawer-view,
+      .btn-drawer-toggle {
+        min-height: 44px;
+      }
     }
 
   </style>
@@ -998,8 +1058,8 @@
   <div id="webgl-container"></div>
 
   <!-- Floating Corner Menu Trigger (شريط منبسط في الزاوية) -->
-  <button id="btn-toggle-drawer" class="corner-menu-btn" onclick="toggleDrawer(true)" title="فتح قائمة خيارات المحل والإعدادات">
-    <i class="fa-solid fa-sliders"></i>
+  <button id="btn-toggle-drawer" class="corner-menu-btn" onclick="toggleDrawer(true)" title="فتح قائمة خيارات المحل والإعدادات" aria-label="فتح قائمة خيارات المحل والإعدادات" aria-controls="app-drawer" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
     <span>الإعدادات والخيارات</span>
     <span class="corner-menu-badge">3 مقترحات</span>
   </button>
@@ -1008,20 +1068,42 @@
   <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
 
   <!-- Collapsible Settings & Layouts Drawer (الشريط المنبسط في الزاوية) -->
-  <div id="app-drawer" class="app-drawer">
+  <aside id="app-drawer" class="app-drawer" role="dialog" aria-label="قائمة خيارات المحل والإعدادات" aria-hidden="true" inert>
     <!-- Drawer Header -->
     <div class="drawer-header">
       <div class="drawer-title">
         <i class="fa-solid fa-sliders" style="color: #38bdf8;"></i>
         <span>لوحة التحكم والإعدادات</span>
       </div>
-      <button class="btn-drawer-close" onclick="toggleDrawer(false)" title="إغلاق القائمة">
+      <button class="btn-drawer-close" onclick="toggleDrawer(false)" title="إغلاق القائمة" aria-label="إغلاق القائمة">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
 
     <!-- Drawer Scrollable Body -->
     <div class="drawer-body">
+
+      <!-- 0. Viewing mode and camera reset -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-eye"></i>
+          <span>وضع المشاهدة</span>
+        </div>
+        <div class="drawer-toggles-grid drawer-mode-grid">
+          <button class="btn-drawer-toggle active" id="btn-mode-360" onclick="toggleInterior360Mode()">
+            <i class="fa-solid fa-street-view"></i>
+            <span>جولة داخلية 360°</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-orbit-view" onclick="setExteriorOrbitMode()">
+            <i class="fa-solid fa-cube"></i>
+            <span>منظور خارجي 3D</span>
+          </button>
+          <button class="btn-drawer-toggle" id="btn-reset-camera" onclick="resetCamera()">
+            <i class="fa-solid fa-compress"></i>
+            <span>إعادة الكاميرا للوسط</span>
+          </button>
+        </div>
+      </div>
 
       <!-- 1. Desk Proposals Switcher -->
       <div class="drawer-section">
@@ -1104,6 +1186,31 @@
         </div>
       </div>
 
+      <!-- 2a. Interior standing spots -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>نقاط الوقوف داخل المحل</span>
+        </div>
+        <div class="drawer-spots-grid">
+          <button class="spot-pill active" id="spot-btn-center" onclick="jumpToSpot('center')">
+            <i class="fa-solid fa-circle-dot"></i> وسط المحل (360°)
+          </button>
+          <button class="spot-pill" id="spot-btn-desk" onclick="jumpToSpot('desk')">
+            <i class="fa-solid fa-screwdriver-wrench"></i> أمام ورشة الصيانة
+          </button>
+          <button class="spot-pill" id="spot-btn-technician" onclick="jumpToSpot('technician')">
+            <i class="fa-solid fa-chair"></i> كرسي الفني
+          </button>
+          <button class="spot-pill" id="spot-btn-entry" onclick="jumpToSpot('entry')">
+            <i class="fa-solid fa-door-open"></i> مدخل الزبائن
+          </button>
+          <button class="spot-pill" id="spot-btn-vitrines" onclick="jumpToSpot('vitrines')">
+            <i class="fa-solid fa-gem"></i> فاترينات الزجاج
+          </button>
+        </div>
+      </div>
+
       <!-- 3. Toggles & Controls -->
       <div class="drawer-section">
         <div class="drawer-section-title">
@@ -1111,7 +1218,7 @@
           <span>أدوات الإظهار والتحكم</span>
         </div>
         <div class="drawer-toggles-grid">
-          <button class="btn-drawer-toggle active" id="btn-toggle-dims">
+          <button class="btn-drawer-toggle" id="btn-toggle-dims" aria-pressed="false">
             <i class="fa-solid fa-ruler-combined"></i>
             <span>الأبعاد 3D</span>
           </button>
@@ -1224,46 +1331,7 @@
       </div>
 
     </div>
-  </div>
-
-    <!-- Interior 360 Standing Spots Bar -->
-  <div id="interior-spots-bar" class="interior-spots-bar">
-    <span class="spot-title"><i class="fa-solid fa-location-dot"></i> نقاط الوقوف بالداخل:</span>
-    <button class="spot-pill active" id="spot-btn-center" onclick="jumpToSpot('center')">
-      <i class="fa-solid fa-circle-dot"></i> وسط المحل (360°)
-    </button>
-    <button class="spot-pill" id="spot-btn-desk" onclick="jumpToSpot('desk')">
-      <i class="fa-solid fa-screwdriver-wrench"></i> أمام ورشة الصيانة
-    </button>
-    <button class="spot-pill" id="spot-btn-technician" onclick="jumpToSpot('technician')">
-      <i class="fa-solid fa-chair"></i> كرسي الفني (قمرة العمل)
-    </button>
-    <button class="spot-pill" id="spot-btn-entry" onclick="jumpToSpot('entry')">
-      <i class="fa-solid fa-door-open"></i> مدخل الزبائن
-    </button>
-    <button class="spot-pill" id="spot-btn-vitrines" onclick="jumpToSpot('vitrines')">
-      <i class="fa-solid fa-gem"></i> فاترينات الزجاج (2 رف مع الشغل)
-    </button>
-  </div>
-
-  <!-- Bottom Quick Controls Bar -->
-  <div class="bottom-bar">
-    <button class="bottom-btn active" id="btn-mode-360" onclick="toggleInterior360Mode()">
-      <i class="fa-solid fa-street-view"></i> بانوراما 360° داخل المحل
-    </button>
-    <button class="bottom-btn" id="btn-orbit-view" onclick="setExteriorOrbitMode()">
-      <i class="fa-solid fa-cube"></i> منظور خارجي 3D
-    </button>
-    <button class="bottom-btn" id="btn-autorotate" onclick="toggleAutoRotate()">
-      <i class="fa-solid fa-arrows-rotate"></i> تدوير 360° تلقائي
-    </button>
-    <button class="bottom-btn" onclick="resetCamera()">
-      <i class="fa-solid fa-compress"></i> ضبط الكاميرا
-    </button>
-    <button class="bottom-btn" onclick="toggleDrawer(true)">
-      <i class="fa-solid fa-sliders"></i> كل الخيارات والإعدادات
-    </button>
-  </div>
+  </aside>
 
   <!-- Free Walk Mode Instructions -->
   <div class="walk-help" id="walk-help">
@@ -1284,6 +1352,7 @@
     // ----------------------------------------------------
     // 1. Procedural Textures
     // ----------------------------------------------------
+    const isMobileViewport = window.matchMedia('(max-width: 768px), (pointer: coarse)').matches;
 
     // Real Marble Porcelain Tiles Matching User's Real Photo Exactly (Calacatta Gold 60x60)
     function createMarbleTileTexture() {
@@ -1301,7 +1370,8 @@
       ctx.fillRect(0, 0, 1024, 1024);
 
       // 2. Micro Mineral Crystalline Grain
-      for (let i = 0; i < 40000; i++) {
+      const grainCount = isMobileViewport ? 8000 : 40000;
+      for (let i = 0; i < grainCount; i++) {
         const x = Math.random() * 1024;
         const y = Math.random() * 1024;
         const rad = Math.random() * 14 + 2;
@@ -1449,7 +1519,8 @@
       ctx.fillRect(0, 0, 1024, 1024);
 
       // Micro acoustic pinhole / stippling texture
-      for (let i = 0; i < 35000; i++) {
+      const pinholeCount = isMobileViewport ? 7000 : 35000;
+      for (let i = 0; i < pinholeCount; i++) {
         const x = Math.random() * 1024;
         const y = Math.random() * 1024;
         ctx.fillStyle = Math.random() < 0.5 ? 'rgba(195, 205, 218, 0.28)' : 'rgba(255, 255, 255, 0.60)';
@@ -1731,14 +1802,14 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0e17);
 
-    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(isMobileViewport ? 60 : 52, window.innerWidth / window.innerHeight, 0.1, 100);
     // Initial camera: Showing the complete L-shaped workstation and shop!
     camera.position.set(2.85, 1.85, 2.75);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobileViewport, alpha: false, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileViewport ? 1.25 : 2));
+    renderer.shadowMap.enabled = !isMobileViewport;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
@@ -1750,6 +1821,7 @@
     labelRenderer.domElement.style.top = '0px';
     labelRenderer.domElement.style.pointerEvents = 'none';
     labelRenderer.domElement.style.zIndex = '5';
+    labelRenderer.domElement.style.display = 'none';
     container.appendChild(labelRenderer.domElement);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -1877,6 +1949,8 @@
     scene.add(shopGroup);
 
     let dimsGroup = new THREE.Group();
+    let dimensionsVisible = false;
+    dimsGroup.visible = dimensionsVisible;
     shopGroup.add(dimsGroup);
 
     let furnitureGroup = new THREE.Group();
@@ -1899,6 +1973,7 @@
       }
       dimsGroup = new THREE.Group();
       dimsGroup.name = 'dimensionAnnotations';
+      dimsGroup.visible = dimensionsVisible;
       shopGroup.add(dimsGroup);
 
       furnitureGroup = new THREE.Group();
@@ -4265,9 +4340,9 @@
 
     const sunLight = new THREE.DirectionalLight(0xfff7ed, 1.1);
     sunLight.position.set(6, 7, 7);
-    sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
+    sunLight.castShadow = !isMobileViewport;
+    sunLight.shadow.mapSize.width = isMobileViewport ? 512 : 1024;
+    sunLight.shadow.mapSize.height = isMobileViewport ? 512 : 1024;
     sunLight.shadow.bias = -0.0001;
     scene.add(sunLight);
 
@@ -4284,7 +4359,7 @@
     spotCoords.forEach(c => {
       const spot = new THREE.PointLight(0xfff3d6, 0.85, 4.5, 1.8);
       spot.position.set(c.x, shopHeight - 0.15, c.z);
-      spot.castShadow = true;
+      spot.castShadow = !isMobileViewport;
       spot.shadow.bias = -0.001;
       shopGroup.add(spot);
       interiorSpotlights.push(spot);
@@ -4457,6 +4532,17 @@
 
       setInterior360Mode(true);
 
+      const viewButtonBySpot = {
+        center: 'view-btn-center',
+        desk: 'view-btn-repair',
+        technician: 'view-btn-tech',
+        entry: 'view-btn-entry',
+        vitrines: 'view-btn-vitrines'
+      };
+      document.querySelectorAll('.btn-view').forEach(button => button.classList.remove('active'));
+      const activeViewButton = document.getElementById(viewButtonBySpot[spotKey]);
+      if (activeViewButton) activeViewButton.classList.add('active');
+
       // Update spot pill UI
       document.querySelectorAll('.spot-pill').forEach(p => p.classList.remove('active'));
       const btn = document.getElementById('spot-btn-' + spotKey);
@@ -4499,17 +4585,19 @@
 
       const btn360 = document.getElementById('btn-mode-360');
       const btnOrbit = document.getElementById('btn-orbit-view');
-      const spotsBar = document.getElementById('interior-spots-bar');
 
       if (btn360) btn360.classList.toggle('active', enable);
       if (btnOrbit) btnOrbit.classList.toggle('active', !enable);
-      if (spotsBar) spotsBar.style.display = enable ? 'flex' : 'none';
+      if (btn360) btn360.setAttribute('aria-pressed', String(enable));
+      if (btnOrbit) btnOrbit.setAttribute('aria-pressed', String(!enable));
 
       if (enable) {
         clampInsideShop(interiorEye);
         controls.autoRotate = false;
         showToastNotification('🔄 بانوراما 360° من الداخل: اسحب بالماوس أو اللمس للف في مكانك');
       } else {
+        controls.autoRotate = autoRotate;
+        controls.autoRotateSpeed = 1.2;
         showToastNotification('🌐 المنظور الخارجي 3D: اسحب لتدوير الموديل بالكامل');
       }
     }
@@ -4715,7 +4803,12 @@
 
       const isOpen = (typeof forceOpen === 'boolean') ? forceOpen : !drawer.classList.contains('open');
       drawer.classList.toggle('open', isOpen);
+      drawer.inert = !isOpen;
       if (overlay) overlay.classList.toggle('active', isOpen);
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+
+      const menuButton = document.getElementById('btn-toggle-drawer');
+      if (menuButton) menuButton.setAttribute('aria-expanded', String(isOpen));
     };
 
     function toggleSpecs() {
@@ -4941,11 +5034,12 @@
     // ----------------------------------------------------
     // Interactive Toggles
     // ----------------------------------------------------
-    let dimensionsVisible = true;
     document.getElementById('btn-toggle-dims').addEventListener('click', function () {
       dimensionsVisible = !dimensionsVisible;
       dimsGroup.visible = dimensionsVisible;
       this.classList.toggle('active', dimensionsVisible);
+      this.setAttribute('aria-pressed', String(dimensionsVisible));
+      labelRenderer.domElement.style.display = dimensionsVisible ? 'block' : 'none';
     });
 
     let ceilingVisible = true;
@@ -4973,6 +5067,7 @@
       autoRotate = !autoRotate;
       const btn = document.getElementById('btn-autorotate');
       if (btn) btn.classList.toggle('active', autoRotate);
+      if (btn) btn.setAttribute('aria-pressed', String(autoRotate));
 
       if (isInterior360) {
         controls.autoRotate = false;
@@ -5028,10 +5123,20 @@
     });
 
     const clock = new THREE.Clock();
+    const renderInterval = isMobileViewport ? 1000 / 40 : 1000 / 60;
+    let lastRenderTime = 0;
 
-    function renderLoop() {
+    function renderLoop(timestamp = 0) {
       requestAnimationFrame(renderLoop);
-      const delta = clock.getDelta();
+      if (document.hidden) {
+        clock.getDelta();
+        lastRenderTime = 0;
+        return;
+      }
+      if (timestamp - lastRenderTime < renderInterval) return;
+      lastRenderTime = timestamp;
+
+      const delta = Math.min(clock.getDelta(), 0.05);
 
       TWEEN.update();
 
@@ -5041,12 +5146,13 @@
 
         // Smooth Auto-Rotate 360 from inside room
         if (autoRotate) {
-          targetYaw += 0.0035;
+          targetYaw += 0.0035 * delta * 60;
         }
 
         // Smooth damping
-        interiorYaw += (targetYaw - interiorYaw) * 0.12;
-        interiorPitch += (targetPitch - interiorPitch) * 0.12;
+        const damping = 1 - Math.pow(1 - 0.12, delta * 60);
+        interiorYaw += (targetYaw - interiorYaw) * damping;
+        interiorPitch += (targetPitch - interiorPitch) * damping;
 
         const cosPitch = Math.cos(interiorPitch);
         const dir = new THREE.Vector3(
@@ -5064,7 +5170,7 @@
       }
 
       renderer.render(scene, camera);
-      labelRenderer.render(scene, camera);
+      if (dimensionsVisible) labelRenderer.render(scene, camera);
     }
 
     renderLoop();
