@@ -1914,12 +1914,6 @@
       color: 0xfff6db
     });
 
-    const blueShutterMaterial = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#1d4ed8'),
-      roughness: 0.4,
-      metalness: 0.2
-    });
-
     const baseboardMaterial = new THREE.MeshStandardMaterial({
       map: floorTexture,
       color: 0xffffff,
@@ -2149,11 +2143,6 @@
         const hMesh = new THREE.Mesh(hGeo, pinkWallMaterial);
         hMesh.position.set(xStart + len / 2, shopHeight - headerHeight / 2, 0);
         wall6Group.add(hMesh);
-
-        const sBoxGeo = new THREE.BoxGeometry(len - 0.04, 0.30, 0.22);
-        const sBoxMesh = new THREE.Mesh(sBoxGeo, blueShutterMaterial);
-        sBoxMesh.position.set(xStart + len / 2, shopHeight - 0.22, 0);
-        wall6Group.add(sBoxMesh);
 
         if (hasAC) {
           const acGroup = new THREE.Group();
@@ -2443,7 +2432,7 @@
 
       // Feature Markers
       createMarker(new THREE.Vector3(1.5, 1.8, 4.6), 'محطة الصيانة المتكاملة حرف L (مع الفواصل والميكروسكوب والكرسي)', 'label-repair', 'fa-chair');
-      createMarker(new THREE.Vector3(2.5, 1.6, 3.23), 'كاونترين بينك (ملاصق للحيطة بعد المرايا)', 'label-counter', 'fa-cash-register');
+      createMarker(new THREE.Vector3(2.5, 1.6, 3.23), 'كاونترين بارتفاع 1.20م • رف عرض زجاجي + 5 رفوف تخزين لكل كونتر', 'label-counter', 'fa-cash-register');
       createMarker(new THREE.Vector3(1.8, 1.5, 1.2), 'فاترينات الموبايلات الزجاج (حرف L عند المدخل)', 'label-vitrine', 'fa-mobile-screen');
 
       const ledMarkerX = onRight ? 0.6 : 3.4;
@@ -3657,45 +3646,123 @@
       function createSinglePinkCounter(width = 1.20) {
         const cg = new THREE.Group();
 
-        // 1. Lower solid pink wood body (height 0.70m, depth 0.55m)
-        const bodyGeo = new THREE.BoxGeometry(width, 0.70, 0.55);
-        const bodyMesh = new THREE.Mesh(bodyGeo, pinkWallMaterial);
-        bodyMesh.position.set(0, 0.35, 0);
-        bodyMesh.castShadow = true;
-        bodyMesh.receiveShadow = true;
-        cg.add(bodyMesh);
+        const counterDepth = 0.55;
+        const totalHeight = 1.20;
+        const plinthHeight = 0.07;
+        const storageTop = 0.88;
+        const panel = 0.025;
+        const storageHeight = storageTop - plinthHeight;
+        const backZ = -counterDepth / 2 + panel / 2;
+        const frontZ = counterDepth / 2;
+        const cabinetMat = pinkWallMaterial;
 
-        // White aluminum / chrome protective trim
-        const trimMesh = new THREE.Mesh(new THREE.BoxGeometry(width + 0.01, 0.04, 0.56), chromeMaterial);
-        trimMesh.position.set(0, 0.71, 0);
-        cg.add(trimMesh);
+        // Open carcass so the five storage shelves are real parts of the model.
+        const bottom = new THREE.Mesh(new THREE.BoxGeometry(width - 0.04, panel, counterDepth - 0.04), cabinetMat);
+        bottom.position.set(0, plinthHeight + panel / 2, 0);
+        cg.add(bottom);
+        const cabinetTop = new THREE.Mesh(new THREE.BoxGeometry(width, panel, counterDepth), cabinetMat);
+        cabinetTop.position.set(0, storageTop - panel / 2, 0);
+        cabinetTop.castShadow = true;
+        cg.add(cabinetTop);
+        [-1, 1].forEach(side => {
+          const sidePanel = new THREE.Mesh(new THREE.BoxGeometry(panel, storageHeight, counterDepth), cabinetMat);
+          sidePanel.position.set(side * (width / 2 - panel / 2), plinthHeight + storageHeight / 2, 0);
+          sidePanel.castShadow = true;
+          cg.add(sidePanel);
+        });
+        const backPanel = new THREE.Mesh(new THREE.BoxGeometry(width - 2 * panel, storageHeight, panel), cabinetMat);
+        backPanel.position.set(0, plinthHeight + storageHeight / 2, backZ);
+        backPanel.castShadow = true;
+        cg.add(backPanel);
 
-        // 2. Upper Glass Display Box (height 0.26m) with clear glass top and sides
-        const topGlassMesh = new THREE.Mesh(new THREE.BoxGeometry(width - 0.02, 0.015, 0.52), glassMaterial);
-        topGlassMesh.position.set(0, 0.98, 0);
+        // Five melamine storage shelves below the separate glass display shelf.
+        const storageShelfCount = 5;
+        const usableStorageHeight = storageTop - plinthHeight - panel;
+        for (let shelfIndex = 1; shelfIndex <= storageShelfCount; shelfIndex++) {
+          const shelf = new THREE.Mesh(
+            new THREE.BoxGeometry(width - 2 * panel - 0.015, panel, counterDepth - 2 * panel - 0.025),
+            cabinetMat
+          );
+          shelf.position.set(0, plinthHeight + usableStorageHeight * shelfIndex / (storageShelfCount + 1), 0);
+          shelf.castShadow = true;
+          cg.add(shelf);
+        }
+
+        // Two hinged pink doors meet at the center and swing out from the counter front.
+        const doorGap = 0.012;
+        const doorWidth = (width - 2 * panel - doorGap) / 2;
+        const doorHeight = storageHeight - 0.035;
+        const doorY = plinthHeight + storageHeight / 2;
+        const hingeOffset = 0.008;
+        [-1, 1].forEach(side => {
+          const hinge = new THREE.Group();
+          const hingeX = side < 0 ? -width / 2 + panel + hingeOffset : width / 2 - panel - hingeOffset;
+          hinge.position.set(hingeX, doorY, frontZ + 0.012);
+          const door = new THREE.Mesh(new THREE.BoxGeometry(doorWidth, doorHeight, 0.022), cabinetMat);
+          door.position.set(-side * doorWidth / 2, 0, 0);
+          door.castShadow = true;
+          door.userData.opensOutward = true;
+          hinge.add(door);
+
+          const handle = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.12, 0.022), chromeMaterial);
+          handle.position.set(-side * (doorWidth / 2 - 0.045), 0, 0.018);
+          hinge.add(handle);
+          cg.add(hinge);
+        });
+
+        // One transparent glass shelf carries the phones; the glass top is exactly 1.20m high.
+        const displayFloorY = storageTop + 0.018;
+        const glassBottom = new THREE.Mesh(
+          new THREE.BoxGeometry(width - 0.035, 0.012, counterDepth - 0.035),
+          glassMaterial
+        );
+        glassBottom.position.set(0, displayFloorY, 0);
+        cg.add(glassBottom);
+
+        const topGlassMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(width - 0.02, 0.015, counterDepth - 0.025),
+          glassMaterial
+        );
+        topGlassMesh.position.set(0, totalHeight - 0.0075, 0);
         cg.add(topGlassMesh);
 
-        const frontGlassMesh = new THREE.Mesh(new THREE.BoxGeometry(width - 0.02, 0.24, 0.015), glassMaterial);
-        frontGlassMesh.position.set(0, 0.85, 0.25);
+        const glassWallBottom = displayFloorY + 0.006;
+        const glassWallTop = totalHeight - 0.015;
+        const glassWallHeight = glassWallTop - glassWallBottom;
+        const glassCenterY = (glassWallBottom + glassWallTop) / 2;
+        const frontGlassMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(width - 0.035, glassWallHeight, 0.012),
+          glassMaterial
+        );
+        frontGlassMesh.position.set(0, glassCenterY, counterDepth / 2 - 0.008);
         cg.add(frontGlassMesh);
+        const backGlassMesh = frontGlassMesh.clone();
+        backGlassMesh.position.z = -counterDepth / 2 + 0.008;
+        cg.add(backGlassMesh);
+        [-1, 1].forEach(side => {
+          const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.012, glassWallHeight, counterDepth - 0.035), glassMaterial);
+          sideGlass.position.set(side * (width / 2 - 0.008), glassCenterY, 0);
+          cg.add(sideGlass);
+        });
 
-        const sideGlassGeo = new THREE.BoxGeometry(0.015, 0.24, 0.50);
-        const sideG1 = new THREE.Mesh(sideGlassGeo, glassMaterial);
-        sideG1.position.set(-width / 2 + 0.02, 0.85, 0);
-        cg.add(sideG1);
-        const sideG2 = sideG1.clone();
-        sideG2.position.x = width / 2 - 0.02;
-        cg.add(sideG2);
-
-        // Items inside top glass (high-end charger boxes & AirPods)
-        for (let i = -2; i <= 2; i++) {
-          const itemBox = new THREE.Mesh(
-            new THREE.BoxGeometry(0.12, 0.04, 0.12),
-            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 })
-          );
-          itemBox.position.set(i * 0.22, 0.75, 0);
-          cg.add(itemBox);
-        }
+        // Five phones are displayed upright on the upper glass shelf of each counter.
+        const phoneCaseColors = [0x111827, 0xe2e8f0, 0x334155, 0xf8fafc, 0x1e293b];
+        const phoneScreenColors = [0x0ea5e9, 0x22c55e, 0xa78bfa, 0xf59e0b, 0x38bdf8];
+        const phoneXs = [-0.43, -0.215, 0, 0.215, 0.43];
+        phoneXs.forEach((phoneX, index) => {
+          const caseMat = new THREE.MeshStandardMaterial({ color: phoneCaseColors[index], roughness: 0.32, metalness: 0.2 });
+          const screenMat = new THREE.MeshStandardMaterial({ color: phoneScreenColors[index], emissive: phoneScreenColors[index], emissiveIntensity: 0.22, roughness: 0.2 });
+          const phone = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.15, 0.012), caseMat);
+          phone.position.set(phoneX, displayFloorY + 0.006 + 0.075, 0.065);
+          cg.add(phone);
+          const screen = new THREE.Mesh(new THREE.BoxGeometry(0.066, 0.137, 0.002), screenMat);
+          screen.position.set(phoneX, phone.position.y, 0.072);
+          cg.add(screen);
+          const stand = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.075, 0.014), darkMetalMaterial);
+          stand.position.set(phoneX, displayFloorY + 0.044, -0.025);
+          stand.rotation.x = -0.18;
+          cg.add(stand);
+        });
 
         return cg;
       }
@@ -3709,7 +3776,7 @@
       const counter2 = createSinglePinkCounter(1.20);
       counter2.position.set(0.60, 0, 0);
 
-      // POS Cashier Screen on counter 2
+      // POS terminal remains on the glass countertop beside the displayed phones.
       const posGroup = new THREE.Group();
       const posScreen = new THREE.Mesh(
         new THREE.BoxGeometry(0.32, 0.22, 0.03),
@@ -3723,7 +3790,7 @@
       posStand.position.set(0, 0.08, -0.04);
       posGroup.add(posStand);
 
-      posGroup.position.set(0.30, 0.98, 0);
+      posGroup.position.set(0.43, 1.20, -0.13);
       counter2.add(posGroup);
 
       counterGroup.add(counter2);
