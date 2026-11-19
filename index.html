@@ -1115,8 +1115,8 @@
           <button class="drawer-opt-card btn-desk-opt active" id="btn-opt-1" onclick="switchDeskOption(1)">
             <span class="card-num opt-num">1</span>
             <div class="card-info">
-              <div class="card-title">المقترح 1: حرف L مدمج (95 سم)</div>
-              <div class="card-desc">تقصير الضلع الداخلي لـ 95 سم مع ممر واسع 1.60م</div>
+              <div class="card-title">المقترح 1: مكتبان صيانة حرف L</div>
+              <div class="card-desc">المكتب الأساسي + مكتب إضافي عند التقاء حائطي 3م و6م</div>
             </div>
           </button>
           <button class="drawer-opt-card btn-desk-opt" id="btn-opt-2" onclick="switchDeskOption(2)">
@@ -1129,8 +1129,8 @@
           <button class="drawer-opt-card btn-desk-opt" id="btn-opt-3" onclick="switchDeskOption(3)">
             <span class="card-num opt-num">3</span>
             <div class="card-info">
-              <div class="card-title">المقترح 3: طولي مستقيم 2.00م</div>
-              <div class="card-desc">ملاصق لحائط 5.7م بدون أي بروز | ممر 2.55م فائق الاتساع</div>
+              <div class="card-title">المقترح 3: مكتب حرف L (2م + حائط 3م)</div>
+              <div class="card-desc">ضلع 2م على حائط 5.7م وضلع كامل على حائط 3م</div>
             </div>
           </button>
         </div>
@@ -1169,7 +1169,11 @@
           </button>
           <button class="btn-drawer-view btn-view" id="view-btn-vitrines" onclick="switchCameraView('glassVitrinesView')">
             <i class="fa-solid fa-shapes" style="color:#10b981;"></i>
-            <span>فاترينات الزجاج (عند الباب)</span>
+            <span>الفاترينات الزجاجية داخل الصالة</span>
+          </button>
+          <button class="btn-drawer-view btn-view" id="view-btn-door-showcase" onclick="switchCameraView('maintenanceDoorShowcaseView')">
+            <i class="fa-solid fa-store" style="color:#34d399;"></i>
+            <span>عرض الباب الزجاجي من الخارج (5 رفوف)</span>
           </button>
           <button class="btn-drawer-view btn-view" id="view-btn-top" onclick="switchCameraView('top')">
             <i class="fa-solid fa-compass-drafting" style="color:#818cf8;"></i>
@@ -2183,6 +2187,98 @@
       d1FixedMesh.position.set(0.75 + 0.72 / 2 + 0.01, (glassHeight - 0.02) / 2, 0);
       d1Group.add(d1FixedMesh);
 
+      // Five glass product shelves mounted inside the fixed pane nearest the repair area.
+      // Their faces and merchandise point through the pane toward customers outside.
+      const maintenanceDoorShowcase = new THREE.Group();
+      maintenanceDoorShowcase.name = 'maintenanceDoorShowcase';
+      d1Group.add(maintenanceDoorShowcase);
+      const showcaseCenterX = 0.75 + 0.72 / 2 + 0.01;
+      const showcaseWidth = 0.68;
+      const showcaseDepth = 0.32;
+      const showcaseShelfYs = [0.48, 0.87, 1.26, 1.65, 2.04];
+      const showcaseSide = onRight ? 1 : -1;
+      const showcaseCenterZ = showcaseSide * (0.025 + showcaseDepth / 2);
+      const showcaseRailHeight = showcaseShelfYs[4] - showcaseShelfYs[0] + 0.06;
+      [-1, 1].forEach(side => {
+        const rail = new THREE.Mesh(
+          new THREE.BoxGeometry(0.012, showcaseRailHeight, 0.018),
+          chromeMaterial
+        );
+        rail.position.set(
+          showcaseCenterX + side * (showcaseWidth / 2 - 0.035),
+          (showcaseShelfYs[0] + showcaseShelfYs[4]) / 2,
+          showcaseSide * 0.035
+        );
+        maintenanceDoorShowcase.add(rail);
+      });
+      showcaseShelfYs.forEach((shelfY) => {
+        const shelf = new THREE.Mesh(
+          new THREE.BoxGeometry(showcaseWidth, 0.014, showcaseDepth),
+          glassMaterial
+        );
+        shelf.position.set(showcaseCenterX, shelfY, showcaseCenterZ);
+        shelf.receiveShadow = true;
+        maintenanceDoorShowcase.add(shelf);
+        [-1, 1].forEach(side => {
+          const bracket = new THREE.Mesh(
+            new THREE.BoxGeometry(0.014, 0.035, showcaseDepth - 0.04),
+            chromeMaterial
+          );
+          bracket.position.set(
+            showcaseCenterX + side * (showcaseWidth / 2 - 0.05),
+            shelfY - 0.023,
+            showcaseCenterZ
+          );
+          maintenanceDoorShowcase.add(bracket);
+        });
+      });
+
+      const displayPhoneBody = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.35, metalness: 0.18 });
+      const displayPhoneScreen = new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x075985, emissiveIntensity: 0.45, roughness: 0.2 });
+      const displayLaptopBody = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.3, metalness: 0.65 });
+      const displayLaptopScreen = new THREE.MeshStandardMaterial({ color: 0x0f172a, emissive: 0x0369a1, emissiveIntensity: 0.35, roughness: 0.18 });
+      const addShowcasePhone = (x, shelfY, z, caseColor = 0x111827, screenColor = 0x38bdf8) => {
+        const bodyMaterial = caseColor === 0x111827 ? displayPhoneBody : new THREE.MeshStandardMaterial({ color: caseColor, roughness: 0.35, metalness: 0.2 });
+        const screenMaterial = screenColor === 0x38bdf8 ? displayPhoneScreen : new THREE.MeshStandardMaterial({ color: screenColor, emissive: screenColor, emissiveIntensity: 0.3, roughness: 0.2 });
+        const body = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.145, 0.014), bodyMaterial);
+        body.position.set(x, shelfY + 0.082, z);
+        maintenanceDoorShowcase.add(body);
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.064, 0.125, 0.003), screenMaterial);
+        screen.position.set(x, shelfY + 0.084, z - showcaseSide * 0.009);
+        maintenanceDoorShowcase.add(screen);
+      };
+      const addShowcaseLaptop = (x, shelfY, z, screenTint = 0x0f172a) => {
+        const laptopScreenMat = screenTint === 0x0f172a ? displayLaptopScreen : new THREE.MeshStandardMaterial({ color: screenTint, emissive: screenTint, emissiveIntensity: 0.28, roughness: 0.18 });
+        const base = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.012, 0.17), displayLaptopBody);
+        base.position.set(x, shelfY + 0.013, z);
+        maintenanceDoorShowcase.add(base);
+        const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.003, 0.12), darkMetalMaterial);
+        keyboard.position.set(x, shelfY + 0.020, z - showcaseSide * 0.01);
+        maintenanceDoorShowcase.add(keyboard);
+        const lid = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.16, 0.012), displayLaptopBody);
+        lid.position.set(x, shelfY + 0.095, z + showcaseSide * 0.072);
+        maintenanceDoorShowcase.add(lid);
+        const screen = new THREE.Mesh(new THREE.BoxGeometry(0.225, 0.135, 0.003), laptopScreenMat);
+        screen.position.set(x, shelfY + 0.096, z + showcaseSide * 0.064);
+        maintenanceDoorShowcase.add(screen);
+      };
+
+      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[0], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a);
+      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[0], showcaseCenterZ - showcaseSide * 0.065, 0x1e293b, 0x38bdf8);
+      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[0], showcaseCenterZ - showcaseSide * 0.065, 0xe2e8f0, 0x0ea5e9);
+      addShowcasePhone(showcaseCenterX - 0.14, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a, 0xa78bfa);
+      addShowcasePhone(showcaseCenterX + 0.02, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0x334155, 0x34d399);
+      addShowcasePhone(showcaseCenterX + 0.18, showcaseShelfYs[1], showcaseCenterZ + showcaseSide * 0.015, 0xf1f5f9, 0xf59e0b);
+      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[2], showcaseCenterZ + showcaseSide * 0.015, 0x172554);
+      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[2], showcaseCenterZ - showcaseSide * 0.065, 0x111827, 0x34d399);
+      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[2], showcaseCenterZ - showcaseSide * 0.065, 0xf1f5f9, 0x38bdf8);
+      addShowcasePhone(showcaseCenterX - 0.14, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0x1e293b, 0xfb7185);
+      addShowcasePhone(showcaseCenterX + 0.02, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0xf1f5f9, 0x38bdf8);
+      addShowcasePhone(showcaseCenterX + 0.18, showcaseShelfYs[3], showcaseCenterZ + showcaseSide * 0.015, 0x0f172a, 0x34d399);
+      addShowcaseLaptop(showcaseCenterX, showcaseShelfYs[4], showcaseCenterZ + showcaseSide * 0.015, 0x1e3a8a);
+      addShowcasePhone(showcaseCenterX - 0.23, showcaseShelfYs[4], showcaseCenterZ - showcaseSide * 0.065, 0xf1f5f9, 0xa78bfa);
+      addShowcasePhone(showcaseCenterX + 0.23, showcaseShelfYs[4], showcaseCenterZ - showcaseSide * 0.065, 0x1e293b, 0xf59e0b);
+
       const d1Frame = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.06, 0.06), chromeMaterial);
       d1Frame.position.set(1.50 / 2, 0.03, 0);
       d1Group.add(d1Frame);
@@ -2704,6 +2800,8 @@
       // ====================================================
       const deskOption1 = new THREE.Group();
       deskOption1.name = 'deskOption1';
+      const deskOption1SecondDesk = new THREE.Group();
+      deskOption1SecondDesk.name = 'deskOption1SecondDesk';
 
       {
         const arm1Len = 1.60;
@@ -2892,7 +2990,7 @@
         // Floating 3D label badge for Option 1
         const tagDiv1 = document.createElement('div');
         tagDiv1.className = 'label-3d label-repair';
-        tagDiv1.innerHTML = '<i class="fa-solid fa-arrows-split-up-and-left"></i> مقترح 1: حرف L مدمج (ضلع 95 سم بالوسط - ممر 1.60م واسع)';
+        tagDiv1.innerHTML = '<i class="fa-solid fa-arrows-split-up-and-left"></i> مقترح 1: مكتبان صيانة حرف L';
         const tag1 = new THREE.CSS2DObject(tagDiv1);
         tag1.position.set(arm1Depth / 2 + 0.45, 1.85, arm2Depth / 2);
         deskOption1.add(tag1);
@@ -2912,6 +3010,138 @@
           deskOption1.rotation.y = -angDeskSolid;
           deskOption1.scale.x = -1;
         }
+
+        // A matching second L desk at the corner shared by the 3m and 6m walls.
+        // Keep the same 1.60m / 0.95m arms and 60cm depth as the original desk.
+        const cornerP = new THREE.Vector2().copy(onRight ? P3 : P4);
+        const wall3End = onRight ? P4 : P3;
+        const wall6End = onRight ? P2 : P1;
+        const dir3 = new THREE.Vector2(wall3End.x - cornerP.x, wall3End.y - cornerP.y).normalize();
+        const dir6 = new THREE.Vector2(wall6End.x - cornerP.x, wall6End.y - cornerP.y).normalize();
+        const roomCenter = new THREE.Vector2(
+          (P1.x + P2.x + P3.x + P4.x) / 4,
+          (P1.y + P2.y + P3.y + P4.y) / 4
+        );
+        const insideNormal = (direction) => {
+          const normal = new THREE.Vector2(-direction.y, direction.x);
+          if (normal.dot(new THREE.Vector2().subVectors(roomCenter, cornerP)) < 0) normal.negate();
+          return normal;
+        };
+        const inward3 = insideNormal(dir3);
+        const inward6 = insideNormal(dir6);
+        const wall3Line = cornerP.clone().addScaledVector(inward3, 0.025);
+        const wall6Line = cornerP.clone().addScaledVector(inward6, 0.025);
+        const lineCross = dir3.x * dir6.y - dir3.y * dir6.x;
+        const lineOffset = new THREE.Vector2().subVectors(wall6Line, wall3Line);
+        const cornerAlong3 = (lineOffset.x * dir6.y - lineOffset.y * dir6.x) / lineCross;
+        const deskCorner = wall3Line.clone().addScaledVector(dir3, cornerAlong3);
+        const secondArm3Len = 1.60;
+        const secondArm6Len = 0.95;
+        const secondDeskDepth = 0.60;
+
+        // One L-shaped top keeps the corner joint clean and prevents overlapping surfaces.
+        const secondDeskFootprint = [
+          deskCorner,
+          deskCorner.clone().addScaledVector(dir3, secondArm3Len),
+          deskCorner.clone().addScaledVector(dir3, secondArm3Len).addScaledVector(inward3, secondDeskDepth),
+          deskCorner.clone().addScaledVector(dir3, secondDeskDepth).addScaledVector(inward3, secondDeskDepth),
+          deskCorner.clone().addScaledVector(dir6, secondArm6Len).addScaledVector(inward6, secondDeskDepth),
+          deskCorner.clone().addScaledVector(dir6, secondArm6Len)
+        ];
+        const secondDeskShape = new THREE.Shape();
+        secondDeskShape.moveTo(secondDeskFootprint[0].x, -secondDeskFootprint[0].y);
+        secondDeskFootprint.slice(1).forEach(point => secondDeskShape.lineTo(point.x, -point.y));
+        secondDeskShape.closePath();
+        const secondDeskTop = new THREE.Mesh(
+          new THREE.ExtrudeGeometry(secondDeskShape, { depth: topThick, bevelEnabled: false }),
+          oakWoodMaterial
+        );
+        secondDeskTop.rotation.x = -Math.PI / 2;
+        secondDeskTop.position.y = deskH - topThick;
+        secondDeskTop.castShadow = true;
+        secondDeskTop.receiveShadow = true;
+        deskOption1SecondDesk.add(secondDeskTop);
+
+        const addSecondDeskBox = (width, height, length, point, y, yaw, material) => {
+          const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, length), material);
+          mesh.position.set(point.x, y, point.y);
+          mesh.rotation.y = yaw;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+          deskOption1SecondDesk.add(mesh);
+          return mesh;
+        };
+        const secondDeskLegGeo = new THREE.BoxGeometry(legSize, deskH - topThick, legSize);
+        const addSecondDeskLeg = (point) => {
+          const leg = new THREE.Mesh(secondDeskLegGeo, frameMat);
+          leg.position.set(point.x, (deskH - topThick) / 2, point.y);
+          leg.castShadow = true;
+          deskOption1SecondDesk.add(leg);
+        };
+        [
+          deskCorner.clone().addScaledVector(dir3, secondArm3Len - 0.05).addScaledVector(inward3, 0.08),
+          deskCorner.clone().addScaledVector(dir3, secondArm3Len - 0.05).addScaledVector(inward3, secondDeskDepth - 0.08),
+          deskCorner.clone().addScaledVector(dir6, secondArm6Len - 0.05).addScaledVector(inward6, 0.08),
+          deskCorner.clone().addScaledVector(dir6, secondArm6Len - 0.05).addScaledVector(inward6, secondDeskDepth - 0.08)
+        ].forEach(addSecondDeskLeg);
+
+        const yaw3 = Math.atan2(dir3.x, dir3.y);
+        const yaw6 = Math.atan2(dir6.x, dir6.y);
+        const arm3Center = deskCorner.clone().addScaledVector(dir3, secondArm3Len / 2);
+        const arm6Center = deskCorner.clone().addScaledVector(dir6, secondArm6Len / 2);
+        addSecondDeskBox(0.018, 0.22, secondArm3Len - 0.08,
+          arm3Center.clone().addScaledVector(inward3, secondDeskDepth - 0.02), deskH - 0.15, yaw3, oakWoodMaterial);
+        addSecondDeskBox(0.018, 0.22, secondArm6Len - 0.08,
+          arm6Center.clone().addScaledVector(inward6, secondDeskDepth - 0.02), deskH - 0.15, yaw6, oakWoodMaterial);
+
+        // Matching shallow illuminated shelf along the long side of the new desk.
+        const arm3Group = new THREE.Group();
+        arm3Group.position.set(deskCorner.x, 0, deskCorner.y);
+        arm3Group.rotation.y = yaw3;
+        deskOption1SecondDesk.add(arm3Group);
+        const side3 = inward3.dot(new THREE.Vector2(dir3.y, -dir3.x)) >= 0 ? 1 : -1;
+        const hutchH2 = 0.52;
+        const hutchDepth2 = 0.28;
+        const backboard2 = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH2, secondArm3Len), oakWoodMaterial);
+        backboard2.position.set(side3 * 0.035, deskH + hutchH2 / 2, secondArm3Len / 2);
+        arm3Group.add(backboard2);
+        const shelf2 = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth2, 0.03, secondArm3Len), oakWoodMaterial);
+        shelf2.position.set(side3 * hutchDepth2 / 2, deskH + hutchH2 - 0.015, secondArm3Len / 2);
+        arm3Group.add(shelf2);
+        [0.06, secondArm3Len - 0.06].forEach(z => {
+          const post = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH2, legSize), frameMat);
+          post.position.set(side3 * 0.24, deskH + hutchH2 / 2, z);
+          arm3Group.add(post);
+        });
+        const ledStrip2 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, secondArm3Len - 0.15), ledWarmEmissive);
+        ledStrip2.position.set(side3 * 0.15, deskH + 0.30, secondArm3Len / 2);
+        arm3Group.add(ledStrip2);
+
+        const secondDeskTools = new THREE.Group();
+        secondDeskTools.position.set(deskCorner.x, 0, deskCorner.y);
+        secondDeskTools.rotation.y = yaw3;
+        deskOption1SecondDesk.add(secondDeskTools);
+        const secondScope = createMicroscope();
+        secondScope.position.set(side3 * 0.30, deskH, 0.32);
+        secondDeskTools.add(secondScope);
+        const secondEsdMat = createEsdMat();
+        secondEsdMat.position.set(side3 * 0.30, deskH, 0.73);
+        secondDeskTools.add(secondEsdMat);
+        const secondSolder = createSolderingStation();
+        secondSolder.position.set(side3 * 0.30, deskH, 1.13);
+        secondDeskTools.add(secondSolder);
+        const secondPowerSupply = createPowerSupply();
+        secondPowerSupply.position.set(side3 * 0.30, deskH, 1.40);
+        secondDeskTools.add(secondPowerSupply);
+
+        const secondChair = createErgonomicChair();
+        const chairCenter = deskCorner.clone()
+          .addScaledVector(dir3, 0.95)
+          .addScaledVector(dir6, 0.82);
+        secondChair.position.set(chairCenter.x, 0, chairCenter.y);
+        const chairFacing = new THREE.Vector2().subVectors(deskCorner, chairCenter).normalize();
+        secondChair.rotation.y = Math.atan2(chairFacing.x, chairFacing.y);
+        deskOption1SecondDesk.add(secondChair);
       }
 
       // ====================================================
@@ -3178,10 +3408,12 @@
       }
 
       // ====================================================
-      // OPTION 3: STRAIGHT 2.00M DESK FLUSH ALONG WALL 5.70M
+      // OPTION 3: L-DESK WITH A 2.00M MAIN SIDE AND A FULL 3.00M RETURN
       // ====================================================
       const deskOption3 = new THREE.Group();
       deskOption3.name = 'deskOption3';
+      const deskOption3SecondSide = new THREE.Group();
+      deskOption3SecondSide.name = 'deskOption3SecondSide';
 
       {
         const deskLen = 2.00;
@@ -3315,43 +3547,105 @@
         // Floating 3D label badge for Option 3
         const tagDiv3 = document.createElement('div');
         tagDiv3.className = 'label-3d label-repair';
-        tagDiv3.innerHTML = '<i class="fa-solid fa-ruler-horizontal"></i> مقترح 3: مكتب طولي 2.00م ملاصق للحائط (ممر 2.55م فائق الاتساع)';
+        tagDiv3.innerHTML = '<i class="fa-solid fa-ruler-horizontal"></i> مقترح 3: مكتب حرف L (2م + ضلع 3م)';
         const tag3 = new THREE.CSS2DObject(tagDiv3);
         tag3.position.set(0.65, 1.85, 0.0);
         deskOption3.add(tag3);
 
         // Position deskOption3 along Wall 4
+        const wall4Len = onRight ? P1.distanceTo(P4) : P2.distanceTo(P3);
         if (onRight) {
-          const dCenter = 4.65;
+          const dCenter = wall4Len - deskLen / 2;
           const wallPos = new THREE.Vector2().copy(P1).addScaledVector(uDir, dCenter);
           const offsetDist = deskDepth / 2 + 0.02;
           const finalPos2D = new THREE.Vector2().copy(wallPos).addScaledVector(uNorm, offsetDist);
           deskOption3.position.set(finalPos2D.x, 0, finalPos2D.y);
           deskOption3.rotation.y = angDeskSolid;
         } else {
-          const dCenter = 4.65;
+          const dCenter = wall4Len - deskLen / 2;
           const wallPos = new THREE.Vector2().copy(P2).addScaledVector(new THREE.Vector2(-uDir.x, uDir.y), dCenter);
           deskOption3.position.set(wallPos.x - (deskDepth / 2 + 0.02), 0, wallPos.y);
           deskOption3.rotation.y = -angDeskSolid;
           deskOption3.scale.x = -1;
         }
+
+        // Complete the L with a full run along the 3m wall. The first 65cm
+        // meets the main desk at its corner, so this separate top starts after
+        // that shared corner area and reaches the far end of the wall.
+        const wall3Len = vWall3.length();
+        const returnStart = deskDepth;
+        const returnLen = Math.max(0, wall3Len - returnStart);
+        const returnCenter = new THREE.Vector2().copy(P4)
+          .addScaledVector(uDir3, returnStart + returnLen / 2)
+          .addScaledVector(uNorm3, deskDepth / 2 + 0.02);
+        const returnSide = new THREE.Group();
+        returnSide.position.set(returnCenter.x, 0, returnCenter.y);
+        returnSide.rotation.y = angWall3;
+        const returnTop = new THREE.Mesh(new THREE.BoxGeometry(deskDepth, topThick, returnLen), oakWoodMaterial);
+        returnTop.position.set(0, topY, 0);
+        returnTop.castShadow = true;
+        returnTop.receiveShadow = true;
+        returnSide.add(returnTop);
+
+        [0.28, returnLen / 2, returnLen - 0.28].forEach(zLeg => {
+          const leg = createLegLoop(deskDepth, deskH - topThick);
+          leg.position.set(0, 0, zLeg - returnLen / 2);
+          returnSide.add(leg);
+        });
+        const returnApron = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.22, Math.max(0.08, returnLen - 0.08)), oakWoodMaterial);
+        returnApron.position.set(-deskDepth / 2 + 0.02, deskH - 0.15, 0);
+        returnSide.add(returnApron);
+
+        const returnHutch = new THREE.Group();
+        returnHutch.position.set(-deskDepth / 2 + hutchDepth / 2, deskH, 0);
+        const returnBackboard = new THREE.Mesh(new THREE.BoxGeometry(0.018, hutchH, returnLen), oakWoodMaterial);
+        returnBackboard.position.set(-hutchDepth / 2 + 0.009, hutchH / 2, 0);
+        returnHutch.add(returnBackboard);
+        const returnShelf = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth, 0.03, returnLen), oakWoodMaterial);
+        returnShelf.position.set(0, hutchH - 0.015, 0);
+        returnHutch.add(returnShelf);
+        [0.06, returnLen / 2, returnLen - 0.06].forEach(zPost => {
+          const post = new THREE.Mesh(new THREE.BoxGeometry(legSize, hutchH, legSize), frameMat);
+          post.position.set(hutchDepth / 2 - legSize / 2, hutchH / 2, zPost - returnLen / 2);
+          returnHutch.add(post);
+        });
+        for (let zDiv = 0.48; zDiv < returnLen - 0.20; zDiv += 0.55) {
+          const divider = new THREE.Mesh(new THREE.BoxGeometry(hutchDepth - 0.02, cubbyH, 0.018), oakWoodMaterial);
+          divider.position.set(0, hutchH - cubbyH / 2 - 0.03, zDiv - returnLen / 2);
+          returnHutch.add(divider);
+        }
+        const returnLed = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, Math.max(0.08, returnLen - 0.15)), ledWarmEmissive);
+        returnLed.position.set(0, hutchH - cubbyH - 0.04, 0);
+        returnHutch.add(returnLed);
+        const returnLight = new THREE.PointLight(0xfff1cc, 2.0, 4.0, 1.4);
+        returnLight.position.set(0, hutchH - cubbyH - 0.06, 0);
+        returnHutch.add(returnLight);
+        ledLightsList.push(returnLight);
+        returnSide.add(returnHutch);
+        deskOption3SecondSide.add(returnSide);
       }
 
       // Add all 3 options to a container group and register globally
       const maintenanceDeskContainer = new THREE.Group();
       maintenanceDeskContainer.name = 'maintenanceDeskContainer';
       maintenanceDeskContainer.add(deskOption1);
+      maintenanceDeskContainer.add(deskOption1SecondDesk);
       maintenanceDeskContainer.add(deskOption2);
       maintenanceDeskContainer.add(deskOption3);
+      maintenanceDeskContainer.add(deskOption3SecondSide);
       furnitureGroup.add(maintenanceDeskContainer);
 
       window.deskOption1 = deskOption1;
+      window.deskOption1SecondDesk = deskOption1SecondDesk;
       window.deskOption2 = deskOption2;
       window.deskOption3 = deskOption3;
+      window.deskOption3SecondSide = deskOption3SecondSide;
 
       deskOption1.visible = true;
+      deskOption1SecondDesk.visible = true;
       deskOption2.visible = false;
       deskOption3.visible = false;
+      deskOption3SecondSide.visible = false;
 
       // ----------------------------------------------------
       // B. THE 2 PINK WOODEN COUNTERS WITH GLASS TOPS (1.20m + 1.20m = 2.40m) (1.20m + 1.20m = 2.40m)
@@ -4417,6 +4711,10 @@
             pos: new THREE.Vector3(2.8, 1.5, 2.2),
             target: new THREE.Vector3(1.8, 0.9, 1.2)
           },
+          maintenanceDoorShowcaseView: {
+            pos: new THREE.Vector3(4.70, 1.50, 1.68),
+            target: new THREE.Vector3(3.84, 1.22, 1.61)
+          },
           // 7. Floor Marble Veining
           floorView: {
             pos: new THREE.Vector3(2.0, 2.0, 2.5),
@@ -4458,6 +4756,10 @@
           glassVitrinesView: {
             pos: new THREE.Vector3(0.7, 1.55, 3.20),
             target: new THREE.Vector3(1.9, 0.95, 4.30)
+          },
+          maintenanceDoorShowcaseView: {
+            pos: new THREE.Vector3(-0.72, 1.50, 1.68),
+            target: new THREE.Vector3(0.14, 1.22, 1.61)
           },
           floorView: {
             pos: new THREE.Vector3(2.0, 2.0, 2.5),
@@ -4636,7 +4938,7 @@
       const activeBtn = Array.from(document.querySelectorAll('.btn-view')).find(b => b.getAttribute('onclick')?.includes(viewKey));
       if (activeBtn) activeBtn.classList.add('active');
 
-      if (viewKey === 'top' || viewKey === 'iso') {
+      if (viewKey === 'top' || viewKey === 'iso' || viewKey === 'maintenanceDoorShowcaseView') {
         if (viewKey === 'top' && window.ceilingMesh) {
           window.ceilingMesh.visible = false;
           const btnCeil = document.getElementById('btn-toggle-ceiling');
@@ -4835,15 +5137,23 @@
         specsBox.innerHTML = `
           <div class="breakdown-title">
             <i class="fa-solid fa-screwdriver-wrench"></i>
-            <span>1. المقترح 1: حرف L مدمج (ضلع 95 سم في وسط المحل):</span>
+            <span>1. المقترح 1: مكتبا صيانة حرف L:</span>
           </div>
           <div class="breakdown-step">
-            <span>ضلع الأجهزة والمعدات (حائط 5.70م):</span>
+            <span>المكتب الأساسي (حائط 5.70م):</span>
             <span style="font-weight:700; color:#38bdf8;">1.60م (ميكروسكوب + هوت إير + باور سبلاي)</span>
           </div>
           <div class="breakdown-step">
-            <span>ضلع الاستلام والفحص (وسط المحل):</span>
+            <span>ضلع المكتب الأساسي الداخلي:</span>
             <span style="font-weight:700; color:#34d399;">95 سم فقط (ممر واسع 1.60م بدون أي تداخل)</span>
+          </div>
+          <div class="breakdown-step">
+            <span>المكتب الإضافي عند حائطي 3م و6م:</span>
+            <span style="font-weight:700; color:#38bdf8;">1.60م على حائط 3م + 95سم على حائط 6م</span>
+          </div>
+          <div class="breakdown-step">
+            <span>عمق المكتب الإضافي:</span>
+            <span style="font-weight:700; color:#34d399;">60سم، بنفس ارتفاع وتشطيب المكتب الأساسي</span>
           </div>
           <div class="breakdown-step">
             <span>حركة الزبائن والممر:</span>
@@ -4885,19 +5195,19 @@
         specsBox.innerHTML = `
           <div class="breakdown-title">
             <i class="fa-solid fa-ruler-horizontal"></i>
-            <span>3. المقترح 3: مكتب طولي مستقيم 2.00م ملاصق للحائط:</span>
+            <span>3. المقترح 3: مكتب حرف L بامتداد حائط 3م:</span>
           </div>
           <div class="breakdown-step">
-            <span>طول المكتب (حائط 5.70م):</span>
-            <span style="font-weight:700; color:#38bdf8;">2.00 متر طولي مستقيم × عمق 65 سم</span>
+            <span>الضلع الأساسي (حائط 5.70م):</span>
+            <span style="font-weight:700; color:#38bdf8;">2.00م طولي × عمق 65سم</span>
           </div>
           <div class="breakdown-step">
-            <span>بروز المكتب في الصالة:</span>
-            <span style="font-weight:700; color:#10b981;">65 سم فقط ملاصق تماماً للحائط</span>
+            <span>الضلع الثاني (حائط 3م):</span>
+            <span style="font-weight:700; color:#10b981;">امتداد بطول الحائط بالكامل، بعمق 65 سم</span>
           </div>
           <div class="breakdown-step">
-            <span>عرض الممر المتبقي:</span>
-            <span style="font-weight:700; color:#34d399;">2.55 متر ممر فائق الاتساع في الصالة</span>
+            <span>التجهيز والتشطيب:</span>
+            <span style="font-weight:700; color:#34d399;">خشب مطابق للمكتب الأساسي مع رفوف وإضاءة ليد</span>
           </div>
           <div class="breakdown-step">
             <span>تجهيزات الصيانة:</span>
@@ -4911,8 +5221,10 @@
       window.activeDeskOption = optIndex;
 
       if (window.deskOption1) window.deskOption1.visible = (optIndex === 1);
+      if (window.deskOption1SecondDesk) window.deskOption1SecondDesk.visible = (optIndex === 1);
       if (window.deskOption2) window.deskOption2.visible = (optIndex === 2);
       if (window.deskOption3) window.deskOption3.visible = (optIndex === 3);
+      if (window.deskOption3SecondSide) window.deskOption3SecondSide.visible = (optIndex === 3);
 
       document.querySelectorAll('.btn-desk-opt, .drawer-opt-card').forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.getElementById('btn-opt-' + optIndex);
@@ -4923,11 +5235,11 @@
       updateDeskSpecsBox(optIndex);
 
       if (optIndex === 1) {
-        showToastNotification('🔧 تم تفعيل المقترح 1: حرف L مدمج (95 سم)');
+        showToastNotification('🔧 تم تفعيل المقترح 1: مكتبا صيانة حرف L');
       } else if (optIndex === 2) {
         showToastNotification('📐 تم تفعيل المقترح 2: ورشة U-Desk متكاملة (3×1.50م)');
       } else if (optIndex === 3) {
-        showToastNotification('📏 تم تفعيل المقترح 3: مكتب طولي مستقيم (2.00م)');
+        showToastNotification('📏 تم تفعيل المقترح 3: مكتب حرف L مع ضلع حائط 3م');
       }
     };
 
